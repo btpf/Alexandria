@@ -1,0 +1,6 @@
+#text{
+    color:blue;
+    text-decoration: underline;
+    display: grid;
+    transition: all .5s;
+}

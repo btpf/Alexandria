@@ -1,0 +1,7 @@
+#homeButton{
+    cursor: pointer;
+    background-color:antiquewhite;
+    width: 250px;
+    height: 50px;
+    user-select: none;
+}

@@ -1,0 +1,17 @@
+// https://github.com/mrmckeb/typescript-plugin-css-modules
+{
+    // Use typescript base https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#tsconfig-bases
+    "extends": "@tsconfig/node16/tsconfig.json",
+    "compilerOptions": {
+        "strict": true,
+        // https://stackoverflow.com/a/49112420
+        "lib": ["dom"],
+        "forceConsistentCasingInFileNames": true, // Forces case sensitive file import linting
+        "jsx": "react-jsx", // https://stackoverflow.com/a/64969461
+        "plugins": [
+            {
+                "name": "typescript-plugin-css-modules"
+            }
+        ]
+    }
+}
