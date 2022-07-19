@@ -1,5 +1,9 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 
 module.exports = {
@@ -10,7 +14,7 @@ module.exports = {
     index: './src/index.tsx',
   },
   // Mode
-  mode: 'development',
+  mode: isDevelopment ? 'development' : 'production',
 
   // Output directory
   output: {
@@ -21,12 +25,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.m?tsx$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           // Use babel-loader (Babel transpiler) for JS Files
           loader: "babel-loader",
           options: {
+            plugins: [isDevelopment && require.resolve('react-refresh/babel')].filter(Boolean), // This object is copied from react-refresh-webpack-plugin documentation
             // preset-react, preset-env = React support and latest JS Support
             presets: [
               '@babel/preset-react',
@@ -73,14 +78,16 @@ module.exports = {
             },
           },
         ],
-      },
+      }
     ],
   },
 
   // Specifies html template (Which has the root component which react mounts to)
   plugins: [new HtmlWebpackPlugin({
     template: 'src/template.html',
-  })],
+  }),
+  isDevelopment && new ReactRefreshWebpackPlugin() // Copied from react-refresh-webpack-plugin documentation
+  ].filter(Boolean),
 
   // Source map for debugging
   devtool: 'source-map',

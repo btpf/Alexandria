@@ -7,7 +7,8 @@ module.exports = {
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended" // This adds linting to react-hooks to prevent errors with debugging and dev tools
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
