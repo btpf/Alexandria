@@ -1,5 +1,4 @@
-// https://github.com/mrmckeb/typescript-plugin-css-modules
-{
+{ // https://github.com/mrmckeb/typescript-plugin-css-modules
     // Use typescript base https://www.typescriptlang.org/docs/handbook/tsconfig-json.html#tsconfig-bases
     "extends": "@tsconfig/node16/tsconfig.json",
     "compilerOptions": {

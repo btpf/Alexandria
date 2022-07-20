@@ -3,6 +3,11 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
+
+import store from './Redux/store'
+import { Provider } from 'react-redux'
+
+
 // https://stackoverflow.com/a/63520782
 const portalDiv = document.getElementById("root");
 if(!portalDiv){
@@ -16,8 +21,10 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
