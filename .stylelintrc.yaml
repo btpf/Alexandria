@@ -1,0 +1,3 @@
+extends: stylelint-config-standard
+rules:
+  selector-id-pattern: .* // Prevent kebab case enforcement
