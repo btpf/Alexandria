@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "christian-kohler.path-intellisense",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "stylelint.vscode-stylelint"
     ]
 }

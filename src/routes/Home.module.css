@@ -1,7 +1,13 @@
-#homeButton{
-    cursor: pointer;
-    background-color:antiquewhite;
-    width: 250px;
-    height: 50px;
-    user-select: none;
+#home-button {
+  cursor: pointer;
+  background-color: antiquewhite;
+  width: 250px;
+  height: 50px;
+  user-select: none;
+}
+
+#libraryShelf {
+  width: 100%;
+  height: 100%;
+  background-color: blue;
 }

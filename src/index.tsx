@@ -1,10 +1,13 @@
 import ReactDOM from "react-dom/client";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import App from "./app/App";
 
+import 'sanitize.css';
+import 'sanitize.css/forms.css';
+import 'sanitize.css/typography.css';
 
-import store from './Redux/store'
+import store from './app/store'
 import { Provider } from 'react-redux'
 
 
