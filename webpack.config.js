@@ -61,7 +61,7 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
-                  ['autoprefixer',
+                  !isDevelopment && ['autoprefixer',
                     {
                       overrideBrowserslist: "last 2 versions" // https://github.com/browserslist/browserslist#full-list
                     }
@@ -73,7 +73,7 @@ module.exports = {
                   //       // Options
                   //     },
                   //   ],
-                ],
+                ].filter(Boolean),
               },
             },
           },
