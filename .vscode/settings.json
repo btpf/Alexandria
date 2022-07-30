@@ -6,4 +6,6 @@
       "source.fixAll.eslint": true,
       "source.fixAll.stylelint": true
     },
+    // https://github.com/tailwindlabs/tailwindcss/discussions/5258#discussioncomment-1979394
+    "css.lint.unknownAtRules": "ignore"
 }
