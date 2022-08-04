@@ -1,13 +1,48 @@
+@import "./dynamic.css";
+@import "breakpoints.css";
+
+/* @value small as bp-small, large as bp-large from "./breakpoints.css"; */
+
+/* @value medium as bp-medium from "./dynamic.css"; */
+
 #home-button {
   cursor: pointer;
   background-color: antiquewhite;
   width: 250px;
   height: 50px;
   user-select: none;
+  color: var(--some-color);
 }
 
 #libraryShelf {
   width: 100%;
   height: 100%;
   background-color: blue;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: left;
+  gap: 40px;
+  padding: 0.5rem;
 }
+
+#boxPlaceholder {
+  width: 100px;
+  height: 150px;
+  background-color: red;
+}
+
+#bookCase {
+  width: 100%;
+  height: 100%;
+  background-color: purple;
+  display: flex;
+  justify-content: center;
+}
+
+@media medium {
+  #libraryShelf {
+    background-color: black;
+  }
+}
+
+/* @medium */

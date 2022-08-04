@@ -9,18 +9,28 @@ const Home = () =>{
 
   console.log("High level rerender")
   return (
-    <div>
+    <>
       <Shelf/>
       Hello World
-    </div>
+    </>
   )
 } 
 
 const Shelf = () =>{
   return (
+    // <div id={styles.bookCase}>
     <div id={styles.libraryShelf}>
-      shelf
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
+      <div id={styles.boxPlaceholder}></div>
     </div>
+    // {/* </div> */}
+
   )
 }
 const ChildComponent = () =>{

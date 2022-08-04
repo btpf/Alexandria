@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const postcssCustomMedia = require('postcss-custom-media');
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -61,6 +62,9 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
+                  ['postcss-import',
+                    {path: path.resolve(__dirname, 'src/utils/styles/')}], // This will make the styles folder global, this way they can be imported from anywhere.
+                  [postcssCustomMedia()],
                   !isDevelopment && ['autoprefixer',
                     {
                       overrideBrowserslist: "last 2 versions" // https://github.com/browserslist/browserslist#full-list

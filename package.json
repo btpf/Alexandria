@@ -37,6 +37,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "html-webpack-plugin": "^5.5.0",
     "postcss": "^8.4.14",
+    "postcss-custom-media": "^8.0.2",
+    "postcss-import": "^14.1.0",
     "postcss-loader": "^7.0.1",
     "react-refresh": "^0.14.0",
     "style-loader": "^3.3.1",
