@@ -81,7 +81,7 @@ module.exports = {
             options: { 
               sourceMap: true,
               sassOptions: {
-                includePaths: [path.resolve(__dirname, 'src/utils/styles')],
+                includePaths: [path.resolve(__dirname, 'src/shared/styles/global')],
               },
             } 
           },
@@ -91,8 +91,9 @@ module.exports = {
   },
 
   // Specifies html template (Which has the root component which react mounts to)
+  // Will inject the script tag by default. Script tag links ALL webpack bundles 
   plugins: [new HtmlWebpackPlugin({
-    template: 'src/template.html',
+    template: 'public/template.html',
   }),
   isDevelopment && new ReactRefreshWebpackPlugin() // Copied from react-refresh-webpack-plugin documentation
   ].filter(Boolean),
@@ -100,10 +101,10 @@ module.exports = {
   // Source map for debugging
   devtool: 'source-map',
 
-
+  // webpack-dev-server is a lightweight express server that serves all output bundles from webpack. Supports hot reload.
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, 'public'), // Will also serve these static files
     },
     compress: true,
     port: 9000,

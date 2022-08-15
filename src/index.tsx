@@ -1,15 +1,14 @@
 import ReactDOM from "react-dom/client";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import App from "./app/App";
+import Router from "./routes/Router";
 
 import 'sanitize.css';
 import 'sanitize.css/forms.css';
 import 'sanitize.css/typography.css';
 // import './utils/styles/breakpoints.css'
-import './utils/styles/defaults.css'
 
-import store from './app/store'
+import store from './store/store'
 import { Provider } from 'react-redux'
 
 
@@ -28,7 +27,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <Router />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

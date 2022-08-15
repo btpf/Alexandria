@@ -2,11 +2,11 @@ import React, { useState } from 'react'; // we need this to make JSX compile
 
 import styles from './Home.module.css'
 
-import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import {increment, decrement} from '../../features/counterSlice'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
+import {increment, decrement} from '../../store/slices/counterSlice'
 
 
-import {setDetails} from '../../features/profileSlice'
+import {setDetails} from '../../store/slices/profileSlice'
 
 type CardProps = {
   title?: string,
