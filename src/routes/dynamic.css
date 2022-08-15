@@ -1,27 +1,33 @@
-@import "breakpoints.css";
+/* @import "breakpoints.css"; */
 
+/*
 #boxPlaceholder {
   border: 1px solid black;
-}
+} */
 
 /* @value small: (max-width: 599px);
 @value medium: (min-width: 600px) and (max-width: 959px);
 @value large: (min-width: 960px); */
 
-:root {
+/* :root {
   --some-color: salmon;
-}
+} */
 
-@media (max-width: 800px) {
+/* @media (max-width: 800px) {
   :root {
     --some-color: rgb(10 239 255);
   }
-}
+} */
 
 /* @custom-media --medium (max-width: 959px); */
 
+/*
 @media (--medium) {
   #boxPlaceholder {
     background-color: var(--some-color) !important;
   }
+} */
+
+.test {
+  color: red;
 }

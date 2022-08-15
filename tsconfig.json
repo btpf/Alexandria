@@ -7,10 +7,5 @@
         "lib": ["dom"],
         "forceConsistentCasingInFileNames": true, // Forces case sensitive file import linting
         "jsx": "react-jsx", // https://stackoverflow.com/a/64969461
-        "plugins": [
-            {
-                "name": "typescript-plugin-css-modules"
-            }
-        ]
     }
 }

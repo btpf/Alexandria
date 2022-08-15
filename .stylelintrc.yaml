@@ -1,6 +1,9 @@
 extends: stylelint-config-standard
+plugins:
+  stylelint-scss
 rules: 
   selector-id-pattern: .* # Prevent kebab case enforcement
   # at-rule-no-unknown - When disabled, this will allow custom variables
   # https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown/README.md - Guideline used to disable
   at-rule-no-unknown: null # https://stylelint.io/user-guide/rules/list/at-rule-no-unknown/ 
+  scss/at-rule-no-unknown: true

@@ -6,7 +6,7 @@ import App from "./app/App";
 import 'sanitize.css';
 import 'sanitize.css/forms.css';
 import 'sanitize.css/typography.css';
-import './utils/styles/breakpoints.css'
+// import './utils/styles/breakpoints.css'
 import './utils/styles/defaults.css'
 
 import store from './app/store'

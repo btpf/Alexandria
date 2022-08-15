@@ -2,6 +2,8 @@
     "recommendations": [
         "christian-kohler.path-intellisense",
         "dbaeumer.vscode-eslint",
-        "stylelint.vscode-stylelint"
+        "stylelint.vscode-stylelint",
+        "mrmlnc.vscode-scss",
+        "clinyong.vscode-css-modules"
     ]
 }

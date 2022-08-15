@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const postcssCustomMedia = require('postcss-custom-media');
 
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -46,7 +45,7 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/i,
+        test: /\.(sc|c)ss$/i,
         use: [
           "style-loader", // Allow import styles
           {
@@ -62,9 +61,6 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
-                  ['postcss-import',
-                    {path: path.resolve(__dirname, 'src/utils/styles/')}], // This will make the styles folder global, this way they can be imported from anywhere.
-                  [postcssCustomMedia()],
                   !isDevelopment && ['autoprefixer',
                     {
                       overrideBrowserslist: "last 2 versions" // https://github.com/browserslist/browserslist#full-list
@@ -80,6 +76,14 @@ module.exports = {
                 ].filter(Boolean),
               },
             },
+          },
+          { loader: "sass-loader", 
+            options: { 
+              sourceMap: true,
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, 'src/utils/styles')],
+              },
+            } 
           },
         ],
       }
@@ -106,6 +110,6 @@ module.exports = {
   },
   // https://stackoverflow.com/questions/63151999/webpack-and-babel-loader-not-resolving-ts-and-tsx-modules
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json', '.css']
+    extensions: ['.ts', '.tsx', '.js', '.json', '.css','.scss']
   }
 };
