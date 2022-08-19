@@ -1,4 +1,4 @@
-extends: stylelint-config-standard
+extends: stylelint-config-recommended-scss
 plugins:
   stylelint-scss
 rules: 
@@ -7,3 +7,4 @@ rules:
   # https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown/README.md - Guideline used to disable
   at-rule-no-unknown: null # https://stylelint.io/user-guide/rules/list/at-rule-no-unknown/ 
   scss/at-rule-no-unknown: true
+  indentation: 2

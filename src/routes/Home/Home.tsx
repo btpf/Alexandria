@@ -14,17 +14,14 @@ const Home = () =>{
 
 const Shelf = () =>{
   return (
-    <div>
+    <div className={styles.bookCase}>
       hi
-      <div className={styles.bookCase}></div>
       <div className={styles.boxPlaceholder}></div>
       <div className={styles.boxPlaceholder}></div>
       <div className={styles.boxPlaceholder}></div>
       <div className={styles.boxPlaceholder}></div>
       <div className={styles.boxPlaceholder}></div>
     </div>
-    // {/* </div> */}
-
   )
 }
 const ChildComponent = () =>{

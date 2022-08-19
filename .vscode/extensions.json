@@ -4,6 +4,7 @@
         "dbaeumer.vscode-eslint",
         "stylelint.vscode-stylelint",
         "mrmlnc.vscode-scss",
-        "clinyong.vscode-css-modules"
+        "clinyong.vscode-css-modules",
+        "phoenisx.cssvar"
     ]
 }
