@@ -3,6 +3,10 @@
     "extends": "@tsconfig/node16/tsconfig.json",
     "compilerOptions": {
         "strict": true,
+        "baseUrl": "./",
+        "paths": {
+            "@resources/*": ["public/resources/*"],
+         },
         // https://stackoverflow.com/a/49112420
         "lib": ["dom"],
         "forceConsistentCasingInFileNames": true, // Forces case sensitive file import linting

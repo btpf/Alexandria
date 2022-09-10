@@ -32,53 +32,189 @@
   color:green;
 }
 
-.boxPlaceholder {
-  width: 100px;
-  height: 150px;
-  background-color: red;
-}
-// $base-color: #c6538c;
-:root{
-  $base-color: #c6538c;
-  --BC: red;
-}
-
-
 
 
 
 .bookCase {
   width: 100%;
   height: 100%;
- 
-  background-color: var(--BC);
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, 100px);
+  gap: 5px 5px;
+  grid-template-columns: repeat(auto-fill, var(--book-width));
+  grid-template-rows: repeat(auto-fill, var(--book-height));
+}
+
+.boxPlaceholder {
+  width: var(--book-width);
+  height: var(--book-height);
+  // background-color: blue;
+  display:flex;
+  flex-direction: column;
+  justify-content: end;
+  padding-bottom: 2px;
+  background-size: contain;
+  background-position-y: bottom;
+  background-position-x: center;
+  cursor:pointer;
+  // V1
+  // box-shadow: inset 0px -40px 40px rgba(0, 0, 0, 0.7);
+  // v2 - Improved shader, Perfect for one line
+  // box-shadow: inset 0px -80px 20px -60px rgba(0,0,0,1);
+  // V3
+  box-shadow: inset 0px -160px 30px -130px rgba(0,0,0,1);
 
 }
-// @media medium {
-//   #libraryShelf {
-//     background-color: black;
+
+.titleBar{
+  height: 50px;
+  width: 100%;
+  display:flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap:25px;
+  border-bottom: 1px solid #E6E6E6;
+  margin-bottom:25px
+}
+
+.titleBar div:first-of-type{
+  margin-right: auto;
+  margin-left: 20px;
+  font-weight: bold;
+  font-size: 24px;
+}
+.titleBar svg:last-of-type{
+  margin-right: 25px;
+}
+
+.boxBottomBar{
+  width:100%;
+  height: 40px;
+  display:flex;
+  flex-direction: row;
+  align-items: end;
+  color:white;
+  text-align: center;
+
+
+}
+.boxBottomBar > div{
+  flex-grow:1;
+  font-size: 12px;
+}
+.boxBottomBar > svg{
+  cursor:pointer;
+  flex-basis:25%;
+}
+
+/// Stroke font-character
+/// @param  {Integer} $stroke - Stroke width
+/// @param  {Color}   $color  - Stroke color
+/// @return {List}            - text-shadow list
+@function stroke($stroke, $color) {
+  $shadow: ();
+  $from: $stroke * -1;
+  @for $i from $from through $stroke {
+    @for $j from $from through $stroke {
+      $shadow: append($shadow, $i * 1px $j * 1px 0 $color, comma);
+    }
+  }
+  @return $shadow;
+}
+/// Stroke font-character
+/// @param  {Integer} $stroke - Stroke width
+/// @param  {Color}   $color  - Stroke color
+/// @return {Style}           - text-shadow
+@mixin stroke($stroke, $color) {
+  text-shadow: stroke($stroke, $color);
+}
+
+
+.boxBottomBar > div:first-of-type{
+  font-weight: bold;
+  // flex-grow:3;
+  text-overflow:clip;
+  overflow: hidden;
+  // white-space: nowrap;
+  // flex-basis:75%;
+  // word-break: break-all;
+  // background: #000000b5;
+  border-radius: 0px 5px;
+  margin-left: 3px;
+  @include stroke(3, #000000)
+
+}
+
+@include lt-md{
+  .bookCase, .boxPlaceholder{
+    --book-width: 100px;
+    --book-height: 150px;
+    $base-color: salmon;
+  }
+  .boxBottomBar > div{
+    font-size:8px;
+  }
+  // .boxBottomBar > svg{
+  //   scale: 0.75;
+  //   translate: 0 3px;
+  // }
+
+  .boxBottomBar > svg{
+    display:none;
+  }
+}
+
+@include gt-sm{
+  .bookCase, .boxPlaceholder{
+    $ScaleFactor: 1.25;   
+    --book-width: calc(100px * #{$ScaleFactor});
+    --book-height: calc(150px * #{$ScaleFactor});
+  }
+
+}
+// @include gt-md{
+//   .bookCase .boxPlaceholder{
+//     --book-width: 100px;
+//     --book-height: 150px;
+//     $base-color: salmon;
 //   }
 // }
 
-@include lt-md{
-  :root{
-    --BC: green !important;
-    $base-color: salmon;
-  }
-  
-  
-}
 
 @include lt-md{
   #libraryShelf {
     background-color: black;
   }
 }
+
+@include gt-lg{
+  .bookCase, .boxPlaceholder{
+    $ScaleFactor: 1.75;   
+    --book-width: calc(100px * #{$ScaleFactor});
+    --book-height: calc(150px * #{$ScaleFactor});
+  }
+  .boxBottomBar > div{
+    font-size:16px;
+  }
+  .boxBottomBar > svg{
+    scale: 1.5;
+    translate: 0 -8px;
+  }
+}
 /* @medium */
 
 
+.flexContainer{
+  width: 500px;
+  height: 500px;
+  background-color: blue;
+  display: flex;
+  flex-direction: row;
+}
 
-
+.flexChild{
+  width: 50px;
+  height: 50px;
+  // flex-basis: 33.3%;
+  background-color: red;
+}

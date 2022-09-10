@@ -31,7 +31,7 @@ module.exports = {
           // Use babel-loader (Babel transpiler) for JS Files
           loader: "babel-loader",
           options: {
-            plugins: [isDevelopment && require.resolve('react-refresh/babel')].filter(Boolean), // This object is copied from react-refresh-webpack-plugin documentation
+            plugins: ["tsconfig-paths-module-resolver", isDevelopment && require.resolve('react-refresh/babel')].filter(Boolean), // This object is copied from react-refresh-webpack-plugin documentation
             // preset-react, preset-env = React support and latest JS Support
             presets: [
               '@babel/preset-react',
@@ -86,6 +86,15 @@ module.exports = {
             } 
           },
         ],
+      },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        use: ['@svgr/webpack'],
+      },
+      {
+        test: /\.(png|jpg|gif|webp)$/i,
+        type: 'asset/resource'
       }
     ],
   },
