@@ -8,3 +8,5 @@ rules:
   at-rule-no-unknown: null # https://stylelint.io/user-guide/rules/list/at-rule-no-unknown/ 
   scss/at-rule-no-unknown: true
   indentation: 2
+  declaration-block-trailing-semicolon: always
+  no-descending-specificity: null # https://github.com/stylelint/stylelint/issues/3516

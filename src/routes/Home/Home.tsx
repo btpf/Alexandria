@@ -6,6 +6,8 @@ import Search from '@resources/feathericons/search.svg'
 import Filter from '@resources/feathericons/filter.svg'
 import Settings from '@resources/feathericons/settings.svg'
 
+import Boomark from '@resources/figma/Bookmark.svg'
+
 
 import moby from "@resources/images/mobydick.jpg"
 import martian from "@resources/images/martian.jpg"
@@ -73,16 +75,26 @@ const Shelf = () =>{
         <Filter/>
         <Settings/>
       </div>
+
       <div className={styles.bookCase}>
+
         {books.map((book)=>{
           return (      
-            // <div key={book.title} className={styles.boxPlaceholder} style={{backgroundImage: `url(${book.BookUrl})`}}>
             <div key={book.title} className={styles.boxPlaceholder}>
-              <img className={styles.bookImage} src={book.BookUrl}/>
+
+              {/* This container is used to handle top bar in CSS in case where book is a short height */}
+              <div className={styles.bookImageContainer}>
+                <div className={styles.boxTopBar}>
+                  <Boomark/>
+                  <div>{book.percent}</div>
+                  <Test onClick={()=>{setCounter(counter + 1)}}/>
+                </div>
+                <img className={styles.bookImage} src={book.BookUrl}/>
+              </div>
+              
               <div className={styles.boxBottomBar} >
                 <div>{book.title}</div>
-                <div>{book.percent}</div>
-                <Test onClick={()=>{setCounter(counter + 1)}}/>
+
               </div>
             </div>
           )
