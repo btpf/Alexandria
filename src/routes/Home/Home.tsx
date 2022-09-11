@@ -16,7 +16,6 @@ import af from "@resources/images/af.jpg"
 import tcr6 from "@resources/images/tcr6.jpg"
 import gg from "@resources/images/gg.jpg"
 import jah from "@resources/images/jah.jpg"
-// import t from ""
 
 const books = [
   {BookUrl: moby,
@@ -46,11 +45,11 @@ const books = [
   {BookUrl: jah,
     title:"Jeckyl and Hyde",
     percent: "43%"},
+  {BookUrl: "None",
+    title:"Jeckyl and Hyde",
+    percent: "43%"},
                   
                 
-              
-            
-          
       
 ]
 
@@ -77,7 +76,9 @@ const Shelf = () =>{
       <div className={styles.bookCase}>
         {books.map((book)=>{
           return (      
-            <div key={book.title} className={styles.boxPlaceholder} style={{backgroundImage: `url(${book.BookUrl})`}}>
+            // <div key={book.title} className={styles.boxPlaceholder} style={{backgroundImage: `url(${book.BookUrl})`}}>
+            <div key={book.title} className={styles.boxPlaceholder}>
+              <img className={styles.bookImage} src={book.BookUrl}/>
               <div className={styles.boxBottomBar} >
                 <div>{book.title}</div>
                 <div>{book.percent}</div>
@@ -93,14 +94,6 @@ const Shelf = () =>{
 
   )
 }
-const ChildComponent = () =>{
-  const [counter, setCounter] = useState(0)
-  console.log("Child Render")
-  return (
-    <div id={styles['home-button']}>
-      <span>{counter}</span>
-    </div>
-  )
-}
+
 export default Home
 
