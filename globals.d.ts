@@ -33,3 +33,9 @@ declare module "*.webp" {
     const content: any;
     export default content;
 }
+
+
+declare module "*.epub" {
+    const content: any;
+    export default content;
+}

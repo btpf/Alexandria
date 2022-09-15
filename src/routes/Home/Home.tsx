@@ -1,4 +1,5 @@
 import React, { useState } from 'react'; // we need this to make JSX compile
+import { Link } from "react-router-dom";
 
 import styles from './Home.module.scss'
 import Test from '@resources/feathericons/more-vertical.svg'
@@ -48,7 +49,7 @@ const books = [
     title:"Jeckyl and Hyde",
     percent: "43%"},
   {BookUrl: "None",
-    title:"Jeckyl and Hyde",
+    title:"Placeholder",
     percent: "43%"},
                   
                 
@@ -79,24 +80,26 @@ const Shelf = () =>{
       <div className={styles.bookCase}>
 
         {books.map((book)=>{
-          return (      
-            <div key={book.title} className={styles.boxPlaceholder}>
+          return (
+            <Link key={book.title} to="/reader">
+              <div className={styles.boxPlaceholder}>
 
-              {/* This container is used to handle top bar in CSS in case where book is a short height */}
-              <div className={styles.bookImageContainer}>
-                <div className={styles.boxTopBar}>
-                  <Boomark/>
-                  <div>{book.percent}</div>
-                  <Test onClick={()=>{setCounter(counter + 1)}}/>
+                {/* This container is used to handle top bar in CSS in case where book is a short height */}
+                <div className={styles.bookImageContainer}>
+                  <div className={styles.boxTopBar}>
+                    <Boomark/>
+                    <div>{book.percent}</div>
+                    <Test onClick={()=>{setCounter(counter + 1)}}/>
+                  </div>
+                  <img className={styles.bookImage} src={book.BookUrl}/>
                 </div>
-                <img className={styles.bookImage} src={book.BookUrl}/>
-              </div>
               
-              <div className={styles.boxBottomBar} >
-                <div>{book.title}</div>
+                <div className={styles.boxBottomBar} >
+                  <div>{book.title}</div>
 
+                </div>
               </div>
-            </div>
+            </Link>
           )
         })}
 

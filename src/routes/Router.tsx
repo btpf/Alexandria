@@ -1,16 +1,14 @@
-import { Routes, Route, Link } from "react-router-dom";
+import {Route, createRoutesFromElements } from "react-router-dom";
 import React from "react";
 
 import Home from './Home/Home'
+import Reader from "./Reader/Reader";
 
-export default function App() {
-  // console.log(test)
-  return (
-    // <div className="App" style={{height:"100%"}}>
-    <Routes>
+export default (
+  createRoutesFromElements(
+    <>
       <Route path="/" element={<Home />} />
-      {/* <Route path="about" element={<About />} /> */}
-    </Routes>
-    // </div>
-  );
-}
+      <Route path="/reader" element={<Reader />} />
+    </>
+  )
+);
