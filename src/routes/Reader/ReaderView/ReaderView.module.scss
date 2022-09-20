@@ -1,0 +1,10 @@
+.epubContainer{
+  width:100%;
+  height:100%;
+
+  // This will fix a bug where the epub child container will try to resize from the size of the parent.
+  // The issue is when double click resizing (Dblclicking the titlebar of the browser), the epubContainer will resize first, but the
+  // previous rendition will still be rendered. This causes an overflow. By default the height of the epubContainer will match that
+  // of what is needed for the child. By setting overflow to hidden, it prevents that bug. However, this may cause issues in the future...
+  overflow: hidden;
+}

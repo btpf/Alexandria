@@ -53,7 +53,6 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
-    "@types/epub": "^0.0.7",
     "@types/node": "^18.0.5",
     "epubjs-myh": "github:btpf/epub.js",
     "react": "^18.2.0",
