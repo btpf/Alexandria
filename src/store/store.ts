@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
+import bookState from './slices/bookStateSlice'
 import counterSlice from './slices/counterSlice'
 import profileSlice from './slices/profileSlice'
 
 const store =  configureStore({
   reducer: {
     counter: counterSlice,
-    profile: profileSlice
+    profile: profileSlice,
+    bookState
   },
 })
 

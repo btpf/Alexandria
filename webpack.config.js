@@ -51,8 +51,12 @@ module.exports = {
           {
             loader: "css-loader", // Allows the use of modules
             options: {
-              modules: true, // Enable module support (Defaults to simply injecting)
+              // Enable module support (Defaults to simply injecting)
+              modules: {
+                localIdentName: isDevelopment? "[name]__[local]--[hash:base64:5]": "[hash:base64]",
+              },
               importLoaders: 1, // Specifies that postcss-loader is also used - https://github.com/webpack-contrib/css-loader#importloaders
+              
             },
           },
 

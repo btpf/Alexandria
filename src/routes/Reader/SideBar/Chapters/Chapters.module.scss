@@ -1,0 +1,40 @@
+
+
+.rootChapterFlexContainer{
+  display:flex;
+  justify-content: space-between;
+}
+    
+$ChapterArrow: 24px;
+.tocExpander{
+  display: inline;
+  // order: 2;
+    
+  height: calc($ChapterArrow * 1.5);
+  width: calc($ChapterArrow * 1.5);
+  padding-right:40px;
+  flex-basis: 56px;
+}
+    
+.tocExpander > svg{
+  transform-origin: 0 0;
+  transform: scale(1.5);
+  color: gray;
+}
+    
+    
+.tocChapterTitle{
+  margin-left:20px;
+  margin-right:20px;
+  flex-basis: calc(100% - 56px);
+  display:flex;
+  align-items: center;
+  font-weight: bold;
+}
+    
+.TocMapContainer{
+  margin-top:10px;
+  margin-bottom:10px;
+}
+  
+    
