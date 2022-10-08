@@ -10,10 +10,8 @@
     "css.lint.unknownAtRules": "ignore",
 
     "path-intellisense.mappings": {
-
-        
-      "@resources": "${workspaceRoot}/public/resources"
+      "@resources": "${workspaceRoot}/public/resources",
+      "@store": "${workspaceRoot}/src/store"
   },
   "path-intellisense.autoTriggerNextSuggestion": true,
-  "path-intellisense.autoSlashAfterDirectory": true
 }

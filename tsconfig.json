@@ -6,6 +6,7 @@
         "baseUrl": "./",
         "paths": {
             "@resources/*": ["public/resources/*"],
+            "@store/*": ["src/store/*"]
          },
         // https://stackoverflow.com/a/49112420
         "lib": ["dom"],
