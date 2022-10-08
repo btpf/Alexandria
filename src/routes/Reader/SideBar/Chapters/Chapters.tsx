@@ -5,7 +5,8 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-
+import { ToggleSidebar } from '@store/slices/bookStateSlice'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 type SidebarTypes = {
     renditionInstance: Rendition
@@ -14,7 +15,7 @@ type ExpandingTree = { [member: string]: any|null }
 
 
 const Sidebar = (props:SidebarTypes)=>{
-    
+  const dispatch = useAppDispatch()
   
   //https://stackoverflow.com/a/59370530
   const [expandableTree, setExpandableTree] = useState<ExpandingTree>({});
@@ -47,7 +48,11 @@ const Sidebar = (props:SidebarTypes)=>{
         <div className={styles.TocMapContainer} style={{paddingLeft: 20 * level.length}} key={`${item.href} + ${item.id}`}>
           <div className={styles.rootChapterFlexContainer}>
 
-            <div className={styles.tocChapterTitle} onClick={()=>{props.renditionInstance?.display(item.href)}}>{item.label}</div>
+            <div className={styles.tocChapterTitle}
+              onClick={()=>{
+                props.renditionInstance?.display(item.href)
+                dispatch(ToggleSidebar(0))
+              }}>{item.label}</div>
 
             <div className={styles.tocExpander} onClick={()=>{
               if(item.subitems){

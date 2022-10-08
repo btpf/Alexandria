@@ -3,21 +3,22 @@ import styles from './SideBar.module.scss'
 
 
 import { NavItem, Rendition } from 'epubjs-myh'
-import produce from 'immer'
-import recursiveMap from './Chapters/Chapters'
 import Chapters from './Chapters/Chapters'
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { ToggleSidebar } from '@store/slices/bookStateSlice'
 
-type SidebarTypes = {
-    sidebarOpen: boolean,
-    renditionInstance: Rendition | undefined
-  };
-const Sidebar = (props:SidebarTypes)=>{
+
+const Sidebar = ()=>{
+  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.options?.sidebarToggled)
+  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
+  
   const [selectedBookmarkTab, selectBookmarkTab] = useState("Chapters");
+  const dispatch = useAppDispatch()
 
   return (
     <div className={styles.sideBarContainer}>
-      <div className={`${styles.opaqueScreen} ${props.sidebarOpen && styles.opaqueScreenActive}`}/>
-      <div className={`${styles.sideBar} ${props.sidebarOpen && styles.sideBarActive}`}>
+      <div onClick={()=>{sidebarOpen? dispatch(ToggleSidebar(0)): false}} className={`${styles.opaqueScreen} ${sidebarOpen && styles.opaqueScreenActive}`}/>
+      <div className={`${styles.sideBar} ${sidebarOpen && styles.sideBarActive}`}>
         <div className={styles.tabSelector}>
           {["Chapters", "Bookmarks", "Annotations"].map((item)=>{
             return (
@@ -29,7 +30,7 @@ const Sidebar = (props:SidebarTypes)=>{
         </div>
 
         <div style={{flexGrow:1, overflowY:"auto"}}>
-          <SidebarContent selection={selectedBookmarkTab} renditionInstance={props.renditionInstance}/>
+          <SidebarContent selection={selectedBookmarkTab} renditionInstance={renditionInstance}/>
         </div>
 
       </div>

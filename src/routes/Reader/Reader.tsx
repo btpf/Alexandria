@@ -11,22 +11,24 @@ import ArrowRight from '@resources/feathericons/arrow-right.svg'
 
 import { Rendition } from 'epubjs-myh'
 import Sidebar from './SideBar/SideBar'
-
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { ToggleSidebar } from '@store/slices/bookStateSlice'
 const Home = () =>{
-  const [menuOpen, toggleMenu] = useState(false);
-  const [sidebarOpen, toggleSidebar] = useState(false);
-  const [renditionInstance, setRendition] = useState<undefined|Rendition>(undefined);
 
+  const menuOpen = useAppSelector((state) => state.bookState[0]?.options?.menuToggled)
+  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
+  const dispatch = useAppDispatch()
+  
   return (
     <div className={styles.readerFlex}>
 
-      <div className={`${styles.readerTitleBar}  ${menuOpen && styles.optionsToggled}`}>
+      <div className={`${styles.readerTitleBar}  ${!menuOpen && styles.optionsToggled}`}>
         <div className={`${styles.menuButtonContainer}`}>
-          <List onClick={()=>{toggleSidebar(!sidebarOpen)}}/>
+          <List onClick={()=>{dispatch(ToggleSidebar(0))}}/>
           <Bookmark/>
         </div>
         <div>
-          {"Charlotte's Web"}
+          {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
         <div className={`${styles.menuButtonContainer}`}>
           <Search/>
@@ -34,16 +36,10 @@ const Home = () =>{
         </div>
       </div>
       <ReaderView
-        onToggleState={()=>{
-          toggleMenu(!menuOpen)
-        }}
 
-        onRenditionInstance={(rendition)=>{
-          setRendition(rendition)
-        }}
       />
 
-      <div className={`${styles.readerFooterBar}  ${menuOpen && styles.optionsToggled}`}>
+      <div className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.menuButtonContainer}`}>
           <ArrowLeft/>
         </div>
@@ -55,7 +51,7 @@ const Home = () =>{
 
 
 
-      <Sidebar sidebarOpen={sidebarOpen} renditionInstance={renditionInstance}/>
+      <Sidebar/>
 
 
     </div>

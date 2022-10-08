@@ -9,6 +9,22 @@ const store =  configureStore({
     profile: profileSlice,
     bookState
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        // This is done since the redux state will only be set once with the rendition and is an 'isolated app'
+        // Isolated since state and react does not directly influence it's rendering. Only library calls do.
+        // See:
+        // https://redux.js.org/style-guide/#do-not-put-non-serializable-values-in-state-or-actions
+        // https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
+        // https://stackoverflow.com/questions/66733221/how-should-react-redux-work-with-non-serializable-data
+        // Although it will break dev tools, and is against the recommendation of markerikson, I believe this approach
+        // is "correct" enough
+        ignoredActions: ['bookState/AddRendition'],
+        ignoredPaths: ['bookState.0.instance', 'bookState.1.instance']
+      },
+    }),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
