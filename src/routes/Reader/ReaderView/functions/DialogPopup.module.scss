@@ -1,0 +1,42 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  background-color:white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+
+.actionContainer{
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-grow:1;
+}
+
+.actionContainer > div{
+  cursor: pointer;
+  display:flex;
+  width: 45px;
+  // flex-grow:1;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.divider{
+  width: 100%;
+  margin: 4px 0px 4px 0px;
+}
+.highlightContainer{
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-grow:1;
+}
+.highlightBubble{
+  height: 24px;
+  width: 24px;
+  border-radius: 100%;
+  border: 1px solid black;
+  cursor:pointer;
+}

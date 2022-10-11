@@ -1,0 +1,129 @@
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "@store/store"
+import styles from './DialogPopup.module.scss'
+
+import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
+import Book from '@resources/iconmonstr/iconmonstr-book-26.svg'
+import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
+
+function DialogPopup(props:{resetMouse: () => void}){
+  const renditionInstance = useSelector((state: RootState) => state.bookState[0]?.instance)
+  const [bounds, setBounds] = useState({x:0, y: 0, width: 0, height:0})
+  const containerWidth = 200
+  const containerHeight = 100
+  const [visible, setVisible] = useState({current:"", previous:""})
+
+  
+  useEffect(()=>{
+    if (!renditionInstance){
+      return
+    }
+    const handleClick = (_:MouseEvent, contents:any)=>{
+      if (contents.window.getSelection().toString().length == 0 && visible.current){
+        props.resetMouse()
+        renditionInstance.annotations.remove(visible.current, "highlight")
+        setVisible({current:"", previous:""})
+      }else if (visible.previous){
+        props.resetMouse()
+        renditionInstance.annotations.remove(visible.previous, "highlight")
+        setVisible({current:visible.current, previous:""})
+        
+      }
+      contents.window.getSelection().removeAllRanges();
+    }
+    
+    renditionInstance.on("click",handleClick )
+    return ()=>{
+      renditionInstance.off("click",handleClick )
+    }
+  }, [visible])
+
+  useEffect(()=>{
+    if (!renditionInstance){
+      return
+    }
+    const handleSelect = (cfiRange:any, contents:any) =>{
+      if (contents.window.getSelection().toString().length > 0){ // If statement will prevent crashing if image is selected
+        // This will set the mouse state to up to prevent the page from flipping on quickly highlighting
+        props.resetMouse()
+        
+        renditionInstance.annotations.highlight(cfiRange, {}, (e:MouseEvent) => {
+          props.resetMouse()
+        }, '', {fill:"#36454F"});
+        setVisible({current:cfiRange, previous:visible.current})
+        const selection = contents.window.getSelection()
+        const getRange = selection.getRangeAt(0).getBoundingClientRect();
+
+        const wrapper = renditionInstance?.manager?.container?.getBoundingClientRect();
+
+        if (!wrapper){
+          return 
+        }
+
+        // Since the position is absolute inside the container, by getting the wrapper and the bounding rect,
+        // We can add how far from the top the actual render of the ReaderView is
+        const offsetY = wrapper?.y
+        // Used for debugging
+        // setBounds({x:getRange.x, y: getRange.y + offsetY, width: getRange.width, height:getRange.height})
+
+        //Production
+        
+        // The bottom limit is the wrappers distance from the top + the height of the render wrapper
+        const yBottomLimit = wrapper?.y + wrapper?.height
+        // The default position will be the position of the highlight + the offsetY + the height of the highlight
+        let ypos = getRange.y + offsetY + getRange.height
+        
+        if (ypos + containerHeight > yBottomLimit){
+          // Subtract the height of the highlight and the height of the rendered dialog
+          ypos -= (containerHeight + getRange.height)
+        }
+        ypos = Math.max(ypos, 0)
+
+        const xRightLimit = wrapper?.x + wrapper?.width
+        let xpos = getRange.x + getRange.width /2 - containerWidth/2
+        xpos = Math.min(xpos, xRightLimit - containerWidth)
+        xpos = Math.max(xpos, 0)
+
+        setBounds({x:xpos, y: ypos, width: getRange.width, height:getRange.height})
+      }
+          
+    }
+
+    renditionInstance.on("selected", handleSelect);
+
+    return ()=>{
+      renditionInstance.off("selected", handleSelect);
+    }
+  }, [renditionInstance, visible])
+
+  
+  
+  return (
+  // Debug square for checking position of bounding box
+    <>
+      {/* <div style={{position:"absolute", top:bounds.y, left: bounds.x, width: bounds.width, height: bounds.height, border:"1px solid red"}}>
+          Debug
+      </div> */}
+
+      <div className={styles.container} style={{position:"absolute", display:visible.current?"":"none", top:bounds.y, left: bounds.x, width: containerWidth, height: containerHeight}}>
+        {/* {visible.current} */}
+        <div className={styles.actionContainer}>
+          <div><Copy/></div>
+          <div><Book/></div>
+          <div><Search/></div>
+        </div>
+        <hr className={styles.divider}/>
+        <div className={styles.highlightContainer}>
+          {['yellow', 'red', 'orange','green', 'blue'].map((item)=>{
+            return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble}/>
+          })}
+          
+        </div>
+      </div>
+    </>
+
+  )
+}
+
+export default DialogPopup

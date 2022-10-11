@@ -16,6 +16,7 @@ import { connect, ConnectedProps } from 'react-redux'
 
 import store, {RootState} from '@store/store'
 import {AddRendition, ToggleMenu} from '@store/slices/bookStateSlice'
+import DialogPopup from './functions/DialogPopup';
 const mapState = (state: RootState) => ({
   testState: state.bookState[0],
 })
@@ -32,6 +33,10 @@ class Reader extends React.Component<PropsFromRedux>{
   private book!:Book;
   private rendition!: Rendition;
   private UID!:string;
+  private instanceVariables:readerInstanceVariables = {
+    timer: null,
+    mouseUp: true
+  }
 
   constructor(props:PropsFromRedux){
     super(props)
@@ -68,13 +73,9 @@ class Reader extends React.Component<PropsFromRedux>{
     // let readerInstanceVariables = require('./ReaderViewTypes.ts').readerInstanceVariables
 
 
-    const instanceVariables:readerInstanceVariables = {
-      timer: null,
-      mouseUp: true
-    }
 
-    mouseEvents(this.rendition, instanceVariables, ()=> this.props.ToggleMenu(0))
-    highlightText(this.rendition, instanceVariables)
+    mouseEvents(this.rendition, this.instanceVariables, ()=> this.props.ToggleMenu(0))
+    // highlightText(this.rendition, instanceVariables)
     redrawAnnotations(this.rendition)
 
 
@@ -82,14 +83,18 @@ class Reader extends React.Component<PropsFromRedux>{
     const displayed = this.rendition.display();
     window.addEventListener('resize', () => this.updateSize(this.rendition, this.renderWindow));
   }
+
   componentWillUnmount(){
     window.removeEventListener('resize', ()=> this.updateSize(this.rendition, this.renderWindow));
     this.rendition.destroy();
   }
   render(): React.ReactNode {
     return(
-      <div className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
-
+      <>
+      
+        <div className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
+        <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/>
+      </>
     )
   }
 
