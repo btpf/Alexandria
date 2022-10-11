@@ -5,7 +5,7 @@ import { castDraft, castImmutable } from 'immer'
 
 interface bookState{
   instance: Rendition,
-  options:{
+  state:{
     sidebarToggled: boolean,
     menuToggled: boolean
   }
@@ -20,15 +20,15 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<Rendition>) => {
-      const t:bookState = {instance: action.payload, options:{sidebarToggled: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload, state:{sidebarToggled: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
       state.push(castImmutable(t))
     },
     ToggleSidebar: (state, action: PayloadAction<number>) =>{
-      state[action.payload].options.sidebarToggled = !state[action.payload].options.sidebarToggled
+      state[action.payload].state.sidebarToggled = !state[action.payload].state.sidebarToggled
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{
-      state[action.payload].options.menuToggled = !state[action.payload].options.menuToggled
+      state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
     }
   },
 })

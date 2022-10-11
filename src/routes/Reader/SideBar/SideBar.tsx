@@ -9,7 +9,7 @@ import { ToggleSidebar } from '@store/slices/bookStateSlice'
 
 
 const Sidebar = ()=>{
-  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.options?.sidebarToggled)
+  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarToggled)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   
   const [selectedBookmarkTab, selectBookmarkTab] = useState("Chapters");

@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { ToggleSidebar } from '@store/slices/bookStateSlice'
 const Home = () =>{
 
-  const menuOpen = useAppSelector((state) => state.bookState[0]?.options?.menuToggled)
+  const menuOpen = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const dispatch = useAppDispatch()
   
