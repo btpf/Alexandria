@@ -45,16 +45,12 @@ class Reader extends React.Component<PropsFromRedux>{
     this.UID = Math.random().toString()
   }
 
-  updateSize(rendition:Rendition, renderWindow:RefObject<HTMLDivElement>){
-    rendition.resize(renderWindow.current?.clientWidth || 50, renderWindow.current?.clientHeight || 50)
-  }
-
   componentDidMount(){
     const book = epubjs(bookImport)
     this.rendition = book.renderTo(this.renderWindow.current?.id || "", 
       {
-        width: this.renderWindow.current?.clientWidth, 
-        height: this.renderWindow.current?.clientHeight,
+        width: "100%", 
+        height: "100%",
         spread: "always"
       });
     this.rendition.themes.default({
@@ -81,11 +77,9 @@ class Reader extends React.Component<PropsFromRedux>{
 
       
     const displayed = this.rendition.display();
-    window.addEventListener('resize', () => this.updateSize(this.rendition, this.renderWindow));
   }
 
   componentWillUnmount(){
-    window.removeEventListener('resize', ()=> this.updateSize(this.rendition, this.renderWindow));
     this.rendition.destroy();
   }
   render(): React.ReactNode {
