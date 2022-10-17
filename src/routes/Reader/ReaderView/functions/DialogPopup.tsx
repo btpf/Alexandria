@@ -7,6 +7,9 @@ import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
 import Book from '@resources/iconmonstr/iconmonstr-book-26.svg'
 import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
+import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { AddHighlight } from '@store/slices/bookStateSlice'
+
 function DialogPopup(props:{resetMouse: () => void}){
   const renditionInstance = useSelector((state: RootState) => state.bookState[0]?.instance)
   const [bounds, setBounds] = useState({x:0, y: 0, width: 0, height:0})
@@ -14,6 +17,7 @@ function DialogPopup(props:{resetMouse: () => void}){
   const containerHeight = 100
   const [visible, setVisible] = useState({current:"", previous:""})
 
+  const dispatch = useAppDispatch()
   
   useEffect(()=>{
     if (!renditionInstance){
@@ -81,7 +85,13 @@ function DialogPopup(props:{resetMouse: () => void}){
         ypos = Math.max(ypos, 0)
 
         const xRightLimit = wrapper?.x + wrapper?.width
-        let xpos = getRange.x + getRange.width /2 - containerWidth/2
+
+        // Fixed bug where once resized, epubjs keep the previously rendered content off screen,
+        // Causing the position calculations to mess up. This will mod the x position by the width
+        // ensuring the box stays on the screen.
+        const trueX = getRange.x % wrapper.width
+
+        let xpos = trueX + getRange.width /2 - containerWidth/2
         xpos = Math.min(xpos, xRightLimit - containerWidth)
         xpos = Math.max(xpos, 0)
 
@@ -106,7 +116,7 @@ function DialogPopup(props:{resetMouse: () => void}){
           Debug
       </div> */}
 
-      <div className={styles.container} style={{position:"absolute", display:visible.current?"":"none", top:bounds.y, left: bounds.x, width: containerWidth, height: containerHeight}}>
+      <div className={styles.container} style={{display:visible.current?"":"none", top:bounds.y, left: bounds.x, width: containerWidth, height: containerHeight}}>
         {/* {visible.current} */}
         <div className={styles.actionContainer}>
           <div><Copy/></div>
@@ -116,7 +126,15 @@ function DialogPopup(props:{resetMouse: () => void}){
         <hr className={styles.divider}/>
         <div className={styles.highlightContainer}>
           {['yellow', 'red', 'orange','green', 'blue'].map((item)=>{
-            return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble}/>
+            return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble} onClick={()=>{
+              setVisible({current:"", previous:""})
+              renditionInstance.annotations.remove(visible.current, "highlight")
+              renditionInstance.annotations.highlight(visible.current, {}, (e:MouseEvent) => {
+                // This will prevent page turning when clicking on highlight
+                props.resetMouse()
+              }, '', {fill:item});
+              dispatch(AddHighlight({highlightRange:visible.current, color:item, note:"", view:0}))
+            }}/>
           })}
           
         </div>

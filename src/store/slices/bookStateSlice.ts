@@ -9,6 +9,20 @@ interface bookState{
     sidebarToggled: boolean,
     menuToggled: boolean
   }
+  data:{
+    highlights:{[cfiRange:string]:highlightData}
+  }
+}
+
+interface highlightData {
+  color: string,
+  note: string
+}
+
+interface highlightAction extends highlightData {
+  view: number,
+  highlightRange: string
+
 }
 
 
@@ -20,7 +34,7 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<Rendition>) => {
-      const t:bookState = {instance: action.payload, state:{sidebarToggled: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload, data:{highlights:{}}, state:{sidebarToggled: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
       state.push(castImmutable(t))
     },
@@ -29,11 +43,14 @@ export const bookState = createSlice({
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{
       state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
-    }
+    },
+    AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
+      state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:""}
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { AddRendition, ToggleSidebar, ToggleMenu } = bookState.actions
+export const { AddRendition, ToggleSidebar, ToggleMenu, AddHighlight } = bookState.actions
 
 export default bookState.reducer

@@ -6,12 +6,13 @@ import { NavItem, Rendition } from 'epubjs-myh'
 import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { ToggleSidebar } from '@store/slices/bookStateSlice'
+import Annotations from './Annotations/Annotations'
 
 
 const Sidebar = ()=>{
   const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarToggled)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-  
+
   const [selectedBookmarkTab, selectBookmarkTab] = useState("Chapters");
   const dispatch = useAppDispatch()
 
@@ -54,6 +55,11 @@ const SidebarContent = (props: SidebarContentTypes)=>{
   if(props.selection == "Chapters" && props.renditionInstance?.book?.navigation){
     return (
       <Chapters renditionInstance={props.renditionInstance}/>
+    )
+  }
+  if(props.selection == "Annotations"){
+    return (
+      <Annotations/>
     )
   }
   
