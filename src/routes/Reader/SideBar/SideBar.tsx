@@ -30,7 +30,7 @@ const Sidebar = ()=>{
           })}
         </div>
 
-        <div style={{flexGrow:1, overflowY:"auto"}}>
+        <div style={{flexGrow:1, overflowY:"scroll"}}>
           <SidebarContent selection={selectedBookmarkTab} renditionInstance={renditionInstance}/>
         </div>
 

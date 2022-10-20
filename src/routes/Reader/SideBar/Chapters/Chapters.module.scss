@@ -7,10 +7,13 @@
     
 $ChapterArrow: 24px;
 .tocExpander{
-  display: inline;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+
   // order: 2;
     
-  height: calc($ChapterArrow * 1.5);
+  // height: calc($ChapterArrow * 1.5);
   width: calc($ChapterArrow * 1.5);
   padding-right:40px;
   flex-basis: 56px;
@@ -19,6 +22,7 @@ $ChapterArrow: 24px;
 .tocExpander > svg{
   transform-origin: 0 0;
   transform: scale(1.5);
+  height: calc(24px * 1.5);
   color: gray;
 }
     
@@ -29,12 +33,12 @@ $ChapterArrow: 24px;
   flex-basis: calc(100% - 56px);
   display:flex;
   align-items: center;
-  font-weight: bold;
+  font-weight: 400;
 }
     
 .TocMapContainer{
-  margin-top:10px;
-  margin-bottom:10px;
+  margin-top:5px;
+  margin-bottom:5px;
 }
   
     
