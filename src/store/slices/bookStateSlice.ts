@@ -22,7 +22,6 @@ interface highlightData {
 interface highlightAction extends highlightData {
   view: number,
   highlightRange: string
-
 }
 
 
@@ -47,10 +46,22 @@ export const bookState = createSlice({
     AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
       state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:""}
     },
+    DeleteHighlight: (state, action: PayloadAction<highlightAction>) =>{
+      delete state[action.payload.view].data.highlights[action.payload.highlightRange]
+    },
+    ChangeHighlightColor: (state, action: PayloadAction<highlightAction>) =>{
+      console.log(action.payload.highlightRange)
+      console.log(JSON.stringify(state[action.payload.view].data.highlights[action.payload.highlightRange]))
+      console.log(state[action.payload.view].data.highlights[action.payload.highlightRange])
+      state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:state[action.payload.view].data.highlights[action.payload.highlightRange].note}
+    },
+    ChangeHighlightNote: (state, action: PayloadAction<highlightAction>) =>{
+      state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:state[action.payload.view].data.highlights[action.payload.highlightRange].color, note:action.payload.note}
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { AddRendition, ToggleSidebar, ToggleMenu, AddHighlight } = bookState.actions
+export const { AddRendition, DeleteHighlight, ToggleSidebar, ToggleMenu, AddHighlight, ChangeHighlightColor, ChangeHighlightNote } = bookState.actions
 
 export default bookState.reducer
