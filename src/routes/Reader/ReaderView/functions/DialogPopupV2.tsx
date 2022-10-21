@@ -179,7 +179,7 @@ class DialogPopup extends React.Component<Props>{
     return(
       <>
         {/* {JSON.stringify(this.state)} */}
-        {JSON.stringify(this.props.completeState?.data)}
+        {/* {JSON.stringify(this.props.completeState?.data)} */}
         <div className={styles.noteContainer} style={{display:this.state.noteLocation.visible?"":"none", left:this.state.noteLocation.x, top:this.state.noteLocation.y}}>
           <textarea placeholder="Add Note" value={this.props.annotations? this.props.annotations[this.state.noteLocation.range]?.note:""} 
             onChange={(event)=>{
