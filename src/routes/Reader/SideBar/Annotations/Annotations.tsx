@@ -17,12 +17,14 @@ interface AnnotationData{
   highlightedText?: string,
 }
 
-
+// Gets the cfi for each chapter name and returns it. Used for finding chapter of annotation
 const getChapterCFIMap = (renditionInstance: Rendition)=>{
   let allChapters: any[] = []
 
+  // Recursive function which gets all the chapters and subchapters in order
   function traverseTree(node: NavItem[]){
     node.forEach((subNode)=>{
+      // href is saved for using spineByHref which returns the ID needed for getting the cfi of the chapter
       allChapters.push({href: subNode.href, title:subNode.label})
       if(subNode.subitems){
         traverseTree(subNode.subitems)
@@ -36,9 +38,9 @@ const getChapterCFIMap = (renditionInstance: Rendition)=>{
       spineByHref: [value:number],
       items: [key:any]
     }
-    const id:number = (renditionInstance.book.spine as fixedSpine).spineByHref[item.href]
-    // console.log(id)
-    // console.log(renditionInstance.book.spine)
+    // This fixes a bug where the spineByHref returns undefined
+    const id:number = (renditionInstance.book.spine as fixedSpine).spineByHref[item.href] || 0 
+
     return {...item, cfi: `epubcfi(${(renditionInstance.book.spine as fixedSpine).items[id].cfiBase}!/0)` }
   })
   return allChapters
@@ -49,11 +51,16 @@ const Annotations = ()=>{
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const annotations = useAppSelector((state) => state.bookState[0]?.data.highlights)
   const [data, updateData] = useState<Array<AnnotationData>>([])
+
+  // Handles case where new annotation is made
   useEffect(()=>{
+
     const promiseArray:Array<Promise<AnnotationData>> = []
     if(!annotations){
       return
     }
+
+    // This will create the promises which fetch the annotated text across the book
     Object.keys(annotations).forEach((item)=>{
       const myPromise:Promise<AnnotationData> = new Promise(function(myResolve, myReject) {
         // "Producing Code" (May take some time)
@@ -65,32 +72,37 @@ const Annotations = ()=>{
         // myReject();  // when error
       });
       promiseArray.push(myPromise)
-
-
     })
+
+
+
     const finalState:Array<AnnotationData> = []
     const allChapters = getChapterCFIMap(renditionInstance)
     Promise.all(promiseArray).then((values) => {
       for (const value of values){
-        let previousItem;
-        for(const item of allChapters){
-          
-          const comparison = renditionInstance.epubcfi.compare(value.AnnotationCFI, item.cfi)
-          if (comparison <= 0){
-            finalState.push({...value, title:previousItem.title})
+        let titlename;
+        for(const item in allChapters){
+          if(!allChapters[item].cfi){
+            continue
+          }
+          const comparison = renditionInstance.epubcfi.compare(value.AnnotationCFI, allChapters[item].cfi)
+          // In the case where the current chapter is ahead of our annotation, break before setting the title
+          if (comparison < 0){
             break
           }
-          previousItem = item
+          titlename = allChapters[item].title
         }
+        finalState.push({...value, title:titlename})
+
       }
 
+      // Sort annotations by location in book
       finalState.sort((a, b)=>{
         return renditionInstance.epubcfi.compare( a.AnnotationCFI, b.AnnotationCFI)
       }
       )
       updateData(finalState)
     });
-    // console.log(finalState)
 
 
   }, [annotations])
