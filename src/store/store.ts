@@ -3,6 +3,10 @@ import bookState from './slices/bookStateSlice'
 import counterSlice from './slices/counterSlice'
 import profileSlice from './slices/profileSlice'
 
+import {enableMapSet} from "immer"
+
+enableMapSet()
+
 const store =  configureStore({
   reducer: {
     counter: counterSlice,
@@ -21,8 +25,8 @@ const store =  configureStore({
         // https://stackoverflow.com/questions/66733221/how-should-react-redux-work-with-non-serializable-data
         // Although it will break dev tools, and is against the recommendation of markerikson, I believe this approach
         // is "correct" enough
-        ignoredActions: ['bookState/AddRendition'],
-        ignoredPaths: ['bookState.0.instance', 'bookState.1.instance']
+        ignoredActions: ['bookState/AddRendition', 'bookState/AddBookmark'],
+        ignoredPaths: ['bookState.0.instance', 'bookState.1.instance', 'bookState.0.data.bookmarks']
       },
     }),
 })

@@ -10,7 +10,8 @@ interface bookState{
     menuToggled: boolean
   }
   data:{
-    highlights:{[cfiRange:string]:highlightData}
+    highlights:{[cfiRange:string]:highlightData},
+    bookmarks:Set<string>
   }
 }
 
@@ -24,6 +25,12 @@ interface highlightAction extends highlightData {
   highlightRange: string
 }
 
+interface bookmarkAction {
+  view: number,
+  bookmarkLocation: string
+}
+
+
 
 // Define the initial state using that type
 const initialState: Array<bookState> = []
@@ -33,7 +40,7 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<Rendition>) => {
-      const t:bookState = {instance: action.payload, data:{highlights:{}}, state:{sidebarToggled: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
       state.push(castImmutable(t))
     },
@@ -45,6 +52,13 @@ export const bookState = createSlice({
     },
     AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
       state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:""}
+    },
+    ToggleBookmark:(state, action: PayloadAction<bookmarkAction>) =>{
+      if(state[action.payload.view].data.bookmarks.has(action.payload.bookmarkLocation)){
+        state[action.payload.view].data.bookmarks.delete(action.payload.bookmarkLocation)
+      }else{
+        state[action.payload.view].data.bookmarks.add(action.payload.bookmarkLocation)
+      }
     },
     DeleteHighlight: (state, action: PayloadAction<highlightAction>) =>{
       delete state[action.payload.view].data.highlights[action.payload.highlightRange]
@@ -62,6 +76,6 @@ export const bookState = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { AddRendition, DeleteHighlight, ToggleSidebar, ToggleMenu, AddHighlight, ChangeHighlightColor, ChangeHighlightNote } = bookState.actions
+export const { AddRendition, DeleteHighlight, ToggleSidebar, ToggleMenu, AddHighlight, ChangeHighlightColor, ChangeHighlightNote, ToggleBookmark } = bookState.actions
 
 export default bookState.reducer

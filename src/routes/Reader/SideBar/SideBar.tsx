@@ -7,6 +7,7 @@ import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { ToggleSidebar } from '@store/slices/bookStateSlice'
 import Annotations from './Annotations/Annotations'
+import Bookmarks from './Bookmarks/Bookmarks'
 
 
 const Sidebar = ()=>{
@@ -62,6 +63,7 @@ const SidebarContent = (props: SidebarContentTypes)=>{
       <Annotations/>
     )
   }
+  return <Bookmarks/>
   
   
   return (<div></div>)

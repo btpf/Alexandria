@@ -1,0 +1,38 @@
+.annotationContainer{
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: row;
+  margin-top: 20px;
+}
+  
+.AnnotationLeftSubContainer{
+  display: flex;
+  align-items: center;
+  min-width: 50px;
+  justify-content: center;
+  color: gray;
+}
+.AnnotationLeftSubContainer:hover{
+  color:red;
+  cursor:pointer;
+}
+.AnnotationRightSubContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+}
+  
+.AnnotationChapter{
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+}
+  
+  
+.noteTextContainer{
+  white-space: pre-line;
+  border-left: 3px solid rgb(0 0 0 / 10%);
+  padding-left: 5px;
+}
