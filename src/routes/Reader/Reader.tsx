@@ -13,6 +13,13 @@ import { Rendition } from 'epubjs-myh'
 import Sidebar from './SideBar/SideBar'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { ToggleSidebar, ToggleBookmark } from '@store/slices/bookStateSlice'
+import SliderNavigator from './SliderNavigator/SliderNavigator'
+
+
+
+
+
+
 const Home = () =>{
 
   const menuOpen = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
@@ -21,6 +28,7 @@ const Home = () =>{
 
   const [isPageBookmarked, setPageBookmarked] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
+
 
   useEffect(()=>{
     if(renditionInstance){
@@ -35,6 +43,8 @@ const Home = () =>{
     }
 
   }, [renditionInstance])
+
+
   useEffect(()=>{
     if(!bookmarks){
       return
@@ -45,6 +55,10 @@ const Home = () =>{
       setPageBookmarked(false)
     }
   },[bookmarks, currentPage])
+
+
+
+
   const dispatch = useAppDispatch()
   return (
     <div className={styles.readerFlex}>
@@ -69,6 +83,9 @@ const Home = () =>{
       <div className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.menuButtonContainer}`}>
           <ArrowLeft/>
+        </div>
+        <div className={styles.sliderContainer}>
+          <SliderNavigator/>
         </div>
         <div onClick={()=>renditionInstance?.next()} className={`${styles.menuButtonContainer}`}>
           <ArrowRight/>

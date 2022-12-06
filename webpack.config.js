@@ -45,7 +45,11 @@ module.exports = {
         }
       },
       {
-        test: /\.(sc|c)ss$/i,
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.scss$/i,
         use: [
           "style-loader", // Allow import styles
           {

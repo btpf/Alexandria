@@ -2,9 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Rendition } from 'epubjs-myh'
 import { castDraft, castImmutable } from 'immer'
 
+export enum LOADSTATE{
+  INITIAL,
+  LOCATIONS,
+  COMPLETE
+}
 
 interface bookState{
   instance: Rendition,
+  loadState: LOADSTATE
   state:{
     sidebarToggled: boolean,
     menuToggled: boolean
@@ -30,6 +36,10 @@ interface bookmarkAction {
   bookmarkLocation: string
 }
 
+interface loadProgressUpdate{
+  view:number,
+  state: LOADSTATE
+}
 
 
 // Define the initial state using that type
@@ -40,9 +50,12 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<Rendition>) => {
-      const t:bookState = {instance: action.payload, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
       state.push(castImmutable(t))
+    },
+    SetLoadState: (state, action: PayloadAction<loadProgressUpdate>) =>{
+      state[action.payload.view].loadState = action.payload.state
     },
     ToggleSidebar: (state, action: PayloadAction<number>) =>{
       state[action.payload].state.sidebarToggled = !state[action.payload].state.sidebarToggled
@@ -76,6 +89,16 @@ export const bookState = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { AddRendition, DeleteHighlight, ToggleSidebar, ToggleMenu, AddHighlight, ChangeHighlightColor, ChangeHighlightNote, ToggleBookmark } = bookState.actions
+export const { 
+  AddRendition,
+  SetLoadState, 
+  DeleteHighlight, 
+  ToggleSidebar, 
+  ToggleMenu, 
+  AddHighlight, 
+  ChangeHighlightColor, 
+  ChangeHighlightNote, 
+  ToggleBookmark 
+} = bookState.actions
 
 export default bookState.reducer
