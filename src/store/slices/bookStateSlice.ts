@@ -4,12 +4,19 @@ import { castDraft, castImmutable } from 'immer'
 
 export enum LOADSTATE{
   INITIAL,
-  LOCATIONS,
-  COMPLETE
+  LOADING_LOCATIONS,
+  COMPLETE,
+  CANCELED
+}
+
+interface RenditionInstance{
+  UID: number,
+  instance: Rendition
 }
 
 interface bookState{
   instance: Rendition,
+  UID: number,
   loadState: LOADSTATE
   state:{
     sidebarToggled: boolean,
@@ -19,6 +26,10 @@ interface bookState{
     highlights:{[cfiRange:string]:highlightData},
     bookmarks:Set<string>
   }
+}
+
+interface BookInstances {
+  [key: string]: bookState
 }
 
 interface highlightData {
@@ -43,24 +54,33 @@ interface loadProgressUpdate{
 
 
 // Define the initial state using that type
-const initialState: Array<bookState> = []
+const initialState: BookInstances = {}
 
 export const bookState = createSlice({
   name: 'bookState',
   initialState,
   reducers: {
-    AddRendition: (state, action: PayloadAction<Rendition>) => {
-      const t:bookState = {instance: action.payload, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
+    AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
+      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
-      state.push(castImmutable(t))
+
+      state[action.payload.UID] = castDraft(t)
+    },
+    RemoveRendition: (state, action: PayloadAction<number>) => {
+      delete state[action.payload]
+
     },
     SetLoadState: (state, action: PayloadAction<loadProgressUpdate>) =>{
-      state[action.payload.view].loadState = action.payload.state
+      if (Object.keys(state).includes(String(action.payload.view))){
+        state[action.payload.view].loadState = action.payload.state
+      }
+
     },
     ToggleSidebar: (state, action: PayloadAction<number>) =>{
       state[action.payload].state.sidebarToggled = !state[action.payload].state.sidebarToggled
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{
+      console.log(action.payload, state)
       state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
     },
     AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
@@ -91,6 +111,7 @@ export const bookState = createSlice({
 // Action creators are generated for each case reducer function
 export const { 
   AddRendition,
+  RemoveRendition,
   SetLoadState, 
   DeleteHighlight, 
   ToggleSidebar, 
