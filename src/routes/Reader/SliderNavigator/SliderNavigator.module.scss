@@ -15,7 +15,7 @@
 
 .slider > div[class=rc-slider-handle]{
   border-color: gray;
-  z-index: 100;
+  z-index: 1;
   height: 22px;
   width: 22px;
   margin-top: calc( (22 / 2 * 1px) - (14px + 5px));
@@ -24,7 +24,7 @@
 
 .slider > div[class="rc-slider-handle rc-slider-handle-dragging"]{
   border-color: gray;
-  z-index: 100;
+  z-index: 1;
 }
 
 // Note: This disables the default bubbles which are used to click. This is replaced by | character
