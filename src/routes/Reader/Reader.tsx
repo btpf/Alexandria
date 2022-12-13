@@ -12,7 +12,7 @@ import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import { Rendition } from 'epubjs-myh'
 import Sidebar from './SideBar/SideBar'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { ToggleSidebar, ToggleBookmark } from '@store/slices/bookStateSlice'
+import { SelectSidebarMenu, ToggleBookmark } from '@store/slices/bookStateSlice'
 import SliderNavigator from './SliderNavigator/SliderNavigator'
 
 
@@ -28,7 +28,7 @@ const Home = () =>{
 
   const [isPageBookmarked, setPageBookmarked] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
-
+  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarMenuSelected)
 
   useEffect(()=>{
     if(renditionInstance){
@@ -65,14 +65,25 @@ const Home = () =>{
 
       <div className={`${styles.readerTitleBar}  ${!menuOpen && styles.optionsToggled}`}>
         <div className={`${styles.menuButtonContainer}`}>
-          <List onClick={()=>{dispatch(ToggleSidebar(0))}}/>
+          <List onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
           <Bookmark style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
         <div>
           {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
         <div className={`${styles.menuButtonContainer}`}>
-          <Search/>
+          <Search onClick={()=>{
+            if(sidebarOpen){
+              if(sidebarOpen == "Search"){
+                dispatch(SelectSidebarMenu({view:0, state:false}))
+              }else{
+                dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+              }
+            }else{
+              dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+            }
+            
+          }}/>
           <Font/>
         </div>
       </div>

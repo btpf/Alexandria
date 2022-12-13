@@ -19,7 +19,7 @@ interface bookState{
   UID: number,
   loadState: LOADSTATE
   state:{
-    sidebarToggled: boolean,
+    sidebarMenuSelected: boolean|string,
     menuToggled: boolean
   }
   data:{
@@ -52,6 +52,11 @@ interface loadProgressUpdate{
   state: LOADSTATE
 }
 
+interface sideBarUpdate{
+  view:number,
+  state: string|boolean
+}
+
 
 // Define the initial state using that type
 const initialState: BookInstances = {}
@@ -61,14 +66,13 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
-      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarToggled: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarMenuSelected: false, menuToggled: false}}
       // https://github.com/immerjs/immer/issues/389
 
       state[action.payload.UID] = castDraft(t)
     },
     RemoveRendition: (state, action: PayloadAction<number>) => {
       delete state[action.payload]
-
     },
     SetLoadState: (state, action: PayloadAction<loadProgressUpdate>) =>{
       if (Object.keys(state).includes(String(action.payload.view))){
@@ -76,11 +80,13 @@ export const bookState = createSlice({
       }
 
     },
-    ToggleSidebar: (state, action: PayloadAction<number>) =>{
-      state[action.payload].state.sidebarToggled = !state[action.payload].state.sidebarToggled
+    SelectSidebarMenu: (state, action: PayloadAction<sideBarUpdate>) =>{
+      state[action.payload.view].state.sidebarMenuSelected = action.payload.state
+    },
+    CloseSidebarMenu: (state, action: PayloadAction<number>) =>{
+      state[action.payload].state.sidebarMenuSelected = false
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{
-      console.log(action.payload, state)
       state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
     },
     AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
@@ -114,7 +120,8 @@ export const {
   RemoveRendition,
   SetLoadState, 
   DeleteHighlight, 
-  ToggleSidebar, 
+  SelectSidebarMenu,
+  CloseSidebarMenu,
   ToggleMenu, 
   AddHighlight, 
   ChangeHighlightColor, 

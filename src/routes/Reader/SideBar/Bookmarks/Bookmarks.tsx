@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { NavItem, Rendition } from 'epubjs-myh'
 import Spine from 'epubjs-myh/types/spine'
-import { DeleteHighlight, ToggleSidebar, ToggleBookmark } from '@store/slices/bookStateSlice'
+import { DeleteHighlight, CloseSidebarMenu, ToggleBookmark } from '@store/slices/bookStateSlice'
 
 import styles from './Bookmarks.module.scss'
 const getChapterCFIMap = (renditionInstance: Rendition)=>{
@@ -95,7 +95,7 @@ const Annotations = ()=>{
             </div>
             <div className={styles.AnnotationRightSubContainer} onClick={()=>{
               renditionInstance.display(item.cfi)
-              dispatch(ToggleSidebar(0))
+              dispatch(CloseSidebarMenu(0))
             }}> 
               <div className={styles.AnnotationChapter}>{item.cfi}</div>
                       

@@ -5,7 +5,7 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-import { ToggleSidebar } from '@store/slices/bookStateSlice'
+import { SelectSidebarMenu } from '@store/slices/bookStateSlice'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 type SidebarTypes = {
@@ -51,7 +51,7 @@ const Sidebar = (props:SidebarTypes)=>{
             <div className={styles.tocChapterTitle}
               onClick={()=>{
                 props.renditionInstance?.display(item.href)
-                dispatch(ToggleSidebar(0))
+                dispatch(SelectSidebarMenu({view:0, state:false}))
               }}>{item.label}</div>
 
             <div className={styles.tocExpander} onClick={()=>{

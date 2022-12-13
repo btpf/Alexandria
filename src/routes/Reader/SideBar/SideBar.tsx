@@ -5,27 +5,25 @@ import styles from './SideBar.module.scss'
 import { NavItem, Rendition } from 'epubjs-myh'
 import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { ToggleSidebar } from '@store/slices/bookStateSlice'
+import { SelectSidebarMenu } from '@store/slices/bookStateSlice'
 import Annotations from './Annotations/Annotations'
 import Bookmarks from './Bookmarks/Bookmarks'
 import Search from './Search/Search'
 
 
 const Sidebar = ()=>{
-  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarToggled)
+  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarMenuSelected)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-
-  const [selectedBookmarkTab, selectBookmarkTab] = useState("Chapters");
   const dispatch = useAppDispatch()
 
   return (
     <div className={styles.sideBarContainer}>
-      <div onClick={()=>{sidebarOpen? dispatch(ToggleSidebar(0)): false}} className={`${styles.opaqueScreen} ${sidebarOpen && styles.opaqueScreenActive}`}/>
+      <div onClick={()=>{sidebarOpen? dispatch(SelectSidebarMenu({view:0, state:false})): false}} className={`${styles.opaqueScreen} ${sidebarOpen && styles.opaqueScreenActive}`}/>
       <div className={`${styles.sideBar} ${sidebarOpen && styles.sideBarActive}`}>
         <div className={styles.tabSelector}>
           {["Chapters", "Bookmarks", "Annotations", "Search"].map((item)=>{
             return (
-              <div key={item} onClick={()=>selectBookmarkTab(item)} className={`${selectedBookmarkTab == item && styles.selectedBookmarkTab}`}>
+              <div key={item} onClick={()=>dispatch(SelectSidebarMenu({view:0, state:item}))} className={`${sidebarOpen == item && styles.selectedBookmarkTab}`}>
                 {item}
               </div>
             )
@@ -33,7 +31,7 @@ const Sidebar = ()=>{
         </div>
 
         <div style={{flexGrow:1, overflowY:"scroll"}}>
-          <SidebarContent selection={selectedBookmarkTab} renditionInstance={renditionInstance}/>
+          <SidebarContent selection={sidebarOpen} renditionInstance={renditionInstance}/>
         </div>
 
       </div>
@@ -44,11 +42,11 @@ const Sidebar = ()=>{
 export default Sidebar
 
 type SidebarContentTypes = {
-    selection: string,
+    selection: string| boolean,
     renditionInstance: Rendition|undefined
   };
   
-const SidebarContent = (props: SidebarContentTypes)=>{
+const SidebarContent = React.memo((props: SidebarContentTypes)=>{
     
   
   
@@ -74,4 +72,6 @@ const SidebarContent = (props: SidebarContentTypes)=>{
   
   return (<div></div>)
   
-}
+}, (_, nextProps)=> nextProps.selection == false)
+
+SidebarContent.displayName = 'SidebarContent';

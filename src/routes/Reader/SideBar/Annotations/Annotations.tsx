@@ -5,7 +5,7 @@ import Trash from '@resources/feathericons/trash-2.svg'
 import styles from './Annotations.module.scss'
 import { NavItem, Rendition } from 'epubjs-myh'
 import Spine from 'epubjs-myh/types/spine'
-import { DeleteHighlight, ToggleSidebar } from '@store/slices/bookStateSlice'
+import { DeleteHighlight, CloseSidebarMenu } from '@store/slices/bookStateSlice'
 
 
 interface AnnotationData{
@@ -121,7 +121,7 @@ const Annotations = ()=>{
             </div>
             <div className={styles.AnnotationRightSubContainer} onClick={()=>{
               renditionInstance.display(item.AnnotationCFI)
-              dispatch(ToggleSidebar(0))
+              dispatch(CloseSidebarMenu(0))
             }}> 
               <div className={styles.AnnotationChapter}>{item.title}</div>
                     
