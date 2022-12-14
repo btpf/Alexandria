@@ -42,7 +42,7 @@
   transition: 0.3s;
 }
 
-.optionsToggled > div{
+.optionsToggled{
   opacity: 0;
   pointer-events: none;
 }
@@ -50,7 +50,6 @@
 .title{
   // color:rgba(0, 0, 0, 0.342);
   color:black;
-  opacity: 1 !important;
 }
 
 .menuButtonContainer > svg{
