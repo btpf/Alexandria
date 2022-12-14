@@ -19,10 +19,11 @@ const SettingsBar = ()=>{
   const dispatch = useAppDispatch()
   const [menu, setMenu] = useState("Fonts")
   const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
+  const MenuToggled = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
   const UIBackgroundColor = useAppSelector((state) => state.bookState[0]?.data?.theme?.backgroundColor)
 
   return (
-    <div style={!ThemeMenuActive?{backgroundColor:UIBackgroundColor}:{}} className={styles.overflowContainer}>
+    <div style={!MenuToggled?{backgroundColor:UIBackgroundColor}:{}} className={styles.overflowContainer}>
       <div style={!ThemeMenuActive?menuExpanded:{}} className={styles.settingsBarContainer}>
         {/* <div className={styles.opaqueScreenActive}/> */}
         <div className={styles.touchBar}/>
