@@ -15,20 +15,23 @@ import { connect, ConnectedProps } from 'react-redux'
 
 
 import store, {RootState} from '@store/store'
-import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE} from '@store/slices/bookStateSlice'
+import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu} from '@store/slices/bookStateSlice'
 import DialogPopup from './functions/DialogPopupV2';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
       LoadState: state.bookState[0].loadState,
+      UIBackgroundColor: state.bookState[0].data.theme.backgroundColor,
+      ThemeMenuActive: state.bookState[0].state.themeMenuActive
     }
+    
   }else{
     return {LoadState: LOADSTATE.INITIAL}
   }
 
 }
 
-const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, RemoveRendition})
+const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu})
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
@@ -122,9 +125,17 @@ class Reader extends React.Component<PropsFromRedux>{
     
     // let readerInstanceVariables = require('./ReaderViewTypes.ts').readerInstanceVariables
 
+    this.rendition.on("started", ()=>{
+      console.log("Book started")
+    })
 
 
-    mouseEvents(this.rendition, this.instanceVariables, ()=> this.props.ToggleMenu(0))
+    mouseEvents(this.rendition, this.instanceVariables, ()=> {
+      this.props.ToggleMenu(0)
+      if(this.props.ThemeMenuActive){
+        this.props.ToggleThemeMenu(0)
+      }
+    })
     // highlightText(this.rendition, instanceVariables)
     redrawAnnotations(this.rendition)
 
@@ -146,7 +157,7 @@ class Reader extends React.Component<PropsFromRedux>{
     return(
       <>
       
-        <div className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
+        <div style={{backgroundColor:this.props.UIBackgroundColor}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
         <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/>
       </>
     )

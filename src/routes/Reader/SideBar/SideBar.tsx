@@ -18,7 +18,7 @@ const Sidebar = ()=>{
 
   return (
     <div className={styles.sideBarContainer}>
-      <div onClick={()=>{sidebarOpen? dispatch(SelectSidebarMenu({view:0, state:false})): false}} className={`${styles.opaqueScreen} ${sidebarOpen && styles.opaqueScreenActive}`}/>
+      {/* <div onClick={()=>{sidebarOpen? dispatch(SelectSidebarMenu({view:0, state:false})): false}} className={`${styles.opaqueScreen} ${sidebarOpen && styles.opaqueScreenActive}`}/> */}
       <div className={`${styles.sideBar} ${sidebarOpen && styles.sideBarActive}`}>
         <div className={styles.tabSelector}>
           {["Chapters", "Bookmarks", "Annotations", "Search"].map((item)=>{

@@ -1,14 +1,5 @@
 @use 'breakpoints.scss' as *;
 
-.opaqueScreen{
-  width: 100%;
-}
-.opaqueScreenActive{
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  pointer-events: auto;
-}
-
 .sideBarContainer{
   height: 100%;
   grid-area: 2/1/4/1;

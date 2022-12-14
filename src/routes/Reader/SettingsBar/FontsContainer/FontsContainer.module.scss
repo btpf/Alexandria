@@ -1,0 +1,65 @@
+.fontContainer{
+  display:flex;
+  max-width: 80vw;
+  width: auto;
+  gap: 30px;
+  overflow:scroll;
+}
+  
+.font{
+  display:flex;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+}
+.fontLetter{
+  background-color: #008DDD;
+  color: white;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Small Size
+  //   width: 50px;
+  //   height: 50px;
+  //   font-size: 42px;
+  // Large Size
+  width: 75px;
+  height: 75px;
+  font-size: 48px;
+}
+  
+.fontName{
+  //   font-family: 'inter';
+  font-size: 18px;
+  width: max-content;
+}
+  
+  
+.fontSizeContainer{
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  font-weight: bold;
+}
+.resizeContainer{
+  display:flex;
+  width: 82px;
+  height: 48px;
+  font-weight: bold;
+  border: 1px solid #9A9A9A;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  cursor:pointer;
+}
+  
+.resizeContainer:last-of-type{
+  font-size: 28px;
+}
+  
+.resizeSize{
+  width: 50px;
+  text-align: center;
+}

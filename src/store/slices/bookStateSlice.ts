@@ -1,35 +1,69 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Rendition } from 'epubjs-myh'
 import { castDraft, castImmutable } from 'immer'
-
+const uuid = require("uuid");
 export enum LOADSTATE{
   INITIAL,
   LOADING_LOCATIONS,
   COMPLETE,
   CANCELED
 }
-
 interface RenditionInstance{
-  UID: number,
   instance: Rendition
+  UID: number
 }
 
 interface bookState{
   instance: Rendition,
   UID: number,
-  loadState: LOADSTATE
+  loadState: LOADSTATE,
   state:{
     sidebarMenuSelected: boolean|string,
-    menuToggled: boolean
-  }
+    menuToggled: boolean,
+    themeMenuActive: boolean
+  },
   data:{
     highlights:{[cfiRange:string]:highlightData},
-    bookmarks:Set<string>
+    bookmarks:Set<string>,
+    theme:{
+      font: string,
+      fontSize: number,
+      backgroundColor: string
+      color:string
+    }
   }
 }
 
 interface BookInstances {
   [key: string]: bookState
+}
+
+
+interface SetFontPayload{
+  view: number
+  font?: string
+  fontSize?: number
+}
+
+interface SetThemePayload{
+  view: number
+  theme: {
+    body: {
+      background: string,
+      color: string,
+    },
+    '*': {
+      color: string,
+      background: string,
+    },
+    'a:link': {
+      color: string,
+      'text-decoration': string,
+    },
+    'a:link:hover': {
+      background: string,
+    }
+  } 
 }
 
 interface highlightData {
@@ -66,7 +100,7 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
-      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set()}, state:{sidebarMenuSelected: false, menuToggled: false}}
+      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set(), theme:{font:"Helvetica, sans-serif", fontSize:100, backgroundColor:'white', color:'grey'}}, state:{sidebarMenuSelected: false, menuToggled: false, themeMenuActive: false}}
       // https://github.com/immerjs/immer/issues/389
 
       state[action.payload.UID] = castDraft(t)
@@ -80,11 +114,50 @@ export const bookState = createSlice({
       }
 
     },
+    ToggleThemeMenu:(state, action: PayloadAction<number>) =>{
+      state[action.payload].state.themeMenuActive = !state[action.payload].state.themeMenuActive
+    },
     SelectSidebarMenu: (state, action: PayloadAction<sideBarUpdate>) =>{
       state[action.payload.view].state.sidebarMenuSelected = action.payload.state
     },
     CloseSidebarMenu: (state, action: PayloadAction<number>) =>{
       state[action.payload].state.sidebarMenuSelected = false
+    },
+    SetFont: (state, action: PayloadAction<SetFontPayload>) =>{
+      const {font, fontSize} = action.payload
+      if (font){
+        state[action.payload.view].data.theme.font = font
+        state[action.payload.view].instance.themes.font(font)
+      }
+      if(fontSize){
+        state[action.payload.view].data.theme.fontSize = fontSize
+        state[action.payload.view].instance.themes.fontSize(fontSize+"%")
+      }
+      
+    },
+    SetTheme: (state, action: PayloadAction<SetThemePayload>) =>{
+      const themeObject = action.payload.theme
+      const rendition = state[action.payload.view].instance
+      // console.log(themeObject)
+      // if(!themeObject){
+      //   rendition.themes.select("default")
+      //   // Force the current page to rerender
+      //   // This will break entire project since .start() will also remove all event handlers
+      //   if(rendition.manager){
+      //     rendition.start();
+      //   }
+      //   return
+      // }
+      const id = uuid.v4();
+      // Register Theme object
+      state[action.payload.view].instance.themes.registerRules(id,themeObject);
+      // Select Theme
+      state[action.payload.view].instance.themes.select(id)
+
+      // Update UI colors
+      state[action.payload.view].data.theme.backgroundColor = action.payload.theme?.body.background
+      state[action.payload.view].data.theme.color = action.payload.theme?.body.color
+
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{
       state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
@@ -126,7 +199,10 @@ export const {
   AddHighlight, 
   ChangeHighlightColor, 
   ChangeHighlightNote, 
-  ToggleBookmark 
+  ToggleBookmark,
+  SetFont,
+  SetTheme,
+  ToggleThemeMenu
 } = bookState.actions
 
 export default bookState.reducer

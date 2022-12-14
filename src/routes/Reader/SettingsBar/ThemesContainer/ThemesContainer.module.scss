@@ -1,0 +1,18 @@
+.themeSelectorContainer{
+  width: 80vw;
+  height: 100%;
+  //   padding-top:5px;
+  display:flex;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+
+.theme{
+  font-size: 32px;
+  background-color:blue;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
