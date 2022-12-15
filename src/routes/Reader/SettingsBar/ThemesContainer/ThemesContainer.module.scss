@@ -1,11 +1,11 @@
 .themeSelectorContainer{
-  width: 80vw;
+  width: 100%;
   height: 100%;
   //   padding-top:5px;
   display:flex;
   align-items: center;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 

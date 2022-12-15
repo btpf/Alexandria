@@ -1,11 +1,19 @@
 .fontContainer{
   display:flex;
-  max-width: 80vw;
-  width: auto;
+  width: 100%;
   gap: 30px;
-  overflow:scroll;
+  overflow-y: hidden;
+  overflow-x:auto;
+  // This fixes bug in webkit where once switching to the themes and back to fonts
+  // There is an overflow
+  height: 125px;
 }
-  
+.font:first-child{
+  margin-left:30px;
+}
+.font:last-child{
+  margin-right:30px;
+}
 .font{
   display:flex;
   align-items: center;

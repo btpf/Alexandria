@@ -12,7 +12,7 @@ const FontsContainer = ()=>{
   return ( 
     <>
       <div className={styles.fontContainer}>
-        {["Original", "Comic Sans MS", "monospace", "Fira Sans"].map((item)=>{
+        {["Original", "Comic Sans MS", "monospace", "Fira Sans", "Original", "Comic Sans MS", "monospace", "Fira Sans"].map((item)=>{
           return (
             <div key={item} onClick={()=>{dispatch(SetFont({view: 0, font: item}))}} style={{fontFamily:item}} className={styles.font}>
               <div className={styles.fontLetter}>A</div>
