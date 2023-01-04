@@ -11,8 +11,16 @@
     "version": "0.1.0"
   },
   "tauri": {
+
     "allowlist": {
-      "all": false
+      "protocol":{
+        "assetScope": ["/*"]
+      },
+      "http": {
+        "all": true, 
+        "request": true
+      },
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -47,9 +55,6 @@
         "timestampUrl": ""
       }
     },
-    "security": {
-      "csp": null
-    },
     "updater": {
       "active": false
     },
@@ -59,7 +64,8 @@
         "height": 600,
         "resizable": true,
         "title": "Alexandria",
-        "width": 800
+        "width": 800,
+        "fileDropEnabled": false
       }
     ]
   }

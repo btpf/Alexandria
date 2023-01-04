@@ -39,3 +39,12 @@ declare module "*.epub" {
     const content: any;
     export default content;
 }
+
+// https://stackoverflow.com/questions/47130406/extending-global-types-e-g-window-inside-a-typescript-module#comment120678060_47130953
+// https://stackoverflow.com/questions/47130406/extending-global-types-e-g-window-inside-a-typescript-module#comment125203797_47130953
+// We define __TAURI__ since it will be used throughout the project
+// declare global {
+interface Window { __TAURI__: boolean; }
+// }
+
+// export {}

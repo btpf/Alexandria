@@ -19,6 +19,9 @@ module.exports = {
   // Output directory
   output: {
     path: path.resolve(__dirname, 'dist'),
+    // React router would not navigate to nested routes without this
+    // https://stackoverflow.com/a/50852084
+    publicPath: '/', 
     filename: 'bundle.js'
   },
 

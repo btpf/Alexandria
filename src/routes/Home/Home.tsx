@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // we need this to make JSX compile
+import React, { useCallback, useEffect, useState } from 'react'; // we need this to make JSX compile
 import { Link } from "react-router-dom";
 
 import styles from './Home.module.scss'
@@ -19,6 +19,11 @@ import af from "@resources/images/af.jpg"
 import tcr6 from "@resources/images/tcr6.jpg"
 import gg from "@resources/images/gg.jpg"
 import jah from "@resources/images/jah.jpg"
+
+
+import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
+import {useDropzone} from 'react-dropzone'
+import Epub from 'epubjs-myh';
 
 const books = [
   {BookUrl: moby,
@@ -67,6 +72,88 @@ const Home = () =>{
 
 const Shelf = () =>{
   const [counter, setCounter] = useState(0)
+  const [myBooks, setBooks] = useState([])
+  const onDrop = useCallback(acceptedFiles => {
+    console.log("ON DROP CALLED")
+    // Do something with the files
+    acceptedFiles.forEach(file => {
+      if(file.type == "application/epub+zip"){
+        console.log("COPYING", file.name)
+        const fileReader = new FileReader(file);
+        fileReader.onload = ()=>{
+          console.log("Done Loading")
+          const data = new Uint8Array(fileReader.result)
+          const tt = Array.from(data)
+
+          // The proper way of doing this is to pass Array.from(new Uint8Array(fileReader.result))
+          // Then on the back end, set the type as vec<u8>
+          console.log("Done Converting")
+          if(window.__TAURI__){
+            // https://github.com/tauri-apps/tauri/discussions/3208
+            // https://github.com/tauri-apps/tauri/issues/1817
+            // JSON serialization is unneccesary for binary and also slow
+            // Let's convert the array into a string to avoid this
+            const payload = {
+              title: "",
+              book: {
+                name: file.name,
+                data: tt
+              },
+              cover: {
+                name: "",
+                data: [0]
+              }
+            }
+
+
+
+            const book = Epub(fileReader.result);
+            book.ready.then(() => {
+              book.coverUrl().then(async (url) => {
+                const response = await fetch(url);
+                const data = await response.blob();
+                console.log("COVER TOO")
+                payload.title = book.packaging.metadata.title
+                payload.cover.data = Array.from(new Uint8Array(await data.arrayBuffer()))
+                invoke('import_book', {payload})
+                console.log(url)
+
+                // Todo, make setBooks contain the hash that is returned by import_book, this way the book will load properly.
+                
+                setBooks([...myBooks, {title: book.packaging.metadata.title, coverUrl: url, progress: 0, hash:"Placeholder"}])
+              });
+            })
+
+            
+            
+          }
+        }
+
+        fileReader.readAsArrayBuffer(file)
+      }
+    });
+  }, [myBooks])
+
+
+  useEffect(()=>{
+    console.log("Home Page Loaded")
+    if(window.__TAURI__){
+      invoke("get_books").then((data)=>{
+        console.log(data)
+        setBooks(data)
+      })
+    }
+
+  }, [])
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone(
+    {
+      onDrop,
+      // Disable click and keydown behavior
+      noClick: true,
+      noKeyboard: true
+    })
+
 
   return (
     <>
@@ -76,9 +163,16 @@ const Shelf = () =>{
         <Filter/>
         <Settings/>
       </div>
+      <div >
+        
 
-      <div className={styles.bookCase}>
-
+      </div>
+      <div {...getRootProps()}
+        className={styles.bookCase}>
+        <input {...getInputProps()} />
+        {
+          isDragActive && <p> Add book to library...</p> 
+        }
         {books.map((book)=>{
           return (
             <Link key={book.title} to="/reader">
@@ -89,7 +183,9 @@ const Shelf = () =>{
                   <div className={styles.boxTopBar}>
                     <Boomark/>
                     <div>{book.percent}</div>
-                    <Test onClick={()=>{setCounter(counter + 1)}}/>
+                    <Test onClick={(e)=>{
+                      e.preventDefault()
+                    }}/>
                   </div>
                   <img className={styles.bookImage} src={book.BookUrl}/>
                 </div>
@@ -103,6 +199,37 @@ const Shelf = () =>{
           )
         })}
 
+
+        {myBooks.map((book)=>{
+          return (
+            <Link key={book.hash} to={"/reader/" + book.hash}>
+              <div className={styles.boxPlaceholder}>
+
+                {/* This container is used to handle top bar in CSS in case where book is a short height */}
+                <div className={styles.bookImageContainer}>
+                  <div className={styles.boxTopBar}>
+                    <Boomark/>
+                    <div>{book.progress}%</div>
+                    <Test onClick={(e)=>{
+                      e.preventDefault()
+                    }}/>
+                  </div>
+                  <img className={styles.bookImage} src={book.coverUrl.includes("blob:")? book.coverUrl: convertFileSrc(book.coverUrl)}/>
+                </div>
+              
+                <div className={styles.boxBottomBar} >
+                  <div>{book.title}</div>
+
+                </div>
+              </div>
+            </Link>
+          )
+        })}
+        <button onClick={async ()=>{
+          invoke("get_books").then((data)=>{
+            console.log(data)
+          })
+        }}/>
       </div>
       
     </>

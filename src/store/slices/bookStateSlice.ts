@@ -100,7 +100,26 @@ export const bookState = createSlice({
   initialState,
   reducers: {
     AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
-      const t:bookState = {instance: action.payload.instance, UID: action.payload.UID, loadState:LOADSTATE.INITIAL, data:{highlights:{}, bookmarks: new Set(), theme:{font:"Helvetica, sans-serif", fontSize:100, backgroundColor:'white', color:'grey'}}, state:{sidebarMenuSelected: false, menuToggled: false, themeMenuActive: false}}
+
+      const t:bookState = {
+        instance: action.payload.instance,
+        UID: action.payload.UID, 
+        loadState:LOADSTATE.INITIAL, 
+        data:{
+          highlights:{},
+          bookmarks: new Set(), 
+          theme:{
+            font:"Helvetica, sans-serif", 
+            fontSize:100,
+            backgroundColor:'white',
+            color:'grey'
+          }
+        }, 
+        state:{
+          sidebarMenuSelected: false,
+          menuToggled: false, 
+          themeMenuActive: false
+        }}
       // https://github.com/immerjs/immer/issues/389
 
       state[action.payload.UID] = castDraft(t)

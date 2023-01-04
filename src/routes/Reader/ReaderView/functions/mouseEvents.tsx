@@ -62,7 +62,13 @@ export default (rendition:Rendition, instanceVariables:readerInstanceVariables, 
       instanceVariables.mouseUp = false
       instanceVariables.timer = setTimeout(()=>{
         if(instanceVariables.mouseUp){
-  
+          // This will prevent a crash.
+          // Found in f914e547, When clicking from TOC, app will crash.
+          if(contents.window.getSelection() == null){
+            console.log("Crash Prevented")
+            instanceVariables.timer = null
+            return
+          }
           // This will prevent case where text is quickly highlighted causing page to transition
           if (contents.window.getSelection().toString().length == 0) {
             if (x < third) {

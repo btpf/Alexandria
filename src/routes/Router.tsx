@@ -1,4 +1,4 @@
-import {Route, createRoutesFromElements } from "react-router-dom";
+import {Route, createRoutesFromElements, useRouteError } from "react-router-dom";
 import React from "react";
 
 import Home from './Home/Home'
@@ -9,6 +9,7 @@ export default (
     <>
       <Route path="/" element={<Home />} />
       <Route path="/reader" element={<Reader />} />
+      <Route path="/reader/:bookHash/" element={<Reader />}/>
     </>
   )
 );

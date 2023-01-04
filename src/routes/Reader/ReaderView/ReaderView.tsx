@@ -1,13 +1,20 @@
 import React, { createRef, ReactPropTypes, RefObject, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
 import styles from './ReaderView.module.scss'
 import epubjs, { Book, Rendition } from 'epubjs-myh'
-import bookImport from '@resources/placeholder/courage.epub'
+import bookImport from '@resources/placeholder/placeholder3.epub'
 import View, { ViewSettings } from 'epubjs-myh/types/managers/view';
 import redrawAnnotations from './functions/redrawAnnotations';
 
 import { readerInstanceVariables } from "./ReaderView.d";
 import highlightText from './functions/highlightText';
 import mouseEvents from './functions/mouseEvents'
+
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import { convertFileSrc, invoke } from '@tauri-apps/api/tauri';
 
 
 import { connect, ConnectedProps } from 'react-redux'
@@ -55,8 +62,21 @@ class Reader extends React.Component<PropsFromRedux>{
     this.UID = Math.random().toString()
   }
 
-  componentDidMount(){
-    const book = epubjs(bookImport)
+  async componentDidMount(){
+    console.log("DID MOUNT")
+    let bookUrl = ""
+
+    const {params} = this.props.router
+    if(window.__TAURI__ && params.bookHash){
+      bookUrl = await invoke("get_book_by_hash",{bookHash: params.bookHash})
+      // bookUrl = convertFileSrc(bookUrl);
+      bookUrl = new Uint8Array(bookUrl).buffer
+      // console.log("BOOK URL LOADED", bookUrl)
+    }else{
+      bookUrl = bookImport
+    }
+
+    const book = epubjs(bookUrl)
     this.rendition = book.renderTo(this.renderWindow.current?.id || "", 
       {
         width: "100%", 
@@ -166,5 +186,27 @@ class Reader extends React.Component<PropsFromRedux>{
 }
 
 // https://stackoverflow.com/questions/66277647/how-to-use-redux-toolkit-createslice-with-react-class-components
-export default connector(Reader)
+
+
+
+
+function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
+    return (
+      <Component
+        {...props}
+        router={{ location, navigate, params }}
+      />
+
+
+    );
+  }
+
+  return ComponentWithRouterProp;
+}
+
+export default connector( withRouter(Reader))
 
