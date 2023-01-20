@@ -7,8 +7,7 @@ import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
 import { CloseSidebarMenu } from '@store/slices/bookStateSlice'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-
-
+import { FindResults } from 'epubjs-myh/types/section';
 
 
 const Search = ()=>{
@@ -17,9 +16,8 @@ const Search = ()=>{
 
   const [searchText, setSearchText] = useState("")
 
-  const [results, setResults] = useState([])
-
-  const search = (query)=>{
+  const [results, setResults] = useState<FindResults[]>([])
+  const search = (query: string)=>{
     return Promise.all(renditionInstance.book.spine.spineItems.map(item => {
       return item.load(renditionInstance.book.load.bind(renditionInstance.book)).then(doc => {
         const results = item.find(query);

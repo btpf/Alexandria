@@ -7,6 +7,13 @@ import Spine from 'epubjs-myh/types/spine'
 import { DeleteHighlight, CloseSidebarMenu, ToggleBookmark } from '@store/slices/bookStateSlice'
 
 import styles from './Bookmarks.module.scss'
+
+
+interface Bookmark{
+  cfi: string,
+  title: string
+}
+
 const getChapterCFIMap = (renditionInstance: Rendition)=>{
   let allChapters: any[] = []
 
@@ -39,7 +46,7 @@ const Annotations = ()=>{
   const dispatch = useAppDispatch()
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const bookmarks = useAppSelector((state) => state.bookState[0]?.data.bookmarks)
-  const [orderedBookmarks, setOrderedBookmarks] = useState(Array<string>)
+  const [orderedBookmarks, setOrderedBookmarks] = useState(Array<Bookmark>)
 
 
   useEffect(()=>{
@@ -48,13 +55,14 @@ const Annotations = ()=>{
     if(!bookmarks || !renditionInstance.book?.spine || !renditionInstance.book?.navigation?.toc){
       return
     }
-    let workingBookmarks = Array.from(bookmarks)
+    const workingBookmarks = Array.from(bookmarks)
   
   
   
     const allChapters = getChapterCFIMap(renditionInstance)
 
-    workingBookmarks = workingBookmarks.map((cfi)=>{
+    
+    const newOrderedBookmarks = workingBookmarks.map((cfi)=>{
       let titlename;
       for(const item in allChapters){
         if(!allChapters[item].cfi){
@@ -73,12 +81,12 @@ const Annotations = ()=>{
 
   
     // Sort annotations by location in book
-    workingBookmarks.sort((a, b)=>{
+    newOrderedBookmarks.sort((a, b)=>{
       return renditionInstance.epubcfi.compare( a.cfi, b.cfi)
     }
     )
 
-    setOrderedBookmarks(workingBookmarks)
+    setOrderedBookmarks(newOrderedBookmarks)
   }, [bookmarks])
 
   return (

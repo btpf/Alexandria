@@ -45,25 +45,27 @@ interface SetFontPayload{
   fontSize?: number
 }
 
+export interface Theme{
+  body: {
+    background?: string,
+    color?: string,
+  },
+  '*'?: {
+    color?: string,
+    background?: string,
+  },
+  'a:link'?: {
+    color?: string,
+    'text-decoration'?: string,
+  },
+  'a:link:hover'?: {
+    background?: string,
+  }
+}
+
 interface SetThemePayload{
   view: number
-  theme: {
-    body: {
-      background: string,
-      color: string,
-    },
-    '*': {
-      color: string,
-      background: string,
-    },
-    'a:link': {
-      color: string,
-      'text-decoration': string,
-    },
-    'a:link:hover': {
-      background: string,
-    }
-  } 
+  theme:Theme
 }
 
 interface highlightData {
@@ -174,8 +176,12 @@ export const bookState = createSlice({
       state[action.payload.view].instance.themes.select(id)
 
       // Update UI colors
-      state[action.payload.view].data.theme.backgroundColor = action.payload.theme?.body.background
-      state[action.payload.view].data.theme.color = action.payload.theme?.body.color
+      if(action.payload.theme?.body.background){
+        state[action.payload.view].data.theme.backgroundColor = action.payload.theme?.body.background
+      }
+      if(action.payload.theme?.body.color){
+        state[action.payload.view].data.theme.color = action.payload.theme?.body.color
+      }
 
     },
     ToggleMenu: (state, action: PayloadAction<number>) =>{

@@ -11,6 +11,16 @@ import { NavItem, Rendition } from 'epubjs-myh'
 import Spine from 'epubjs-myh/types/spine'
 import { LOADSTATE } from '@store/slices/bookStateSlice';
 
+
+
+interface MarkObj {
+  style?: React.CSSProperties;
+  label?: React.ReactNode;
+}
+
+type MarkType = Record<string | number, React.ReactNode | MarkObj>
+
+ 
 const defaultMarks = {
   500: {
     style: {
@@ -36,7 +46,7 @@ const SliderNavigator = ()=>{
   const [isEpubNavigate, setEpubNavigate] = useState(false)
 
 
-  const [markers, setMarkers] = useState(defaultMarks)
+  const [markers, setMarkers] = useState<MarkType>(defaultMarks)
 
 
 
@@ -127,8 +137,8 @@ const SliderNavigator = ()=>{
 
     const chapterCFIMap = getChapterCFIMap(renditionInstance)
 
-    const markerObject = {}
-    
+    const markerObject: MarkType = {}
+
     chapterCFIMap.forEach((item)=>{
       markerObject[renditionInstance.book.locations.percentageFromCfi(item.cfi) * 1000] = <strong>|</strong>
     })
@@ -146,8 +156,9 @@ const SliderNavigator = ()=>{
       className={styles.slider}
       onChange={(e)=>{
 
-        setPercent(e/1000)
-              
+        if(typeof e === "number"){
+          setPercent(e/1000)
+        }
 
       }}
       value={currentPercent * 1000}

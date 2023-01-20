@@ -10,6 +10,9 @@ import highlightText from './functions/highlightText';
 import mouseEvents from './functions/mouseEvents'
 
 import {
+  Location,
+  NavigateFunction,
+  Params,
   useLocation,
   useNavigate,
   useParams,
@@ -43,9 +46,18 @@ const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, Rem
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 
+type ReaderProps = PropsFromRedux & {
+  router:{
+    location: Location
+    navigate: NavigateFunction 
+    params: Readonly<Params<string>>
+  }
+
+}
+
 // https://stackoverflow.com/questions/59072200/useselector-destructuring-vs-multiple-calls
 
-class Reader extends React.Component<PropsFromRedux>{
+class Reader extends React.Component<ReaderProps>{
   private renderWindow = createRef<HTMLDivElement>()
   private book!:Book;
   private rendition!: Rendition;
@@ -55,7 +67,7 @@ class Reader extends React.Component<PropsFromRedux>{
     mouseUp: true
   }
 
-  constructor(props:PropsFromRedux){
+  constructor(props:ReaderProps){
     super(props)
 
     // This is used to ensure that in the case multiple renditions are on the page, there will not be conflicts
@@ -64,19 +76,24 @@ class Reader extends React.Component<PropsFromRedux>{
 
   async componentDidMount(){
     console.log("DID MOUNT")
-    let bookUrl = ""
+    type bookData = string | ArrayBuffer
+    let bookUrl: bookData = ""
 
     const {params} = this.props.router
     if(window.__TAURI__ && params.bookHash){
-      bookUrl = await invoke("get_book_by_hash",{bookHash: params.bookHash})
+      const bookBytes:ArrayBuffer = await invoke("get_book_by_hash",{bookHash: params.bookHash})
       // bookUrl = convertFileSrc(bookUrl);
-      bookUrl = new Uint8Array(bookUrl).buffer
+      bookUrl = new Uint8Array(bookBytes).buffer
       // console.log("BOOK URL LOADED", bookUrl)
     }else{
       bookUrl = bookImport
     }
 
-    const book = epubjs(bookUrl)
+    const book = epubjs((bookUrl as any))
+
+
+
+
     this.rendition = book.renderTo(this.renderWindow.current?.id || "", 
       {
         width: "100%", 
@@ -190,11 +207,11 @@ class Reader extends React.Component<PropsFromRedux>{
 
 
 
-function withRouter(Component) {
-  function ComponentWithRouterProp(props) {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const params = useParams();
+function withRouter(Component: React.ComponentClass<ReaderProps>) {
+  function ComponentWithRouterProp(props: any) {
+    const location: Location = useLocation();
+    const navigate: NavigateFunction = useNavigate();
+    const params: Readonly<Params<string>> = useParams();
     return (
       <Component
         {...props}

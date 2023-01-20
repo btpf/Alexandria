@@ -22,8 +22,9 @@ import jah from "@resources/images/jah.jpg"
 
 
 import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
-import {useDropzone} from 'react-dropzone'
+import {useDropzone, Accept} from 'react-dropzone'
 import Epub from 'epubjs-myh';
+import { BookOptions } from 'epubjs-myh/types/book';
 
 const books = [
   {BookUrl: moby,
@@ -56,10 +57,14 @@ const books = [
   {BookUrl: "None",
     title:"Placeholder",
     percent: "43%"},
-                  
-                
-      
 ]
+
+interface BookData {
+  title:string,
+  progress: number,
+  hash: string,
+  cover_url: string
+}
 
 const Home = () =>{
 
@@ -72,16 +77,22 @@ const Home = () =>{
 
 const Shelf = () =>{
   const [counter, setCounter] = useState(0)
-  const [myBooks, setBooks] = useState([])
-  const onDrop = useCallback(acceptedFiles => {
+  const [myBooks, setBooks] = useState<BookData[]>([])
+  const onDrop = useCallback((acceptedFiles:File[]) => {
     console.log("ON DROP CALLED")
     // Do something with the files
     acceptedFiles.forEach(file => {
       if(file.type == "application/epub+zip"){
         console.log("COPYING", file.name)
-        const fileReader = new FileReader(file);
+        const fileReader = new FileReader();
         fileReader.onload = ()=>{
           console.log("Done Loading")
+
+          if(!(fileReader.result instanceof ArrayBuffer)){
+            console.log("Non ArrayBuffer Returned")
+            return
+          }
+
           const data = new Uint8Array(fileReader.result)
           const tt = Array.from(data)
 
@@ -106,10 +117,13 @@ const Shelf = () =>{
             }
 
 
-
             const book = Epub(fileReader.result);
             book.ready.then(() => {
               book.coverUrl().then(async (url) => {
+                if(url == null){
+                  console.log("Error: No Cover Found For Book")
+                  return
+                }
                 const response = await fetch(url);
                 const data = await response.blob();
                 console.log("COVER TOO")
@@ -120,7 +134,7 @@ const Shelf = () =>{
 
                 // Todo, make setBooks contain the hash that is returned by import_book, this way the book will load properly.
                 
-                setBooks([...myBooks, {title: book.packaging.metadata.title, coverUrl: url, progress: 0, hash:"Placeholder"}])
+                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url, progress: 0, hash:"Placeholder"}])
               });
             })
 
@@ -139,8 +153,7 @@ const Shelf = () =>{
     console.log("Home Page Loaded")
     if(window.__TAURI__){
       invoke("get_books").then((data)=>{
-        console.log(data)
-        setBooks(data)
+        setBooks((data as BookData[]))
       })
     }
 
@@ -183,7 +196,7 @@ const Shelf = () =>{
                   <div className={styles.boxTopBar}>
                     <Boomark/>
                     <div>{book.percent}</div>
-                    <Test onClick={(e)=>{
+                    <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
                       e.preventDefault()
                     }}/>
                   </div>
@@ -210,11 +223,11 @@ const Shelf = () =>{
                   <div className={styles.boxTopBar}>
                     <Boomark/>
                     <div>{book.progress}%</div>
-                    <Test onClick={(e)=>{
+                    <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
                       e.preventDefault()
                     }}/>
                   </div>
-                  <img className={styles.bookImage} src={book.coverUrl.includes("blob:")? book.coverUrl: convertFileSrc(book.coverUrl)}/>
+                  <img className={styles.bookImage} src={book.cover_url.includes("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
                 </div>
               
                 <div className={styles.boxBottomBar} >

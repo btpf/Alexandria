@@ -80,24 +80,24 @@ fn import_book(payload: ImportBookPayload) {
 
     println!("{}", checksum);
 
-    let hashedBookFolder = format!("{current_dir}/data/books/{checksum}/");
+    let hashed_book_folder = format!("{current_dir}/data/books/{checksum}/");
     // format!("{hashedBookFolder}/{}", fromPath.file_name().unwrap().to_str().unwrap()))
 
-    match std::fs::create_dir(&hashedBookFolder) {
-        Ok(file) => println!("Book is Unique, Creating Directory"),
-        Err(error) => {
+    match std::fs::create_dir(&hashed_book_folder) {
+        Ok(_file) => println!("Book is Unique, Creating Directory"),
+        Err(_error) => {
             println!("Error: Book is duplicate");
             return;
         }
     };
 
     std::fs::write(
-        format!("{hashedBookFolder}/{}", payload.book.name),
+        format!("{hashed_book_folder}/{}", payload.book.name),
         &payload.book.data,
     )
     .unwrap();
     std::fs::write(
-        format!("{hashedBookFolder}/{}", "cover.jpg"),
+        format!("{hashed_book_folder}/{}", "cover.jpg"),
         &payload.cover.data,
     )
     .unwrap();
@@ -119,7 +119,7 @@ fn import_book(payload: ImportBookPayload) {
 
     let initial_data = serde_json::to_string_pretty(&initial_data).unwrap();
 
-    std::fs::write(format!("{hashedBookFolder}/{checksum}.json"), initial_data).unwrap();
+    std::fs::write(format!("{hashed_book_folder}/{checksum}.json"), initial_data).unwrap();
 }
 
 fn get_hash(data: &Vec<u8>) -> String {
@@ -131,8 +131,8 @@ fn get_hash(data: &Vec<u8>) -> String {
 
 #[derive(Deserialize, Serialize)]
 struct BookHydrate {
-    coverUrl: String,
-    bookUrl: String,
+    cover_url: String,
+    book_url: String,
     hash: String,
     progress: f64,
     title: String,
@@ -156,43 +156,35 @@ fn get_books() -> Vec<BookHydrate> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
-    let hashedBookFolders = fs::read_dir(format!("{current_dir}/data/books/")).unwrap();
+    let hashed_book_folders = fs::read_dir(format!("{current_dir}/data/books/")).unwrap();
 
-    let mut hydrationData: Vec<BookHydrate> = Vec::new();
-    for hashedBookFolder in hashedBookFolders {
-        let hashedBookFolder = &hashedBookFolder.unwrap();
+    let mut hydration_data: Vec<BookHydrate> = Vec::new();
+    for hashed_book_folder in hashed_book_folders {
+        let hashed_book_folder = &hashed_book_folder.unwrap();
 
-        let fileHash = &hashedBookFolder.path();
-        let fileHash = fileHash.file_name().unwrap();
-        let fileHash = fileHash.to_str().unwrap();
+        let file_hash = &hashed_book_folder.path();
+        let file_hash = file_hash.file_name().unwrap();
+        let file_hash = file_hash.to_str().unwrap();
 
-        println!("File Hash: {}", &fileHash);
+        println!("File Hash: {}", &file_hash);
 
-        let bookFolder = fs::read_dir(&hashedBookFolder.path()).unwrap();
+        let book_folder = fs::read_dir(&hashed_book_folder.path()).unwrap();
 
-        let mut epubPath = String::new();
+        let mut epub_path = String::new();
         let mut title = String::new();
         let mut progress: f64 = 0.0;
-        let mut coverPath = String::new();
+        let mut cover_path = String::new();
 
-        for bookFile in bookFolder {
-            let bookFile = bookFile.unwrap().path().display().to_string();
-            let isEpub = bookFile.contains(".epub");
-            let isData = bookFile.contains(".json");
-            // match isEpub{
-            //   true => {
-            //     epubPath.push_str(&bookFile);
-            //   },
-            //   false =>{
-            //     coverPath.push_str(&bookFile);
-            //   }
-            // }
-
-            if isEpub {
-                epubPath.push_str(&bookFile);
-            } else if isData {
-                println!("PRINTING JSON FILE: {}", &bookFile);
-                let file = File::open(&bookFile).unwrap();
+        for book_file in book_folder {
+            let book_file = book_file.unwrap().path().display().to_string();
+            let is_epub = book_file.contains(".epub");
+            let is_data = book_file.contains(".json");
+            
+            if is_epub {
+              epub_path.push_str(&book_file);
+            } else if is_data {
+                println!("PRINTING JSON FILE: {}", &book_file);
+                let file = File::open(&book_file).unwrap();
                 let reader = BufReader::new(file);
 
                 let json: serde_json::Value =
@@ -212,23 +204,23 @@ fn get_books() -> Vec<BookHydrate> {
                     )
                 )
             } else {
-                coverPath.push_str(&bookFile);
+              cover_path.push_str(&book_file);
             }
         }
-        println!("BOOK PATH: {}", epubPath);
-        println!("Cover PATH: {}", coverPath);
+        println!("BOOK PATH: {}", epub_path);
+        println!("Cover PATH: {}", cover_path);
 
         let folderData: BookHydrate = BookHydrate {
-            coverUrl: coverPath,
-            bookUrl: epubPath,
-            hash: String::from(fileHash),
+            cover_url: cover_path,
+            book_url: epub_path,
+            hash: String::from(file_hash),
             progress,
             title,
         };
-        hydrationData.push(folderData)
+        hydration_data.push(folderData)
     }
 
-    return hydrationData;
+    return hydration_data;
 }
 
 #[tauri::command]
@@ -236,14 +228,14 @@ fn get_book_by_hash(bookHash: String) -> Vec<u8> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
-    let hashedBookFolder = fs::read_dir(format!("{current_dir}/data/books/{bookHash}")).unwrap();
+    let hashed_book_folder = fs::read_dir(format!("{current_dir}/data/books/{bookHash}")).unwrap();
 
-    for bookFile in hashedBookFolder {
-        let bookFile = bookFile.unwrap().path().display().to_string();
-        let isEpub = bookFile.contains(".epub");
+    for book_file in hashed_book_folder {
+        let book_file = book_file.unwrap().path().display().to_string();
+        let is_epub = book_file.contains(".epub");
 
-        if isEpub {
-            let mut f = File::open(bookFile).unwrap();
+        if is_epub {
+            let mut f = File::open(book_file).unwrap();
             let mut buffer = Vec::new();
             // read the whole file
             f.read_to_end(&mut buffer).unwrap();

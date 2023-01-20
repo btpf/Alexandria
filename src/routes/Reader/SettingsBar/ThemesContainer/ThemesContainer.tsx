@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './ThemesContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetTheme } from '@store/slices/bookStateSlice'
+import { SetTheme, Theme } from '@store/slices/bookStateSlice'
 
 const dark = {
   body: {
@@ -19,7 +19,7 @@ const dark = {
   },
 };
 
-const Base = {
+const Base:Theme = {
   body: {
     background: `white`,
     color: `black`,
@@ -34,7 +34,11 @@ const Base = {
   },
 };
 
-const testThemes = {
+
+interface ThemeInterface{
+  [name: string]: Theme
+}
+const testThemes: ThemeInterface = {
   Dark: dark, 
 //   Default: Base
 }
@@ -51,7 +55,7 @@ const ThemesContainer = ()=>{
           Default
       </div>
       {Object.keys(testThemes).map((item)=>{
-        const {background, color} = testThemes[item].body
+        const {background, color} = (testThemes[item]).body
         return (
           <div key={item} onClick={()=>{
             dispatch(SetTheme({view:0, theme:testThemes[item]}))
@@ -60,13 +64,6 @@ const ThemesContainer = ()=>{
           </div>
         )
       })}
-        
-      {/* <div className={styles.theme}>
-            Default
-        </div>
-        <div className={styles.theme}>
-            Dark Mode
-        </div> */}
     </div>
   )
 }
