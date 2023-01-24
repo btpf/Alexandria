@@ -43,7 +43,7 @@ const store =  configureStore({
         // Only save the data if the book is done with it's loading phase
         // During the loading phase, all sorts of synced actions will get called, but this is only the initial population,
         // And nothing here should be saved.
-        if(currentBook.loadState == LOADSTATE.COMPLETE){
+        if(window.__TAURI__ && currentBook.loadState == LOADSTATE.COMPLETE){
           const saveData = {
             title: currentBook.title,
             data:{
