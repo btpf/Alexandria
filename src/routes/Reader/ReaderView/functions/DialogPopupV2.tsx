@@ -45,10 +45,11 @@ class DialogPopup extends React.Component<Props>{
   containerWidth = 200
   containerHeight = 100
   // const [visible, setVisible] = useState({current:"", previous:""})
-  // const [noteLocation, setNoteLocation] = useState({visible: false, x:0, y:0})
-  state = {bounds: {x:0, y: 0, width: 0, height:0},
-    visible: {current:"", previous:""},
-    noteLocation: {visible: false, range:"", x:0, y:0},
+  // const [noteModal, setnoteModal] = useState({visible: false, x:0, y:0})
+  state = {
+    selectedCFI: "",
+    quickbarModal: {visible: false, x:0, y:0},
+    noteModal: {visible: false, x:0, y:0},
     renditionHandlers: {click:null, select:null}}
 
   constructor(props:Props){
@@ -58,27 +59,31 @@ class DialogPopup extends React.Component<Props>{
     if(this.state.renditionHandlers.click || !this.props.renditionInstance){
       return
     }
-    // TODO: Refactor this code to use an invisible blocking div to cancel the mouse click.
-    // Or we can maybe move resetMouse into props?
+
     const handleClick = (_:MouseEvent, contents:any)=>{
       const newState = {...this.state}
-      if(this.state.noteLocation.visible){
+
+      // If the note popup is visible
+      if(this.state.noteModal.visible){
         this.props.resetMouse()
-        newState.noteLocation = {...this.state.noteLocation, visible: false}
-        // setNoteLocation({...noteLocation, visible:false})
+        newState.noteModal = {...this.state.noteModal, visible: false}
+
+        // If clicking off of the noteModal, the selectedCFI Must be removed
+        newState.selectedCFI = ""
       }
-      if (contents.window.getSelection().toString().length == 0 && this.state.visible.current){
+
+      // If text is current selected and the quickbar is visible
+      if(contents.window.getSelection().toString().length == 0 && this.state.quickbarModal.visible){
         this.props.resetMouse()
-        this.props.renditionInstance.annotations.remove(this.state.visible.current, "highlight")
-        // setVisible({current:"", previous:""})
-        newState.visible = {current:"", previous:""}
-      }else if (this.state.visible.previous){
-        this.props.resetMouse()
-        this.props.renditionInstance.annotations.remove(this.state.visible.previous, "highlight")
-        newState.visible = {current:this.state.visible.current, previous:""}
-        // setVisible({current:visible.current, previous:""})
         
+        // Deselect the text
+        this.props.renditionInstance.annotations.remove(this.state.selectedCFI, "highlight")
+
+        // hide quickbarModal
+        newState.quickbarModal = {...newState.quickbarModal, visible: false}
       }
+
+
       this.setState(newState)
       contents.window.getSelection().removeAllRanges();
     }
@@ -91,14 +96,20 @@ class DialogPopup extends React.Component<Props>{
 
 
     const handleSelect = (cfiRange:any, contents:Contents) =>{
+      console.log("Select handled")
       // This will set the mouse state to up to prevent the page from flipping on quickly highlighting
       this.props.resetMouse()
       this.props.renditionInstance.annotations.highlight(cfiRange, {}, (e:MouseEvent) => {
         this.props.resetMouse()
       }, '', {fill:"#36454F"});
-      // setVisible({current:cfiRange, previous:this.state.visible.current})
+      // setVisible({current:cfiRange, previous:this.state.quickbarModal.location})
       const newState = {...this.state}
-      newState.visible = {current:cfiRange, previous:this.state.visible.current}
+
+
+      // If the noteModal is open, meaning the selectedCFI is a real note, do not remove the highlight
+      if(!this.state.noteModal.visible){
+        this.props.renditionInstance.annotations.remove(this.state.selectedCFI, "highlight")
+      }
 
       const selection = contents.window.getSelection()
 
@@ -111,11 +122,14 @@ class DialogPopup extends React.Component<Props>{
       const {x, y} = this.calculateBoxPosition(getRange, containerWidth, containerHeight)
 
       // setBounds({x, y, width: getRange.width, height:getRange.height})
-      newState.bounds ={x, y, width: getRange.width, height:getRange.height}
+
       
-      const invisibleNoteLocation = this.calculateBoxPosition(getRange, 300, 250)
-      // setNoteLocation({visible: false, x:invisibleNoteLocation.x, y:invisibleNoteLocation.y})
-      newState.noteLocation = {x:invisibleNoteLocation.x, y:invisibleNoteLocation.y, visible: false, range:""}
+      const invisiblenoteModal = this.calculateBoxPosition(getRange, 300, 250)
+
+      newState.quickbarModal ={x, y, visible: true}
+      newState.selectedCFI = cfiRange
+      newState.noteModal = {x:invisiblenoteModal.x, y:invisiblenoteModal.y, visible: false}
+
       this.setState(newState)
         
           
@@ -146,10 +160,6 @@ class DialogPopup extends React.Component<Props>{
     // Since the position is absolute inside the container, by getting the wrapper and the bounding rect,
     // We can add how far from the top the actual render of the ReaderView is
     const offsetY = wrapper?.y
-    // Used for debugging
-    // setBounds({x:getRange.x, y: getRange.y + offsetY, width: getRange.width, height:getRange.height})
-
-    //Production
       
     // The bottom limit is the wrappers distance from the top + the height of the render wrapper
     const yBottomLimit = wrapper?.y + wrapper?.height
@@ -176,105 +186,110 @@ class DialogPopup extends React.Component<Props>{
     return {x:xpos, y:ypos}
   }
   render(): React.ReactNode {
-    return(
-      <>
-        {/* {JSON.stringify(this.state)} */}
-        {/* {JSON.stringify(this.props.completeState?.data)} */}
-        <div className={styles.noteContainer} style={{display:this.state.noteLocation.visible?"":"none", left:this.state.noteLocation.x, top:this.state.noteLocation.y}}>
-          <textarea placeholder="Add Note" value={this.props.annotations? this.props.annotations[this.state.noteLocation.range]?.note:""} 
+    if(this.state.noteModal.visible){
+      return(
+        <div className={styles.noteContainer} style={{display:this.state.noteModal.visible?"":"none", left:this.state.noteModal.x, top:this.state.noteModal.y}}>
+          <textarea placeholder="Add Note" value={this.props.annotations? this.props.annotations[this.state.selectedCFI]?.note:""} 
             onChange={(event)=>{
-              this.props.ChangeHighlightNote({highlightRange:this.state.noteLocation.range, color:"any", note:event.target.value, view:0})
+              this.props.ChangeHighlightNote({highlightRange:this.state.selectedCFI, color:"any", note:event.target.value, view:0})
             }}
             className={styles.noteContentContainer}>
           </textarea>
-
+  
           <div className={styles.annotationActions}>
             <div className={styles.svgSelect}>
               <Trash onClick={()=>{
-                this.props.renditionInstance.annotations.remove(this.state.noteLocation.range, "highlight")
-                this.props.DeleteHighlight({highlightRange:this.state.noteLocation.range, color:"any", note:"", view:0})
-                this.setState({...this.state, noteLocation:{...this.state.noteLocation, visible: false}})
-              }}/>
+                this.props.renditionInstance.annotations.remove(this.state.selectedCFI, "highlight")
+                this.props.DeleteHighlight({highlightRange:this.state.selectedCFI, color:"any", note:"", view:0})
 
+
+                this.setState({...this.state, selectedCFI: "", noteModal:{...this.state.noteModal, visible: false}})
+              }}/>
+  
             </div>
             <div className={styles.colorSelector}>
               {COLORS.map((item)=>{
                 return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble} onClick={()=>{
-                  this.props.renditionInstance.annotations.remove(this.state.noteLocation.range, "highlight")
-                  this.props.ChangeHighlightColor({highlightRange:this.state.noteLocation.range, color:item, note:"", view:0})
-                  const cfiRangeClosure = this.state.noteLocation.range
-                  this.props.renditionInstance.annotations.highlight(this.state.noteLocation.range,{}, (e:MouseEvent) => {
+                  this.props.renditionInstance.annotations.remove(this.state.selectedCFI, "highlight")
+                  this.props.ChangeHighlightColor({highlightRange:this.state.selectedCFI, color:item, note:"", view:0})
+                  const cfiRangeClosure = this.state.selectedCFI
+                  this.props.renditionInstance.annotations.highlight(this.state.selectedCFI,{}, (e:MouseEvent) => {
                     // This will prevent page turning when clicking on highlight
                     this.props.resetMouse()
-            
+              
                     //Returning here will prevent the edgecase & race-condition where highlighting text over an existing annotation
                     // Will open both the note and the highlight dialog
-                    if(this.state.visible.current){
+                    if(this.state.quickbarModal.visible){
                       // console.log("Race Condition Prevented")
                       return
                     }
                     const boundingBox = this.props.renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
                     const {x, y} = this.calculateBoxPosition(boundingBox, 300, 250)
-                    this.setState({...this.state, noteLocation:{visible: true, x, y, range:cfiRangeClosure}})
-  
+                    this.setState({...this.state, selectedCFI: cfiRangeClosure, noteModal:{visible: true, x, y}})
+    
                   }, '', {fill:item});
-
-
+  
+  
                   console.log(item)
                 }}/>
-
+  
               })}
             </div>
             <div className={styles.svgSelect}>
               <Check onClick={()=>{
-                this.setState({...this.state, noteLocation:{...this.state.noteLocation, visible: false, range:""}})
+                this.setState({...this.state, selectedCFI: "", noteModal:{...this.state.noteModal, visible: false}})
               }}/>
-
-            </div>
-    
-          </div>
   
-        </div>
-        <div className={styles.container} style={{display:this.state.visible.current?"":"none", top:this.state.bounds.y, left: this.state.bounds.x, width: containerWidth, height: containerHeight}}>
-          {/* {visible.current} */}
-          <div className={styles.actionContainer}>
-            <div><Copy/></div>
-            <div><Book/></div>
-            <div><Search/></div>
+            </div>
+      
           </div>
-          <hr className={styles.divider}/>
-          <div className={styles.highlightContainer}>
-            {COLORS.map((item)=>{
-              return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble} onClick={()=>{
-                this.props.renditionInstance.annotations.remove(this.state.visible.current, "highlight")
-
-                const cfiRangeClosure = this.state.visible.current
-                this.props.renditionInstance.annotations.highlight(this.state.visible.current,{}, (e:MouseEvent) => {
-                  // This will prevent page turning when clicking on highlight
-                  this.props.resetMouse()
-          
-                  //Returning here will prevent the edgecase & race-condition where highlighting text over an existing annotation
-                  // Will open both the note and the highlight dialog
-                  if(this.state.visible.current){
-                    // console.log("Race Condition Prevented")
-                    return
-                  }
-                  const boundingBox = this.props.renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
-                  const {x, y} = this.calculateBoxPosition(boundingBox, 300, 250)
-                  this.setState({...this.state, noteLocation:{visible: true, x, y, range:cfiRangeClosure}})
-
-                }, '', {fill:item});
-                this.setState({...this.state, visible:{current:"", previous:""}, noteLocation:{...this.state.noteLocation, visible: true, range:cfiRangeClosure}})
-                this.props.AddHighlight({highlightRange:this.state.visible.current, color:item, note:"", view:0})
-                console.log(AddHighlight)
-              }}/>
-            })}
     
-          </div>
         </div>
-      </>
+      )
+    }else if(this.state.quickbarModal.visible){
+      return(
+        <>
+          <div className={styles.container} style={{top:this.state.quickbarModal.y, left: this.state.quickbarModal.x, width: containerWidth, height: containerHeight}}>
+            <div className={styles.actionContainer}>
+              <div><Copy/></div>
+              <div><Book/></div>
+              <div><Search/></div>
+            </div>
+            <hr className={styles.divider}/>
+            <div className={styles.highlightContainer}>
+              {COLORS.map((item)=>{
+                return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble} onClick={()=>{
+                  this.props.renditionInstance.annotations.remove(this.state.selectedCFI, "highlight")
 
-    )
+                  const cfiRangeClosure = this.state.selectedCFI
+                  this.props.renditionInstance.annotations.highlight(this.state.selectedCFI,{}, (e:MouseEvent) => {
+
+                    // This will prevent page turning when clicking on highlight
+                    this.props.resetMouse()
+          
+                    //Returning here will prevent the edgecase & race-condition where highlighting text over an existing annotation
+                    // Will open both the note and the highlight dialog
+                    if(this.state.quickbarModal.visible){
+                    // console.log("Race Condition Prevented")
+                      return
+                    }
+                    const boundingBox = this.props.renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
+                    const {x, y} = this.calculateBoxPosition(boundingBox, 300, 250)
+                    this.setState({...this.state, noteModal:{visible: true, x, y}, selectedCFI: cfiRangeClosure})
+
+                  }, '', {fill:item});
+                  this.setState({...this.state, quickbarModal:{visible:false}, noteModal:{...this.state.noteModal, visible: true}})
+                  this.props.AddHighlight({highlightRange:this.state.selectedCFI, color:item, note:"", view:0})
+                  console.log(AddHighlight)
+                }}/>
+              })}
+    
+            </div>
+          </div>
+        </>
+
+      )
+    }
   }
 
 }
