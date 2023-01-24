@@ -9,7 +9,7 @@ import 'rc-slider/assets/index.css';
 
 import { NavItem, Rendition } from 'epubjs-myh'
 import Spine from 'epubjs-myh/types/spine'
-import { LOADSTATE } from '@store/slices/bookStateSlice';
+import { LOADSTATE, SetProgress } from '@store/slices/bookStateSlice';
 
 
 
@@ -34,12 +34,13 @@ const defaultMarks = {
 const SliderNavigator = ()=>{
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const renditionState = useAppSelector((state) => state.bookState[0]?.loadState)
+  const currentPercent = useAppSelector((state) => state.bookState[0]?.data.progress)
 
 
   const dispatch = useAppDispatch()
 
 
-  const [currentPercent, setPercent] = useState(0)
+  // const [currentPercent, setPercent] = useState(0)
 
   // This will track whether the slider was updated because of a locationChanged event
   // or it was because of a mousedown event
@@ -89,7 +90,14 @@ const SliderNavigator = ()=>{
       // On the event from epubjs, set the epubNavigate to true
       // This will cancel out a loop of the epub reader changing
       setEpubNavigate(true)
-      setPercent(renditionInstance.book.locations.percentageFromCfi(e.end))
+      const progress = renditionInstance.book.locations.percentageFromCfi(e.start);
+      console.log(progress)
+      console.log("CFI From Progress", renditionInstance.book.locations.cfiFromPercentage(progress))
+
+      // This may be preventing a race condition with setEpubNavigate
+      setTimeout(()=>{
+        dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+      }, 1)
     }
 
     renditionInstance.on("locationChanged", pageTurnHandler)
@@ -109,14 +117,15 @@ const SliderNavigator = ()=>{
 
     // If the previous update event was because of the epub reader
     // cancel the event
+    console.log("EFFECT CALLED WITH", isEpubNavigate)
     if(isEpubNavigate){
       setEpubNavigate(false)
       return
     }
     const handler = setTimeout(() =>{ 
-      
       setEpubNavigate(true)
-      renditionInstance.display(renditionInstance.book.locations.cfiFromPercentage(currentPercent))
+      if(currentPercent)
+        renditionInstance.display(renditionInstance.book.locations.cfiFromPercentage(currentPercent))
     }, 100);
 
     return () => clearTimeout(handler);
@@ -155,9 +164,9 @@ const SliderNavigator = ()=>{
       min={0}
       className={styles.slider}
       onChange={(e)=>{
-
         if(typeof e === "number"){
-          setPercent(e/1000)
+          dispatch(SetProgress({view: 0, progress: e/1000}))
+          
         }
 
       }}

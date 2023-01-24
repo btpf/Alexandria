@@ -25,7 +25,7 @@ import { connect, ConnectedProps } from 'react-redux'
 
 
 import store, {RootState} from '@store/store'
-import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu} from '@store/slices/bookStateSlice'
+import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookStateSlice'
 import DialogPopup from './functions/DialogPopupV2';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
@@ -41,7 +41,7 @@ const mapState = (state: RootState) => {
 
 }
 
-const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu})
+const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu, SyncedAddRendition})
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
@@ -106,14 +106,27 @@ class Reader extends React.Component<ReaderProps>{
 
     console.log(book)
 
-    // store.dispatch(AddRendition(this.rendition))
+    // This must be called before any book logic
+    // Since functions around app, redux middleware in particular, relies on it.
+
+    this.props.SetLoadState({view:0, state:LOADSTATE.LOADING})
+
+
     
     this.rendition.book.loaded.spine.then(async (x)=>{
-      this.props.AddRendition({instance:this.rendition, UID:0})
+      this.props.SyncedAddRendition({instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+    
+
+
+
+      // AddHighlight
+
+
+      // this.props.populateRendition({UID:0, data})
+    
     })
 
     book.ready.then(async ()=>{
-      this.props.SetLoadState({view:0, state:LOADSTATE.LOADING_LOCATIONS})
 
       // This code will handle the edge case where a book is still loading but the user leaves the page, unmounting the component.
       // We use the standard subscribe here since react-redux will not pass the state updates once unmounted.
@@ -138,9 +151,7 @@ class Reader extends React.Component<ReaderProps>{
         return
       }
 
-
       this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
-
     })
  
 
@@ -183,7 +194,7 @@ class Reader extends React.Component<ReaderProps>{
 
   componentWillUnmount(){
     // This handles the edgecase where the locations are loading, but the user exits the page.
-    if(this.props.LoadState == LOADSTATE.LOADING_LOCATIONS){
+    if(this.props.LoadState == LOADSTATE.LOADING){
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
       return
     }

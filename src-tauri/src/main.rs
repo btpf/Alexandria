@@ -4,6 +4,7 @@
 )]
 
 use std::{
+    collections::HashMap,
     env::{self, current_dir},
     fs::{self, File},
     io::{BufReader, Read},
@@ -23,7 +24,9 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             import_book,
             get_books,
-            get_book_by_hash
+            get_book_by_hash,
+            update_data_by_hash,
+            load_book_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -114,12 +117,20 @@ fn import_book(payload: ImportBookPayload) {
 
     let initial_data = json!({
         "title": payload.title,
-        "progress": 0
+        "data":{
+            "progress": 0,
+            "highlights":{},
+            "bookmarks": []
+        }
     });
 
     let initial_data = serde_json::to_string_pretty(&initial_data).unwrap();
 
-    std::fs::write(format!("{hashed_book_folder}/{checksum}.json"), initial_data).unwrap();
+    std::fs::write(
+        format!("{hashed_book_folder}/{checksum}.json"),
+        initial_data,
+    )
+    .unwrap();
 }
 
 fn get_hash(data: &Vec<u8>) -> String {
@@ -179,9 +190,9 @@ fn get_books() -> Vec<BookHydrate> {
             let book_file = book_file.unwrap().path().display().to_string();
             let is_epub = book_file.contains(".epub");
             let is_data = book_file.contains(".json");
-            
+
             if is_epub {
-              epub_path.push_str(&book_file);
+                epub_path.push_str(&book_file);
             } else if is_data {
                 println!("PRINTING JSON FILE: {}", &book_file);
                 let file = File::open(&book_file).unwrap();
@@ -191,7 +202,8 @@ fn get_books() -> Vec<BookHydrate> {
                     serde_json::from_reader(reader).expect("JSON was not well-formatted");
                 title.push_str(json.get("title").unwrap().as_str().unwrap());
 
-                let t = json.get("progress").unwrap();
+                let t = &json["data"]["progress"];
+
                 let t = t.as_f64();
                 progress = t.unwrap();
 
@@ -200,11 +212,11 @@ fn get_books() -> Vec<BookHydrate> {
                     format!(
                         "title: {}, progress: {}",
                         json.get("title").unwrap(),
-                        json.get("progress").unwrap()
+                        progress
                     )
                 )
             } else {
-              cover_path.push_str(&book_file);
+                cover_path.push_str(&book_file);
             }
         }
         println!("BOOK PATH: {}", epub_path);
@@ -228,6 +240,7 @@ fn get_book_by_hash(bookHash: String) -> Vec<u8> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
+    println!("{}", format!("{current_dir}/data/books/{bookHash}"));
     let hashed_book_folder = fs::read_dir(format!("{current_dir}/data/books/{bookHash}")).unwrap();
 
     for book_file in hashed_book_folder {
@@ -244,4 +257,65 @@ fn get_book_by_hash(bookHash: String) -> Vec<u8> {
     }
 
     return Vec::new();
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct highlightData {
+    color: String,
+    note: String,
+}
+#[derive(Serialize, Deserialize, Debug)]
+struct updateDataPayload {
+    progress: f64,
+    bookmarks: Vec<String>,
+    highlights: HashMap<String, highlightData>,
+}
+#[derive(Serialize, Deserialize, Debug)]
+struct updateBookPayload {
+    title: String,
+    data: updateDataPayload,
+}
+
+#[tauri::command]
+fn update_data_by_hash(payload: updateBookPayload, hash: String) {
+    println!("{:?}", payload);
+    println!("{:?}", serde_json::to_string_pretty(&payload).unwrap());
+
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+
+    let checksum = hash;
+
+    let hashed_book_folder = format!("{current_dir}/data/books/{checksum}/");
+
+    std::fs::write(
+        format!("{hashed_book_folder}/{checksum}.json"),
+        serde_json::to_string_pretty(&payload).unwrap(),
+    )
+    .unwrap();
+}
+
+#[tauri::command]
+fn load_book_data(checksum: &str) -> updateBookPayload {
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+
+    let file = File::open(format!(
+        "{current_dir}/data/books/{checksum}/{checksum}.json"
+    ))
+    .unwrap();
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let bookPayload: updateBookPayload = serde_json::from_value(json).unwrap();
+    return bookPayload;
+    // println!("Data Read: {}","hi")
+
+    // let mut f = File::open(book_file).unwrap();
+    // let mut buffer = Vec::new();
+    // // read the whole file
+    // f.read_to_end(&mut buffer).unwrap();
+    // return buffer;
 }

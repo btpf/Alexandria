@@ -1,21 +1,26 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { invoke } from '@tauri-apps/api';
 import { Rendition } from 'epubjs-myh'
 import { castDraft, castImmutable } from 'immer'
 const uuid = require("uuid");
 export enum LOADSTATE{
   INITIAL,
-  LOADING_LOCATIONS,
+  LOADING,
   COMPLETE,
   CANCELED
 }
 interface RenditionInstance{
   instance: Rendition
-  UID: number
+  UID: number,
+  hash: string,
+  title: string
 }
 
-interface bookState{
+export interface bookStateStructure{
+  title: string,
   instance: Rendition,
   UID: number,
+  hash: string
   loadState: LOADSTATE,
   state:{
     sidebarMenuSelected: boolean|string,
@@ -25,6 +30,7 @@ interface bookState{
   data:{
     highlights:{[cfiRange:string]:highlightData},
     bookmarks:Set<string>,
+    progress: number,
     theme:{
       font: string,
       fontSize: number,
@@ -35,7 +41,7 @@ interface bookState{
 }
 
 interface BookInstances {
-  [key: string]: bookState
+  [key: string]: bookStateStructure
 }
 
 
@@ -78,6 +84,11 @@ interface highlightAction extends highlightData {
   highlightRange: string
 }
 
+interface progressUpdate{
+  view: number,
+  progress: number
+}
+
 interface bookmarkAction {
   view: number,
   bookmarkLocation: string
@@ -93,6 +104,54 @@ interface sideBarUpdate{
   state: string|boolean
 }
 
+export const SyncedAddRendition = createAsyncThunk(
+  'bookState/SyncedAddRendition',
+  // if you type your function argument here
+  async (renditionData: RenditionInstance, thunkAPI) => {
+    // console.log("ASYNC CALLED 1")
+    if(window.__TAURI__){
+      // invoke("get_books").then((data)=>{
+      //   setBooks((data as BookData[]))
+      // })
+
+      // console.log(thunkAPI.getState())
+      // thunkAPI.dispatch(AddHighlight(highlightData))
+      // console.log(thunkAPI.getState())
+
+      // Eventually, this should match bookStateStructure.data
+      interface expectedLoadData{
+        data:{
+          highlights:{[cfiRange:string]:highlightData},
+          bookmarks:Set<string>,
+        },
+      }
+      
+      const result:expectedLoadData = await invoke("load_book_data", {checksum: renditionData.hash})
+
+   
+
+      const bookmarks = result.data.bookmarks
+      const highlights = result.data.highlights
+
+
+      for (const [key, value] of Object.entries(highlights)) {
+        thunkAPI.dispatch(AddHighlight({highlightRange:key, color:value.color, note:value.note, view:0}))
+      }
+      bookmarks.forEach((bookmark)=>{
+        thunkAPI.dispatch(ToggleBookmark({
+          view: 0,
+          bookmarkLocation: bookmark
+        }))
+      })
+
+      
+
+    }
+    
+    return true
+  }
+)
+
 
 // Define the initial state using that type
 const initialState: BookInstances = {}
@@ -103,11 +162,14 @@ export const bookState = createSlice({
   reducers: {
     AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
 
-      const t:bookState = {
+      const t:bookStateStructure = {
+        title: action.payload.title,
         instance: action.payload.instance,
         UID: action.payload.UID, 
+        hash: action.payload.hash,
         loadState:LOADSTATE.INITIAL, 
         data:{
+          progress: 0,
           highlights:{},
           bookmarks: new Set(), 
           theme:{
@@ -209,9 +271,46 @@ export const bookState = createSlice({
     ChangeHighlightNote: (state, action: PayloadAction<highlightAction>) =>{
       state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:state[action.payload.view].data.highlights[action.payload.highlightRange].color, note:action.payload.note}
     },
+    SetProgress: (state, action: PayloadAction<progressUpdate>) =>{
+      state[action.payload.view].data.progress = action.payload.progress
+    },
+  },
+
+  extraReducers: (builder) => {
+    builder.addCase(SyncedAddRendition.pending, (state, action) => {
+      console.log("PENDING CASE")
+      const t:bookStateStructure = {
+        title: action.meta.arg.title,
+        instance: action.meta.arg.instance,
+        UID: action.meta.arg.UID, 
+        hash: action.meta.arg.hash,
+        loadState:LOADSTATE.INITIAL, 
+        data:{
+          progress: 0,
+          highlights:{},
+          bookmarks: new Set(), 
+          theme:{
+            font:"Helvetica, sans-serif", 
+            fontSize:100,
+            backgroundColor:'white',
+            color:'grey'
+          }
+        }, 
+        state:{
+          sidebarMenuSelected: false,
+          menuToggled: false, 
+          themeMenuActive: false
+        }}
+      // https://github.com/immerjs/immer/issues/389
+
+      state[action.meta.arg.UID] = castDraft(t)
+    })
+
+    builder.addCase(SyncedAddRendition.fulfilled, (state, action) => {
+      console.log("Fulfulled Initial Load")
+    })
   },
 })
-
 // Action creators are generated for each case reducer function
 export const { 
   AddRendition,
@@ -227,7 +326,29 @@ export const {
   ToggleBookmark,
   SetFont,
   SetTheme,
-  ToggleThemeMenu
+  ToggleThemeMenu,
+  SetProgress
 } = bookState.actions
+
+// type Getters<Type> = {
+//   [Property in keyof typeof Type as `bookState/${Capitalize<string & Property>}`]: number
+// };
+type bookStateActionNames = keyof typeof bookState.actions
+type bookActionPaths = Record<`bookState/${bookStateActionNames}`, string>; 
+
+
+
+export const ActionNames = ((Object.keys(bookState.actions) as Array<keyof typeof bookState>).map((name)=>"bookState/" + name).reduce((a, v) => ({ ...a, [v]: v}),
+  {}) as bookActionPaths)
+
+export const SyncedDataActions = new Set([
+  ActionNames['bookState/AddHighlight'],
+  ActionNames['bookState/ChangeHighlightColor'],
+  ActionNames['bookState/SetProgress']
+])
+
+// satisfies Record<Colors, unknown>;
+
+
 
 export default bookState.reducer

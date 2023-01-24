@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import bookState from './slices/bookStateSlice'
+import bookState, { bookStateStructure, LOADSTATE, SyncedDataActions } from './slices/bookStateSlice'
 import counterSlice from './slices/counterSlice'
 import profileSlice from './slices/profileSlice'
 
 import {enableMapSet} from "immer"
+import { invoke } from '@tauri-apps/api'
 
 enableMapSet()
 
@@ -28,6 +29,38 @@ const store =  configureStore({
         ignoredActions: ['bookState/AddRendition', 'bookState/AddBookmark'],
         ignoredPaths: ['bookState.0.instance', 'bookState.1.instance', 'bookState.0.data.bookmarks']
       },
+    }).concat(storeAPI => next => action => {
+      
+      next(action)
+
+      if(SyncedDataActions.has(action.type)){
+        const currentState = storeAPI.getState()
+        console.log("Synced Action:", action)
+        const currentBook:bookStateStructure = currentState.bookState[0]
+        const bookUID = currentBook.hash
+
+
+        // Only save the data if the book is done with it's loading phase
+        // During the loading phase, all sorts of synced actions will get called, but this is only the initial population,
+        // And nothing here should be saved.
+        if(currentBook.loadState == LOADSTATE.COMPLETE){
+          const saveData = {
+            title: currentBook.title,
+            data:{
+              progress: currentBook.data.progress,
+              bookmarks: Array.from(currentBook.data.bookmarks),
+              highlights: currentBook.data.highlights
+            }
+          }
+          console.log("This is the save data: ")
+          console.log(saveData)
+          invoke("update_data_by_hash", {payload:saveData, hash: currentBook.hash})
+        }
+
+      }
+
+
+
     }),
 })
 
