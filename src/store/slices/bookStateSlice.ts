@@ -205,40 +205,6 @@ export const bookState = createSlice({
   name: 'bookState',
   initialState,
   reducers: {
-    AddRendition: (state, action: PayloadAction<RenditionInstance>) => {
-
-      const t:bookStateStructure = {
-        title: action.payload.title,
-        instance: action.payload.instance,
-        UID: action.payload.UID, 
-        hash: action.payload.hash,
-        loadState:LOADSTATE.INITIAL, 
-        data:{
-          progress: 0,
-          highlights:{},
-          bookmarks: new Set(), 
-          theme:{
-            font:"Helvetica, sans-serif", 
-            fontSize:100,
-            backgroundColor:'white',
-            color:'grey'
-          }
-        }, 
-        state:{
-          sidebarMenuSelected: false,
-          menuToggled: false, 
-          themeMenuActive: false,
-          skipMouseEvent: false,
-          modals:{
-            selectedCFI: "",
-            quickbarModal: {visible: false, x:0, y:0},
-            noteModal: {visible: false, x:0, y:0}
-          }
-        }}
-      // https://github.com/immerjs/immer/issues/389
-
-      state[action.payload.UID] = castDraft(t)
-    },
     RemoveRendition: (state, action: PayloadAction<number>) => {
       delete state[action.payload]
     },
@@ -395,7 +361,6 @@ export const bookState = createSlice({
 })
 // Action creators are generated for each case reducer function
 export const { 
-  AddRendition,
   RemoveRendition,
   SetLoadState, 
   DeleteHighlight, 

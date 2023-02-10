@@ -20,7 +20,7 @@ import { connect, ConnectedProps } from 'react-redux'
 
 
 import store, {RootState} from '@store/store'
-import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookStateSlice'
+import {RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookStateSlice'
 import registerHandlers from './functions/registerHandlers';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import QuickbarModal from './functions/QuickbarModal';
@@ -39,7 +39,7 @@ const mapState = (state: RootState) => {
 
 }
 
-const connector = connect(mapState, {AddRendition, ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu, SyncedAddRendition})
+const connector = connect(mapState, {ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu, SyncedAddRendition})
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
