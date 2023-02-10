@@ -1,13 +1,8 @@
 import React, { createRef, ReactPropTypes, RefObject, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
 import styles from './ReaderView.module.scss'
 import epubjs, { Book, Rendition } from 'epubjs-myh'
-import bookImport from '@resources/placeholder/placeholder3.epub'
-import View, { ViewSettings } from 'epubjs-myh/types/managers/view';
+import bookImport from '@resources/placeholder/childrens-literature.epub'
 import redrawAnnotations from './functions/redrawAnnotations';
-
-import { readerInstanceVariables } from "./ReaderView.d";
-import highlightText from './functions/highlightText';
-import mouseEvents from './functions/mouseEvents'
 
 import {
   Location,
@@ -26,7 +21,10 @@ import { connect, ConnectedProps } from 'react-redux'
 
 import store, {RootState} from '@store/store'
 import {AddRendition, RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookStateSlice'
-import DialogPopup from './functions/DialogPopupV2';
+import registerHandlers from './functions/registerHandlers';
+import { Unsubscribe } from '@reduxjs/toolkit';
+import QuickbarModal from './functions/QuickbarModal';
+import NoteModal from './functions/NoteModal';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
@@ -62,10 +60,8 @@ class Reader extends React.Component<ReaderProps>{
   private book!:Book;
   private rendition!: Rendition;
   private UID!:string;
-  private instanceVariables:readerInstanceVariables = {
-    timer: null,
-    mouseUp: true
-  }
+
+  private unsubscribeHandlers!:Unsubscribe;
 
   constructor(props:ReaderProps){
     super(props)
@@ -137,6 +133,8 @@ class Reader extends React.Component<ReaderProps>{
           cancel_Load = true
           // unsubscribe immediately
           unsubscribe()
+          // unsubscribe from registerHandlers.tsx
+          this.unsubscribeHandlers()
           // Remove rendition from state immediately to prevent duplicate removals
           this.props.RemoveRendition(0)
         }
@@ -177,14 +175,8 @@ class Reader extends React.Component<ReaderProps>{
       console.log("Book started")
     })
 
+    this.unsubscribeHandlers = registerHandlers(this.rendition)
 
-    mouseEvents(this.rendition, this.instanceVariables, ()=> {
-      this.props.ToggleMenu(0)
-      if(this.props.ThemeMenuActive){
-        this.props.ToggleThemeMenu(0)
-      }
-    })
-    // highlightText(this.rendition, instanceVariables)
     redrawAnnotations(this.rendition)
 
 
@@ -198,6 +190,8 @@ class Reader extends React.Component<ReaderProps>{
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
       return
     }
+    this.unsubscribeHandlers();
+
     this.props.RemoveRendition(0)
     this.rendition.destroy();
   }
@@ -206,7 +200,9 @@ class Reader extends React.Component<ReaderProps>{
       <>
       
         <div style={{backgroundColor:this.props.UIBackgroundColor}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
-        <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/>
+        {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
+        <QuickbarModal/>
+        <NoteModal/>
       </>
     )
   }

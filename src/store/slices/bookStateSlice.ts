@@ -25,7 +25,13 @@ export interface bookStateStructure{
   state:{
     sidebarMenuSelected: boolean|string,
     menuToggled: boolean,
-    themeMenuActive: boolean
+    themeMenuActive: boolean,
+    modals:{
+      selectedCFI: string,
+      quickbarModal: {visible: boolean, x:number, y:number},
+      noteModal: {visible: boolean, x:number, y:number}
+    },
+    skipMouseEvent: boolean
   },
   data:{
     highlights:{[cfiRange:string]:highlightData},
@@ -97,6 +103,17 @@ interface bookmarkAction {
 interface loadProgressUpdate{
   view:number,
   state: LOADSTATE
+}
+
+interface MoveModalAction{
+  view:number,
+  x: number,
+  y: number,
+  visible: boolean
+}
+interface MoveModalCFIAction{
+  view:number,
+  selectedCFI: string
 }
 
 interface sideBarUpdate{
@@ -182,7 +199,13 @@ export const bookState = createSlice({
         state:{
           sidebarMenuSelected: false,
           menuToggled: false, 
-          themeMenuActive: false
+          themeMenuActive: false,
+          skipMouseEvent: false,
+          modals:{
+            selectedCFI: "",
+            quickbarModal: {visible: false, x:0, y:0},
+            noteModal: {visible: false, x:0, y:0}
+          }
         }}
       // https://github.com/immerjs/immer/issues/389
 
@@ -274,6 +297,31 @@ export const bookState = createSlice({
     SetProgress: (state, action: PayloadAction<progressUpdate>) =>{
       state[action.payload.view].data.progress = action.payload.progress
     },
+    MoveQuickbarModal: (state, action: PayloadAction<MoveModalAction>) =>{
+      state[action.payload.view].state.modals.quickbarModal = {x: action.payload.x, y:action.payload.y, visible: action.payload.visible}
+    },
+    HideQuickbarModal: (state, action: PayloadAction<number>) =>{
+      state[action.payload].state.modals.quickbarModal.visible = false
+    },
+    MoveNoteModal: (state, action: PayloadAction<MoveModalAction>) =>{
+      state[action.payload.view].state.modals.noteModal = {x: action.payload.x, y:action.payload.y, visible: action.payload.visible}
+    },
+    ShowNoteModal: (state, action: PayloadAction<number>) =>{
+      state[action.payload].state.modals.noteModal.visible = true
+    },
+    HideNoteModal: (state, action: PayloadAction<number>) =>{
+      state[action.payload].state.modals.noteModal.visible = false
+    },
+    SetModalCFI: (state, action: PayloadAction<MoveModalCFIAction>) =>{
+      state[action.payload.view].state.modals.selectedCFI = action.payload.selectedCFI
+    },
+    SkipMouseEvent: (state, action: PayloadAction<number>) =>{
+      console.log("Next event will be skipped")
+      state[action.payload].state.skipMouseEvent = true;
+    },
+    AllowMouseEvent: (state, action: PayloadAction<number>) =>{
+      state[action.payload].state.skipMouseEvent = false;
+    },
   },
 
   extraReducers: (builder) => {
@@ -299,7 +347,13 @@ export const bookState = createSlice({
         state:{
           sidebarMenuSelected: false,
           menuToggled: false, 
-          themeMenuActive: false
+          themeMenuActive: false,
+          skipMouseEvent: false,
+          modals:{
+            selectedCFI: "",
+            quickbarModal: {visible: false, x:0, y:0},
+            noteModal: {visible: false, x:0, y:0}
+          }
         }}
       // https://github.com/immerjs/immer/issues/389
 
@@ -327,7 +381,15 @@ export const {
   SetFont,
   SetTheme,
   ToggleThemeMenu,
-  SetProgress
+  SetProgress,
+  MoveQuickbarModal,
+  MoveNoteModal,
+  SetModalCFI,
+  SkipMouseEvent,
+  ShowNoteModal,
+  HideNoteModal,
+  HideQuickbarModal,
+  AllowMouseEvent
 } = bookState.actions
 
 // type Getters<Type> = {
