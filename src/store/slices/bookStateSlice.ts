@@ -139,6 +139,7 @@ export const SyncedAddRendition = createAsyncThunk(
       // Eventually, this should match bookStateStructure.data
       interface expectedLoadData{
         data:{
+          progress: number,
           highlights:{[cfiRange:string]:highlightData},
           bookmarks:Set<string>,
         },
@@ -188,6 +189,7 @@ export const SyncedAddRendition = createAsyncThunk(
         }))
       })
 
+      thunkAPI.dispatch(SetProgress({view:0, progress:result.data.progress}))
       
 
     }

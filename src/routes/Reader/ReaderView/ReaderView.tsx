@@ -140,6 +140,7 @@ class Reader extends React.Component<ReaderProps>{
         }
       })
       await book.locations.generate(1000)
+      this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
       unsubscribe()
 
       // This will destroy the rendition only once the generations have been generated.
@@ -148,7 +149,7 @@ class Reader extends React.Component<ReaderProps>{
         this.rendition.destroy();
         return
       }
-
+      
       this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
     })
  

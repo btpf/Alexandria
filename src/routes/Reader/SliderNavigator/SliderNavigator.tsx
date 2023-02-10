@@ -81,37 +81,9 @@ const SliderNavigator = ()=>{
     return allChapters
   }
 
-  useEffect(()=>{
-    if(!renditionInstance){
-      return
-    }
-
-    const pageTurnHandler = (e:any)=>{
-      // On the event from epubjs, set the epubNavigate to true
-      // This will cancel out a loop of the epub reader changing
-      setEpubNavigate(true)
-      const progress = renditionInstance.book.locations.percentageFromCfi(e.start);
-      console.log(progress)
-      console.log("CFI From Progress", renditionInstance.book.locations.cfiFromPercentage(progress))
-
-      // This may be preventing a race condition with setEpubNavigate
-      setTimeout(()=>{
-        dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
-      }, 1)
-    }
-
-    renditionInstance.on("locationChanged", pageTurnHandler)
-
-    return ()=>{
-      renditionInstance.off("locationChanged", pageTurnHandler)
-    }
-    
-
-  }, [renditionInstance])
-
 
   useEffect(() => {
-    if(!renditionInstance){
+    if(renditionState != LOADSTATE.COMPLETE){
       return
     }
 
@@ -140,6 +112,22 @@ const SliderNavigator = ()=>{
       return
     }
 
+    const pageTurnHandler = (e:any)=>{
+      // On the event from epubjs, set the epubNavigate to true
+      // This will cancel out a loop of the epub reader changing
+      setEpubNavigate(true)
+
+      // This may be preventing a race condition with setEpubNavigate
+      setTimeout(()=>{
+        dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+      }, 1)
+    }
+
+    renditionInstance.on("locationChanged", pageTurnHandler)
+
+
+    
+
     console.log("Change y")
     console.log(markers, defaultMarks)
     console.log(renditionInstance.book.locations)
@@ -155,6 +143,9 @@ const SliderNavigator = ()=>{
     console.log(markerObject)
     setMarkers(markerObject)
 
+    return ()=>{
+      renditionInstance.off("locationChanged", pageTurnHandler)
+    }
 
   }, [renditionState])
 
