@@ -222,7 +222,7 @@ const Shelf = () =>{
                 <div className={styles.bookImageContainer}>
                   <div className={styles.boxTopBar}>
                     <Boomark/>
-                    <div>{book.progress}%</div>
+                    <div>{Math.round(book.progress*100)}%</div>
                     <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
                       e.preventDefault()
                     }}/>
