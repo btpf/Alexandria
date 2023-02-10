@@ -34,7 +34,7 @@ const mapState = (state: RootState) => {
     }
     
   }else{
-    return {LoadState: LOADSTATE.INITIAL}
+    return {LoadState: LOADSTATE.LOADING}
   }
 
 }
@@ -102,11 +102,6 @@ class Reader extends React.Component<ReaderProps>{
 
     console.log(book)
 
-    // This must be called before any book logic
-    // Since functions around app, redux middleware in particular, relies on it.
-
-    this.props.SetLoadState({view:0, state:LOADSTATE.LOADING})
-
 
     
     this.rendition.book.loaded.spine.then(async (x)=>{
@@ -140,7 +135,6 @@ class Reader extends React.Component<ReaderProps>{
         }
       })
       await book.locations.generate(1000)
-      this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
       unsubscribe()
 
       // This will destroy the rendition only once the generations have been generated.
@@ -150,6 +144,7 @@ class Reader extends React.Component<ReaderProps>{
         return
       }
       
+      this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
       this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
     })
  
@@ -188,9 +183,12 @@ class Reader extends React.Component<ReaderProps>{
   componentWillUnmount(){
     // This handles the edgecase where the locations are loading, but the user exits the page.
     if(this.props.LoadState == LOADSTATE.LOADING){
+      console.log("LOADSTATE SET")
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
       return
     }
+
+    console.log("Rendition removed as normal!!!!!!!", this.props.LoadState)
     this.unsubscribeHandlers();
 
     this.props.RemoveRendition(0)

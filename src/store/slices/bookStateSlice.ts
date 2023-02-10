@@ -5,7 +5,6 @@ import { castDraft, castImmutable } from 'immer'
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from 'src/routes/Reader/ReaderView/functions/ModalUtility';
 const uuid = require("uuid");
 export enum LOADSTATE{
-  INITIAL,
   LOADING,
   COMPLETE,
   CANCELED
@@ -361,7 +360,7 @@ export const bookState = createSlice({
         instance: action.meta.arg.instance,
         UID: action.meta.arg.UID, 
         hash: action.meta.arg.hash,
-        loadState:LOADSTATE.INITIAL, 
+        loadState:LOADSTATE.LOADING, 
         data:{
           progress: 0,
           highlights:{},
