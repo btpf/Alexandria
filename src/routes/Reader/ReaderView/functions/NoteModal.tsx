@@ -1,8 +1,6 @@
 import React from 'react'; // we need this to make JSX compile
 
 
-import CalculateBoxPosition from './CalculateBoxPosition';
-
 import {
   ChangeHighlightColor, 
   DeleteHighlight, 
@@ -20,6 +18,7 @@ import styles from './DialogPopup.module.scss'
 import Check from '@resources/feathericons/check.svg'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { useAppSelector, useAppDispatch } from '@store/hooks';
+import { CalculateBoxPosition } from './ModalUtility';
 
 
 

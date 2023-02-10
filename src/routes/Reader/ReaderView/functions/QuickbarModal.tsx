@@ -1,8 +1,6 @@
 import React from 'react'; // we need this to make JSX compile
 
 
-import CalculateBoxPosition from './CalculateBoxPosition';
-
 import {
   AddHighlight, 
   SetModalCFI,
@@ -20,7 +18,7 @@ import Book from '@resources/iconmonstr/iconmonstr-book-26.svg'
 import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
 import { useAppSelector, useAppDispatch } from '@store/hooks';
-import { quickbarModalHeight, quickbarModalWidth } from './ModalUtility';
+import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from './ModalUtility';
 
 
 const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']
@@ -45,7 +43,7 @@ const QuickbarModal = () =>{
   if(quickbarModalVisible){
     return(
       <>
-        <div className={styles.container} style={{top:modalY, left: modalX, width: quickbarModalWidth, height: quickbarModalHeight}}>
+        <div className={styles.container} style={{top:modalY, left: modalX, width: QUICKBAR_MODAL_WIDTH, height: QUICKBAR_MODAL_HEIGHT}}>
           <div className={styles.actionContainer}>
             <div><Copy/></div>
             <div><Book/></div>
@@ -68,7 +66,7 @@ const QuickbarModal = () =>{
         
 
                   const boundingBox = renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
-                  const {x, y} = CalculateBoxPosition(getEpubBounds(),boundingBox, 300, 250)
+                  const {x, y} = CalculateBoxPosition(getEpubBounds(),boundingBox, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
 
                   dispatch(SetModalCFI({view:0,selectedCFI:cfiRangeClosure}))
                   dispatch(MoveNoteModal({

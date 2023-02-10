@@ -1,8 +1,13 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, SkipMouseEvent, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookStateSlice";
+import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookStateSlice";
 import store from "@store/store";
 import { Contents, Rendition } from "epubjs-myh";
-import CalculateBoxPosition from "./CalculateBoxPosition";
-import { quickbarModalHeight, quickbarModalWidth } from "./ModalUtility";
+import { 
+  CalculateBoxPosition, 
+  NOTE_MODAL_HEIGHT, 
+  NOTE_MODAL_WIDTH,
+  QUICKBAR_MODAL_HEIGHT, 
+  QUICKBAR_MODAL_WIDTH 
+} from "./ModalUtility";
 
 
 export default (renditionInstance:Rendition)=>{
@@ -181,12 +186,12 @@ export default (renditionInstance:Rendition)=>{
 
     const {x, y} = CalculateBoxPosition(
       renditionInstance?.manager?.container?.getBoundingClientRect(),getRange,
-      quickbarModalWidth, 
-      quickbarModalHeight
+      QUICKBAR_MODAL_WIDTH, 
+      QUICKBAR_MODAL_HEIGHT
     )
 
       
-    const invisiblenoteModal = CalculateBoxPosition(renditionInstance?.manager?.container?.getBoundingClientRect(),getRange, 300, 250)
+    const invisiblenoteModal = CalculateBoxPosition(renditionInstance?.manager?.container?.getBoundingClientRect(),getRange, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
 
     store.dispatch(MoveQuickbarModal({
       view: 0,

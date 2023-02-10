@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { invoke } from '@tauri-apps/api';
 import { Rendition } from 'epubjs-myh'
 import { castDraft, castImmutable } from 'immer'
+import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from 'src/routes/Reader/ReaderView/functions/ModalUtility';
 const uuid = require("uuid");
 export enum LOADSTATE{
   INITIAL,
@@ -150,10 +151,36 @@ export const SyncedAddRendition = createAsyncThunk(
       const bookmarks = result.data.bookmarks
       const highlights = result.data.highlights
 
+      const renditionInstance = renditionData.instance
 
-      for (const [key, value] of Object.entries(highlights)) {
-        thunkAPI.dispatch(AddHighlight({highlightRange:key, color:value.color, note:value.note, view:0}))
+      for (const [cfiRange, value] of Object.entries(highlights)) {
+        thunkAPI.dispatch(AddHighlight({highlightRange:cfiRange, color:value.color, note:value.note, view:0}))
+
+        renditionInstance.annotations.highlight(cfiRange,{}, (e:MouseEvent) => {
+
+          // This will prevent page turning when clicking on highlight
+          thunkAPI.dispatch(SkipMouseEvent(0))
+
+
+          const boundingBox = renditionInstance.getRange(cfiRange).getBoundingClientRect()
+          const {x, y} = CalculateBoxPosition(
+            renditionInstance?.manager?.container?.getBoundingClientRect(),
+            boundingBox,
+            NOTE_MODAL_WIDTH,
+            NOTE_MODAL_HEIGHT)
+
+          thunkAPI.dispatch(SetModalCFI({view:0,selectedCFI:cfiRange}))
+          thunkAPI.dispatch(MoveNoteModal({
+            view: 0,
+            x,
+            y,
+            visible: true
+          }))
+
+          
+        }, '', {fill:value.color});
       }
+
       bookmarks.forEach((bookmark)=>{
         thunkAPI.dispatch(ToggleBookmark({
           view: 0,
@@ -273,7 +300,7 @@ export const bookState = createSlice({
       state[action.payload].state.menuToggled = !state[action.payload].state.menuToggled
     },
     AddHighlight: (state, action: PayloadAction<highlightAction>) =>{
-      state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:""}
+      state[action.payload.view].data.highlights[action.payload.highlightRange] = {color:action.payload.color, note:action.payload.note}
     },
     ToggleBookmark:(state, action: PayloadAction<bookmarkAction>) =>{
       if(state[action.payload.view].data.bookmarks.has(action.payload.bookmarkLocation)){
@@ -406,7 +433,9 @@ export const ActionNames = ((Object.keys(bookState.actions) as Array<keyof typeo
 export const SyncedDataActions = new Set([
   ActionNames['bookState/AddHighlight'],
   ActionNames['bookState/ChangeHighlightColor'],
-  ActionNames['bookState/SetProgress']
+  ActionNames['bookState/SetProgress'],
+  ActionNames['bookState/ChangeHighlightNote'],
+  ActionNames['bookState/DeleteHighlight']
 ])
 
 // satisfies Record<Colors, unknown>;
