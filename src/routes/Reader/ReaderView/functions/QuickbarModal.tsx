@@ -9,7 +9,7 @@ import {
   ShowNoteModal,
   MoveNoteModal,
   
-} from '@store/slices/bookStateSlice'
+} from '@store/slices/bookState'
 
 // Transferred Imports
 import styles from './DialogPopup.module.scss'

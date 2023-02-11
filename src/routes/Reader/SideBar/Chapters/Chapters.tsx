@@ -5,7 +5,7 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-import { SelectSidebarMenu } from '@store/slices/bookStateSlice'
+import { SelectSidebarMenu } from '@store/slices/bookState'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 type SidebarTypes = {

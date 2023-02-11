@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import bookState, { bookStateStructure, LOADSTATE, SyncedDataActions } from './slices/bookStateSlice'
+import bookState, { SyncedDataActions } from './slices/bookState'
 import counterSlice from './slices/counterSlice'
 import profileSlice from './slices/profileSlice'
 
 import {enableMapSet} from "immer"
 import { invoke } from '@tauri-apps/api'
+import { LOADSTATE } from './slices/constants'
+import { bookStateStructure } from './slices/EpubJSBackend/epubjsManager.d'
 
 enableMapSet()
 

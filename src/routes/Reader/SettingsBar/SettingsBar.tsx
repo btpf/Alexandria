@@ -4,7 +4,7 @@ import styles from './SettingsBar.module.scss'
 
 import { NavItem, Rendition } from 'epubjs-myh'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetFont } from '@store/slices/bookStateSlice'
+import { SetFont } from '@store/slices/bookState'
 import FontsContainer from './FontsContainer/FontsContainer'
 import ThemesContainer from './ThemesContainer/ThemesContainer'
 

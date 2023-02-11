@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './ThemesContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetTheme, Theme } from '@store/slices/bookStateSlice'
+import { SetTheme, Theme } from '@store/slices/bookState'
 
 const dark = {
   body: {

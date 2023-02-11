@@ -5,7 +5,7 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-import { CloseSidebarMenu } from '@store/slices/bookStateSlice'
+import { CloseSidebarMenu } from '@store/slices/bookState'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { FindResults } from 'epubjs-myh/types/section';
 

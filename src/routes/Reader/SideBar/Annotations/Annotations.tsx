@@ -5,7 +5,7 @@ import Trash from '@resources/feathericons/trash-2.svg'
 import styles from './Annotations.module.scss'
 import { NavItem, Rendition } from 'epubjs-myh'
 import Spine from 'epubjs-myh/types/spine'
-import { DeleteHighlight, CloseSidebarMenu } from '@store/slices/bookStateSlice'
+import { DeleteHighlight, CloseSidebarMenu } from '@store/slices/bookState'
 
 
 interface AnnotationData{

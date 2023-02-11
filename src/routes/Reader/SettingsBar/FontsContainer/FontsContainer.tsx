@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './FontsContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetFont } from '@store/slices/bookStateSlice'
+import { SetFont } from '@store/slices/bookState'
 
 const FontsContainer = ()=>{
   const dispatch = useAppDispatch()

@@ -20,11 +20,12 @@ import { connect, ConnectedProps } from 'react-redux'
 
 
 import store, {RootState} from '@store/store'
-import {RemoveRendition, ToggleMenu, SetLoadState, LOADSTATE, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookStateSlice'
+import {RemoveRendition, ToggleMenu, SetLoadState, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookState'
 import registerHandlers from './functions/registerHandlers';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import QuickbarModal from './functions/QuickbarModal';
 import NoteModal from './functions/NoteModal';
+import { LOADSTATE } from '@store/slices/constants';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
@@ -183,12 +184,9 @@ class Reader extends React.Component<ReaderProps>{
   componentWillUnmount(){
     // This handles the edgecase where the locations are loading, but the user exits the page.
     if(this.props.LoadState == LOADSTATE.LOADING){
-      console.log("LOADSTATE SET")
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
       return
     }
-
-    console.log("Rendition removed as normal!!!!!!!", this.props.LoadState)
     this.unsubscribeHandlers();
 
     this.props.RemoveRendition(0)
