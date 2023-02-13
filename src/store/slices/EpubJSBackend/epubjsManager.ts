@@ -8,7 +8,7 @@ import { bookState } from "../bookState"
 
 
 // import { bookState } from "../bookStateSlice"
-import { BookInstances } from "../bookStateTypes"
+import { BackendInstance, BookInstances } from "../bookStateTypes"
 import { LOADSTATE } from "../constants"
 import { bookStateStructure, expectedLoadData, loadProgressUpdate } from "./epubjsManager.d"
 
@@ -19,7 +19,7 @@ import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 export const SyncedAddRendition = createAsyncThunk(
   'bookState/SyncedAddRendition',
   // if you type your function argument here
-  async (renditionData: bookStateStructure, thunkAPI) => {
+  async (renditionData: BackendInstance, thunkAPI) => {
 
 
     // console.log("ASYNC CALLED 1")
