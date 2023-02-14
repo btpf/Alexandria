@@ -174,7 +174,9 @@ const Shelf = () =>{
         <div>Alexandria</div>
         <Search/>
         <Filter/>
-        <Settings/>
+        <Link  to="/settings">
+          <Settings/>
+        </Link>
       </div>
       <div >
         

@@ -1,0 +1,107 @@
+@use 'breakpoints.scss' as *;
+
+
+.titleBar{
+  height: 50px;
+  width: 100%;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap:25px;
+  border-bottom: 1px solid #E6E6E6;
+  //   margin-bottom:25px;
+}
+
+
+.backButtonContainer{
+  margin-left:25px;
+  cursor:pointer;
+  width: 50px;
+  height:50px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+
+.titleText{
+  font-size:25px;
+}
+
+
+
+.responsiveSettingsGrid{
+  display:grid;
+
+  grid-template-columns: 1fr 4fr;
+  height: 100%;
+  width: 100%;
+}
+
+
+.settingsPageContainer{
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+    
+}
+
+
+// This class name is only appended when subPageActive is true in the react component
+// Then these conditions will only apply if the screen size is small
+.navbarActive{
+  @include lt-sm{
+    > .navbar{
+      display:none;
+    }
+    // Content will span the entire page
+    > .contentContainer{
+      @include lt-sm{
+        grid-column: 1/3;
+      }
+    }
+
+  }
+}
+
+.hidesm{
+  @include lt-sm{
+    display:none;
+  }
+}
+
+.hidegtsm{
+  @include gt-xs{
+    display:none;
+  }
+}
+
+
+.navbar{
+  min-width: 150px;
+  font-size: 18px;
+  text-align: center;
+  grid-row: 1/1;
+  z-index: 3;
+  background-color: white;
+  @include lt-sm{
+    grid-column: 1/3;
+  }
+
+}
+
+.navbar > div:first-of-type{
+  margin-top: 10px;
+}
+
+.navbar > div{
+  margin: 15px 0 15px 0;
+  cursor:pointer;
+}
+
+
+.contentContainer{
+  grid-row: 1/1;
+  grid-column: 2/3;
+}
