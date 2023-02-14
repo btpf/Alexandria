@@ -44,8 +44,9 @@ export const {
   RemoveRendition,
   SetLoadState, 
 
-  
+  /* themeManager */
   SetFont,
+  SetTheme,
 
   /* dataManager */
   ToggleBookmark,
@@ -59,7 +60,6 @@ export const {
   SelectSidebarMenu,
   CloseSidebarMenu,
   ToggleMenu, 
-  SetTheme,
   ToggleThemeMenu,
   SkipMouseEvent,
   AllowMouseEvent,
