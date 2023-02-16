@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import bookState, { SyncedDataActions } from './slices/bookState'
 import counterSlice from './slices/counterSlice'
-import profileSlice from './slices/profileSlice'
+import app from './slices/appState'
 
 import {enableMapSet} from "immer"
 import { invoke } from '@tauri-apps/api'
@@ -13,7 +13,7 @@ enableMapSet()
 const store =  configureStore({
   reducer: {
     counter: counterSlice,
-    profile: profileSlice,
+    app,
     bookState
   },
   middleware: (getDefaultMiddleware) =>

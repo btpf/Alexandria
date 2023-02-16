@@ -3,8 +3,8 @@ import styles from './Settings.module.scss'
 
 import BackArrow from '@resources/feathericons/arrow-left.svg'
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
-import Blue from "./pages/Blue"
-import Red from "./pages/Red"
+import ReaderTheme from "./pages/ReaderTheme"
+import GlobalTheme from "./pages/GlobalTheme"
 
 const Settings = ()=>{
   const navigate = useNavigate()
@@ -34,21 +34,21 @@ const Settings = ()=>{
         <div onClick={()=> mobileTitle=="Settings"? navigate("/"): navigate("/settings")} className={styles.backButtonContainer + " " + styles.hidegtsm}>
           <BackArrow/>
         </div>
-        <div className={styles.titleText  + " " + styles.hidegtsm}>{mobileTitle}</div>
+        <div className={styles.titleText  + " " + styles.hidegtsm}>{mobileTitle.replace("%20", " ")}</div>
         
       </div>
 
       <div className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
         <div className={styles.navbar}>
-          <div onClick={()=>navigate("Appearance")}>Appearance</div>
-          <div><Link to={"Presets"}>Presets</Link></div>
+          <div onClick={()=>navigate("Global Theme")}>Global Theme</div>
+          <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div>
         </div>
 
         <div className={styles.contentContainer}>
           <Routes>
-            <Route path="/" element={<Blue />} />
-            <Route path="/appearance" element={<Blue />} />
-            <Route  path="/Presets" element={<Red />} />
+            <Route path="/" element={<GlobalTheme />} />
+            <Route  path="/Global Theme" element={<GlobalTheme />} />
+            <Route path="/Reader Theme" element={<ReaderTheme />} />
           </Routes>
         </div>
       </div>
