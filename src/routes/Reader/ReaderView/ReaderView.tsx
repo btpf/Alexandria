@@ -145,8 +145,16 @@ class Reader extends React.Component<ReaderProps>{
         return
       }
       
-      this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
+      // This is needed because it can cause the first page of the book to be skipped when opening
+      // Since cfiFromPercentage is not always accurate.
+      if(store.getState().bookState["0"].data.progress != 0){
+        this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
+      }
+
+
       this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
+
+      
     })
  
 
