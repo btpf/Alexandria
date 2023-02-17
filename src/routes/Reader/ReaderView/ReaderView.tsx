@@ -2,7 +2,6 @@ import React, { createRef, ReactPropTypes, RefObject, useEffect, useRef, useStat
 import styles from './ReaderView.module.scss'
 import epubjs, { Book, Rendition } from 'epubjs-myh'
 import bookImport from '@resources/placeholder/childrens-literature.epub'
-import redrawAnnotations from './functions/redrawAnnotations';
 
 import {
   Location,
@@ -181,8 +180,6 @@ class Reader extends React.Component<ReaderProps>{
     })
 
     this.unsubscribeHandlers = registerHandlers(this.rendition)
-
-    redrawAnnotations(this.rendition)
 
 
       

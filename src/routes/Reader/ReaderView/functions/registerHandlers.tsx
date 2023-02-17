@@ -1,6 +1,7 @@
 import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import store from "@store/store";
 import { Contents, Rendition } from "epubjs-myh";
+import View from "epubjs-myh/types/managers/view";
 import { 
   CalculateBoxPosition, 
   NOTE_MODAL_HEIGHT, 
@@ -21,13 +22,26 @@ export default (renditionInstance:Rendition)=>{
 
   let timer:any = null;
 
-  
+  // https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
+  const shallowCompareEqual = (obj1:any, obj2:any) =>
+    Object.keys(obj1).length === Object.keys(obj2).length &&
+  Object.keys(obj1).every(key => obj1[key] === obj2[key]);
+
+
+  let oldThemeState = {};
   const unsubscribe = store.subscribe(()=>{
-    NoteModalVisible = store.getState().bookState["0"].state.modals.noteModal.visible
-    QuickbarModalVisible = store.getState().bookState["0"].state.modals.quickbarModal.visible;
-    selectedCFI = store.getState().bookState["0"].state.modals.selectedCFI;
-    ThemeMenuActive = store.getState().bookState["0"].state.themeMenuActive;
-    skipMouseEvent = store.getState().bookState["0"].state.skipMouseEvent
+    const newState = store.getState()
+    NoteModalVisible = newState.bookState["0"].state.modals.noteModal.visible
+    QuickbarModalVisible = newState.bookState["0"].state.modals.quickbarModal.visible;
+    selectedCFI = newState.bookState["0"].state.modals.selectedCFI;
+    ThemeMenuActive = newState.bookState["0"].state.themeMenuActive;
+    skipMouseEvent = newState.bookState["0"].state.skipMouseEvent
+
+
+    if(!shallowCompareEqual(newState.bookState["0"].data.theme, oldThemeState)){
+      oldThemeState = newState.bookState["0"].data.theme
+      redrawAnnotations()
+    }
   })
 
 
@@ -213,6 +227,13 @@ export default (renditionInstance:Rendition)=>{
     }))
         
   });
+  
+
+  const redrawAnnotations = () => renditionInstance.views().forEach((view:View) => view.pane ? view.pane.render() : null)
+    
+  renditionInstance.on('rendered', redrawAnnotations)
+
+
 
   return unsubscribe
 }
