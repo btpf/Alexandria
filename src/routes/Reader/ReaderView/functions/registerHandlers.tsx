@@ -1,6 +1,6 @@
 import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import store from "@store/store";
-import { Contents, Rendition } from "epubjs-myh";
+import { Contents, EpubCFI, Rendition } from "epubjs-myh";
 import View from "epubjs-myh/types/managers/view";
 import { 
   CalculateBoxPosition, 
@@ -190,22 +190,17 @@ export default (renditionInstance:Rendition)=>{
       renditionInstance.annotations.remove(selectedCFI, "highlight")
     }
 
-    const selection = contents.window.getSelection()
-
-    if (!selection){
-      console.log("selection in DialogPopup is null")
-      return null
-    }
-    const getRange = selection.getRangeAt(0).getBoundingClientRect();
 
     const {x, y} = CalculateBoxPosition(
-      renditionInstance?.manager?.container?.getBoundingClientRect(),getRange,
+      renditionInstance,cfiRange,
       QUICKBAR_MODAL_WIDTH, 
       QUICKBAR_MODAL_HEIGHT
     )
 
-      
-    const invisiblenoteModal = CalculateBoxPosition(renditionInstance?.manager?.container?.getBoundingClientRect(),getRange, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
+    const invisiblenoteModal = CalculateBoxPosition(renditionInstance,cfiRange, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
+
+  
+
 
     store.dispatch(MoveQuickbarModal({
       view: 0,

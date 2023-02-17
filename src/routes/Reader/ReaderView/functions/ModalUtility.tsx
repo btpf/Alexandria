@@ -1,3 +1,4 @@
+import { Contents, EpubCFI, Rendition } from "epubjs-myh";
 
 
 export const QUICKBAR_MODAL_WIDTH = 200
@@ -7,17 +8,23 @@ export const NOTE_MODAL_WIDTH = 300;
 export const NOTE_MODAL_HEIGHT = 250;
 
 
-export const CalculateBoxPosition = (wrapperBounds:DOMRect|undefined, rangeBoxBounds:DOMRect, boxWidth:number, boxHeight:number)=>{
+export const CalculateBoxPosition = (renditionInstance:Rendition, cfiRange:string,boxWidth:number, boxHeight:number)=>{
   //   const wrapperBounds = this.props.renditionInstance?.manager?.container?.getBoundingClientRect();
-    
+  const wrapperBounds = renditionInstance?.manager?.container?.getBoundingClientRect()
+  const rangeBoxBounds = renditionInstance.getRange(cfiRange).getBoundingClientRect();
+  
   if (!wrapperBounds){
     console.log("Wrapper not found")
     return {x:0, y:0}
   }
-    
+
   // Since the position is absolute inside the container, by getting the wrapper and the bounding rect,
   // We can add how far from the top the actual render of the ReaderView is
-  const offsetY = wrapperBounds?.y
+  // We also subtract wrapperBounds.top for the continuous scroll since our offset
+  // is our y position - how far from the top we are
+  const offsetY = wrapperBounds?.y - wrapperBounds.top
+
+  
           
   // The bottom limit is the wrappers distance from the top + the height of the render wrapper
   const yBottomLimit = wrapperBounds?.y + wrapperBounds?.height
@@ -29,6 +36,22 @@ export const CalculateBoxPosition = (wrapperBounds:DOMRect|undefined, rangeBoxBo
     ypos -= (boxHeight + rangeBoxBounds.height)
   }
   ypos = Math.max(ypos, 0)
+
+
+  const cfi = new EpubCFI(cfiRange);
+  const sectionIndex = cfi.spinePos
+  const views = renditionInstance.views();
+  // We are finding the current view we are on in the case there are multiple on screen (Continuous)
+  let correctView;
+  views.forEach( (view) => {
+    if (sectionIndex === view.index) {
+      correctView = view;
+    }
+  });
+
+  const correctViewBounds = correctView.iframe.getBoundingClientRect();
+  // We are adding the amount from the top we are in the current selected view
+  ypos += correctViewBounds.top
     
   const xRightLimit = wrapperBounds?.x + wrapperBounds?.width
     

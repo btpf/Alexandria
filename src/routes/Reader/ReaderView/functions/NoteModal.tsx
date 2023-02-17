@@ -77,8 +77,7 @@ const NoteModal = () =>{
                   // This will prevent page turning when clicking on highlight
                   dispatch(SkipMouseEvent(0))
             
-                  const boundingBox = renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
-                  const {x, y} = CalculateBoxPosition(getEpubBounds(),boundingBox, 300, 250)
+                  const {x, y} = CalculateBoxPosition(renditionInstance,cfiRangeClosure, 300, 250)
 
                   
                   dispatch(SetModalCFI({

@@ -65,8 +65,7 @@ const QuickbarModal = () =>{
                   dispatch(SkipMouseEvent(0))
         
 
-                  const boundingBox = renditionInstance.getRange(cfiRangeClosure).getBoundingClientRect()
-                  const {x, y} = CalculateBoxPosition(getEpubBounds(),boundingBox, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
+                  const {x, y} = CalculateBoxPosition(renditionInstance, cfiRangeClosure, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
 
                   dispatch(SetModalCFI({view:0,selectedCFI:cfiRangeClosure}))
                   dispatch(MoveNoteModal({
