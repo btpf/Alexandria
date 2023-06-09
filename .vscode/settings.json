@@ -1,4 +1,7 @@
 {
+  "files.exclude": {
+    "**/node_modules": true
+  },
     "typescript.tsdk": "node_modules/typescript/lib",
     "typescript.suggest.paths": false,
     "eslint.format.enable": true,

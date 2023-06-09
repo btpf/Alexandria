@@ -17,7 +17,8 @@
         "assetScope": ["/*"]
       },
       "http": {
-        "all": true, 
+        "all": true,
+        "scope": ["https://fonts.gstatic.com/*","https://fonts.googleapis.com/*"],
         "request": true
       },
       "all": true

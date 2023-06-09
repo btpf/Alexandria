@@ -5,6 +5,7 @@ import BackArrow from '@resources/feathericons/arrow-left.svg'
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import ReaderTheme from "./pages/ReaderTheme"
 import GlobalTheme from "./pages/GlobalTheme"
+import Fonts from "./pages/Fonts/Fonts"
 
 const Settings = ()=>{
   const navigate = useNavigate()
@@ -42,6 +43,7 @@ const Settings = ()=>{
         <div className={styles.navbar}>
           <div onClick={()=>navigate("Global Theme")}>Global Theme</div>
           <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div>
+          <div onClick={()=>navigate("Fonts")}>Fonts</div>
         </div>
 
         <div className={styles.contentContainer}>
@@ -49,6 +51,7 @@ const Settings = ()=>{
             <Route path="/" element={<GlobalTheme />} />
             <Route  path="/Global Theme" element={<GlobalTheme />} />
             <Route path="/Reader Theme" element={<ReaderTheme />} />
+            <Route path="/Fonts" element={<Fonts />} />
           </Routes>
         </div>
       </div>

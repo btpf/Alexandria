@@ -9,8 +9,11 @@
             "@store/*": ["src/store/*"]
          },
         // https://stackoverflow.com/a/49112420
-        "lib": ["dom"],
+        // https://stackoverflow.com/a/67227887
+        "lib": ["dom", "ES2021"],
         "forceConsistentCasingInFileNames": true, // Forces case sensitive file import linting
         "jsx": "react-jsx", // https://stackoverflow.com/a/64969461
+        "resolveJsonModule": true, // Enables importing JSON
+        // "esModuleInterop": true
     }
 }

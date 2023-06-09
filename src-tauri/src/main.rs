@@ -14,6 +14,10 @@ use std::{
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+
+extern crate reqwest;
+use std::io;
+
 fn main() {
     tauri::Builder::default()
         .setup(|app| {
@@ -26,7 +30,12 @@ fn main() {
             get_books,
             get_book_by_hash,
             update_data_by_hash,
-            load_book_data
+            load_book_data,
+            get_font_url,
+            download_font,
+            toggle_font,
+            list_fonts
+
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -52,6 +61,8 @@ fn create_or_load_data() -> Option<DataExists> {
         std::fs::create_dir(&config_path).unwrap();
 
         std::fs::create_dir(format!("{}/books", &config_path.to_string())).unwrap();
+        
+        std::fs::create_dir(format!("{}/fonts", &config_path.to_string())).unwrap();
 
         std::fs::write(format!("{}/settings.json", &config_path), "").unwrap();
         return Some(DataExists::CREATED);
@@ -318,4 +329,109 @@ fn load_book_data(checksum: &str) -> updateBookPayload {
     // // read the whole file
     // f.read_to_end(&mut buffer).unwrap();
     // return buffer;
+}
+
+#[tauri::command]
+fn get_font_url(name: &str) -> String {
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+
+
+    let font_folder = format!("{current_dir}/data/fonts");
+
+    return format!("{font_folder}/{name}");
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+struct fontStatus {
+    fontMap: HashMap<String, bool>
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+struct fontsJSON {
+    fonts: fontStatus,
+}
+
+#[tauri::command]
+fn download_font(url: &str, name: &str, weight: &str){
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/fonts");
+
+    let resp = reqwest::blocking::get(url).expect("request failed");
+    let body = resp.bytes().expect("body invalid");
+    std::fs::write(format!("{font_folder}/{name} - {weight}.ttf"), &body);
+
+
+
+
+    let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
+    // println!("File Hash: {}", &fontsPayload);
+    println!("{:?}", serde_json::to_string_pretty(&fontsPayload).unwrap());
+
+    fontsPayload.fonts.fontMap.insert(format!("{name} - {weight}.ttf"), true);
+
+
+    std::fs::write(
+        format!("{font_folder}/fonts.json"),
+        serde_json::to_string_pretty(&fontsPayload).unwrap(),
+    );
+
+}
+
+#[tauri::command]
+fn toggle_font(name: &str){
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/fonts");
+
+
+    let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
+    // println!("File Hash: {}", &fontsPayload);
+    println!("{:?}", serde_json::to_string_pretty(&fontsPayload).unwrap());
+
+    *fontsPayload.fonts.fontMap.get_mut(name).unwrap() = !fontsPayload.fonts.fontMap[name];
+
+
+    std::fs::write(
+        format!("{font_folder}/fonts.json"),
+        serde_json::to_string_pretty(&fontsPayload).unwrap(),
+    );
+
+}
+
+#[tauri::command]
+fn list_fonts() -> fontStatus{
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/fonts");
+
+
+    let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
+
+    return fontsPayload.fonts
+
 }

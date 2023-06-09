@@ -6,3 +6,4 @@ dist
 *.gif
 *.epub
 changelog.txt
+public/resources/webfonts.json

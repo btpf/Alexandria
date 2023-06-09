@@ -57,6 +57,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
     "@tauri-apps/api": "^1.2.0",
+    "@types/css-font-loading-module": "^0.0.8",
     "@types/node": "^18.0.5",
     "epubjs-myh": "github:btpf/epub.js",
     "immer": "^9.0.15",
@@ -67,6 +68,7 @@
     "react-dropzone": "^14.2.3",
     "react-redux": "^8.0.2",
     "react-router-dom": "^6.6.1",
+    "react-virtuoso": "^4.1.0",
     "sanitize.css": "^13.0.0",
     "stylelint-scss": "^4.3.0"
   }
