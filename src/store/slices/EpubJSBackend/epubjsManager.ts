@@ -55,8 +55,8 @@ export const SyncedAddRendition = createAsyncThunk(
       
           const boundingBox = renditionInstance.getRange(cfiRange).getBoundingClientRect()
           const {x, y} = CalculateBoxPosition(
-            renditionInstance?.manager?.container?.getBoundingClientRect(),
-            boundingBox,
+            renditionInstance,
+            cfiRange,
             NOTE_MODAL_WIDTH,
             NOTE_MODAL_HEIGHT)
                 
