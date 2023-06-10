@@ -6,8 +6,9 @@ import styles from './ReaderTheme.module.scss'
 import UndoButton from '@resources/iconmonstr/iconmonstr-undo-7.svg'
 import TrashIcon from '@resources/feathericons/trash-2.svg'
 import { useAppSelector } from "@store/hooks";
-import { AddTheme, RenameTheme, UpdateTheme } from "@store/slices/appState";
+import { AddTheme, DeleteTheme, RenameTheme, UpdateTheme } from "@store/slices/appState";
 import { useDispatch } from "react-redux";
+import { invoke } from "@tauri-apps/api";
 
 // import styles from './Settings.module.scss'
 
@@ -21,12 +22,12 @@ const ReaderTheme = ()=>{
   // const dispatch = useAppDispatch()
   
   
-  const [selectedTheme, changeTheme] = useState("Default Theme")
+  const [selectedTheme, changeTheme] = useState("Default Light")
 
   const [color, setIntialColor] = useState("#000000");
   const [pickerPosition, setPosition] = useState({x:-500, y:-500})
 
-  const appThemes = useAppSelector((state) => state.app.themes)
+  const appThemes = useAppSelector((state) => state.appState.themes)
 
   // This will keep track of the current state of the theme
   const prevAppThemes = useRef({appThemes}).current;
@@ -34,7 +35,7 @@ const ReaderTheme = ()=>{
 
   // Error Catching
   const [displayError, toggleError] = useState(false)
-  const [lastValidTheme, setLastValidTheme] = useState("Default Theme")
+  const [lastValidTheme, setLastValidTheme] = useState("Default Light")
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [colorUpdater, setColorUpdater] = useState(() => () => console.log("default ooops"))
@@ -42,7 +43,8 @@ const ReaderTheme = ()=>{
 
   const dispatch = useDispatch()
 
-  // This is all to switch to the new theme 
+  // This is all to switch to the new theme
+  // Clarity: This function should make it so the selected theme changes to the new theme upon creation
   useEffect(() => {
     const newThemesKeys = Object.keys(appThemes)
     const prevThemesKeys = Object.keys(prevAppThemes.appThemes)
@@ -90,7 +92,7 @@ const ReaderTheme = ()=>{
 
       <div className={styles.comboContainer}>
         <div className={styles.comboContainerText}>Theme Name</div>
-        <input disabled={lastValidTheme=="Default Theme"} onChange={(e)=>{
+        <input disabled={lastValidTheme=="Default Light"} onChange={(e)=>{
           console.log(e.target.value,e.target.value.length, selectedTheme)
           console.log(appThemes)
           // TODO: FIX 0 length erorr
@@ -124,7 +126,7 @@ const ReaderTheme = ()=>{
             <div className={styles.themePropertyName}>
               Background
             </div>
-            <button disabled={lastValidTheme =="Default Theme"} onClick={(e)=>{
+            <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
               const bounds = e.currentTarget.getBoundingClientRect()
               setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
               setColorUpdater(()=>(color:string) => {
@@ -139,9 +141,12 @@ const ReaderTheme = ()=>{
               }
             }} style={{backgroundColor:appThemes[lastValidTheme].body.background}} className={styles.themeColor}/>
             <UndoButton onClick={()=>{
+              if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
+                return 
+              }
               dispatch(UpdateTheme({
                 themeName: lastValidTheme,
-                theme: {body:{background:appThemes["Default Theme"].body.background}}
+                theme: {body:{background:appThemes["Default Light"].body.background}}
               }))
             }} className={styles.resetButton}/>
           </div>
@@ -150,7 +155,7 @@ const ReaderTheme = ()=>{
             <div className={styles.themePropertyName}>
               Color
             </div>
-            <button disabled={lastValidTheme =="Default Theme"} onClick={(e)=>{
+            <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
               const bounds = e.currentTarget.getBoundingClientRect()
               setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
               setColorUpdater(()=>(color:string) => {
@@ -165,9 +170,12 @@ const ReaderTheme = ()=>{
               }
             }} style={{backgroundColor:appThemes[lastValidTheme].body.color}} className={styles.themeColor}/>
             <UndoButton onClick={()=>{
+              if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
+                return 
+              }
               dispatch(UpdateTheme({
                 themeName: lastValidTheme,
-                theme: {body:{color:appThemes["Default Theme"].body.color}}
+                theme: {body:{color:appThemes["Default Light"].body.color}}
               }))
             }} className={styles.resetButton}/>
           </div>
@@ -179,7 +187,16 @@ const ReaderTheme = ()=>{
       </div>
 
 
-      <div style={{display: lastValidTheme == "Default Theme"?"none":""}} className={styles.deleteButton}><TrashIcon style={{transform:"scale(1.2)", marginRight:10}}/> Delete Theme</div>
+      <div onClick={()=>{
+        console.log("Delete button pressed")
+        // console.log(Object.keys(appThemes).filter((key) => key != selectedTheme)[0])
+        changeTheme("Default Light")
+        setLastValidTheme("Default Light")
+        
+        dispatch(DeleteTheme(selectedTheme))
+        // changeTheme(Object.keys(appThemes).filter((key) => key == selectedTheme)[0])
+
+      }} style={{display: lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"?"none":""}} className={styles.deleteButton}><TrashIcon style={{transform:"scale(1.2)", marginRight:10}}/> Delete Theme</div>
       
     </div>
 

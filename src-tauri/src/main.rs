@@ -34,7 +34,9 @@ fn main() {
             get_font_url,
             download_font,
             toggle_font,
-            list_fonts
+            list_fonts,
+            get_reader_themes,
+            set_reader_themes
 
         ])
         .run(tauri::generate_context!())
@@ -65,6 +67,7 @@ fn create_or_load_data() -> Option<DataExists> {
         std::fs::create_dir(format!("{}/fonts", &config_path.to_string())).unwrap();
 
         std::fs::write(format!("{}/settings.json", &config_path), "").unwrap();
+        std::fs::write(format!("{}/ReaderThemes.json", &config_path), "").unwrap();
         return Some(DataExists::CREATED);
     }
 }
@@ -433,5 +436,67 @@ fn list_fonts() -> fontStatus{
     let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
 
     return fontsPayload.fonts
+
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct ReaderThemeBody {
+    #[serde(default)]
+    background: String,
+    #[serde(default)]
+    color: String
+
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ReaderTheme {
+    #[serde(default)]
+    body: ReaderThemeBody,
+    #[serde(default)]
+    color: String
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ReaderThemes {
+    #[serde(default)]
+    themes: HashMap<String, ReaderTheme>
+}
+
+
+#[tauri::command]
+fn get_reader_themes() -> ReaderThemes{
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+
+    let file = File::open(format!("{font_folder}/ReaderThemes.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut themesPayload: ReaderThemes = serde_json::from_value(json).unwrap();
+
+    return themesPayload
+
+}
+
+#[tauri::command]
+fn set_reader_themes(payload: ReaderThemes){
+    println!("{:?}", payload);
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+    
+    std::fs::write(
+        format!("{font_folder}/ReaderThemes.json"),
+        serde_json::to_string_pretty(&payload).unwrap(),
+    )
+    .unwrap();
+
+    // return themesPayload
 
 }

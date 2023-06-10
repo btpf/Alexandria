@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import bookState, { SyncedDataActions } from './slices/bookState'
+import bookState from './slices/bookState'
+import SyncedDataActions from './syncedActions'
 import counterSlice from './slices/counterSlice'
-import app from './slices/appState'
+import appState from './slices/appState'
 
 import {enableMapSet} from "immer"
 import { invoke } from '@tauri-apps/api'
@@ -13,7 +14,7 @@ enableMapSet()
 const store =  configureStore({
   reducer: {
     counter: counterSlice,
-    app,
+    appState,
     bookState
   },
   middleware: (getDefaultMiddleware) =>
@@ -37,27 +38,36 @@ const store =  configureStore({
 
       if(SyncedDataActions.has(action.type)){
         const currentState = storeAPI.getState()
-        console.log("Synced Action:", action)
-        const currentBook:bookStateStructure = currentState.bookState[0]
-        const bookUID = currentBook.hash
+        if(action.type.includes("bookState")){
 
-
-        // Only save the data if the book is done with it's loading phase
-        // During the loading phase, all sorts of synced actions will get called, but this is only the initial population,
-        // And nothing here should be saved.
-        if(window.__TAURI__ && currentBook.loadState == LOADSTATE.COMPLETE){
-          const saveData = {
-            title: currentBook.title,
-            data:{
-              progress: currentBook.data.progress,
-              bookmarks: Array.from(currentBook.data.bookmarks),
-              highlights: currentBook.data.highlights
+          console.log("Synced bookState Action:", action)
+          const currentBook:bookStateStructure = currentState.bookState[0]
+          const bookUID = currentBook.hash
+  
+  
+          // Only save the data if the book is done with it's loading phase
+          // During the loading phase, all sorts of synced actions will get called, but this is only the initial population,
+          // And nothing here should be saved.
+          if(window.__TAURI__ && currentBook.loadState == LOADSTATE.COMPLETE){
+            const saveData = {
+              title: currentBook.title,
+              data:{
+                progress: currentBook.data.progress,
+                bookmarks: Array.from(currentBook.data.bookmarks),
+                highlights: currentBook.data.highlights
+              }
             }
+            console.log("This is the save data: ")
+            console.log(saveData)
+            invoke("update_data_by_hash", {payload:saveData, hash: currentBook.hash})
           }
-          console.log("This is the save data: ")
-          console.log(saveData)
-          invoke("update_data_by_hash", {payload:saveData, hash: currentBook.hash})
+
+        }else if (action.type.includes("appState")){
+          console.log("Synced App State")
+          console.log(currentState.appState.themes)
+          invoke("set_reader_themes", {payload:currentState.appState})
         }
+        
 
       }
 

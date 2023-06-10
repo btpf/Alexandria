@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import {Theme} from './EpubJSBackend/data/theme/themeManager.d'
 
 const dark = {
@@ -39,8 +39,8 @@ interface defaultState {
   }
 const initialState: defaultState = {
   themes:{
-    "Default Theme": Base,
-    dark,
+    "Default Light": Base,
+    "Default Dark": dark,
   }
 }
 
@@ -53,8 +53,8 @@ interface UpdateThemePayload{
     theme: Theme
 }
 
-export const app = createSlice({
-  name: 'app',
+export const appState = createSlice({
+  name: 'appState',
   initialState,
   reducers: {
     AddTheme: (state) =>{
@@ -85,12 +85,22 @@ export const app = createSlice({
       }
 
     },
-
+    LoadThemes: (state, action: PayloadAction<defaultState>) =>{
+      if(Object.keys(action.payload.themes).length == 0){
+        return
+      }
+      state.themes = action.payload.themes
+    },
     RenameTheme: (state, action: PayloadAction<RenameThemePayload>) =>{
       if(state.themes[action.payload.newThemeName] == undefined){
         state.themes[action.payload.newThemeName] = state.themes[action.payload.oldThemeName]
         delete state.themes[action.payload.oldThemeName]
       }
+    },
+    DeleteTheme: (state, action) =>{
+      console.log(action.payload)
+      console.log(current(state).themes)
+      delete state.themes[action.payload]
     },
 
     UpdateTheme: (state, action: PayloadAction<UpdateThemePayload>) =>{
@@ -111,7 +121,9 @@ export const app = createSlice({
 export const { 
   AddTheme,
   RenameTheme,
-  UpdateTheme
-} = app.actions
+  UpdateTheme,
+  DeleteTheme,
+  LoadThemes
+} = appState.actions
 
-export default app.reducer
+export default appState.reducer

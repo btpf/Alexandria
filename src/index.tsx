@@ -11,6 +11,7 @@ import 'sanitize.css/typography.css';
 import store from './store/store'
 import { Provider } from 'react-redux'
 
+import InitializeApp from "./InitializeApp";
 // import bookImport from '@resources/placeholder/courage.epub'
 
 // https://stackoverflow.com/a/63520782
@@ -24,9 +25,9 @@ const root = ReactDOM.createRoot(
 );
 
 function Root() {
-
   return (
     <Provider store={store}>
+      <InitializeApp></InitializeApp>
       <RouterProvider router={createBrowserRouter(Router)} />
     </Provider>
   )

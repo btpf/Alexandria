@@ -34,7 +34,6 @@ export const bookState = createSlice({
   },
 })
 
-
 // export const {SyncedAddRendition} = asyncActions(bookState).thunks
 
 
@@ -72,27 +71,6 @@ export const {
   HideNoteModal,
   SetModalCFI
 } = actions
-
-type bookStateActionNames = keyof typeof bookState.actions
-// type bookActionPaths = Record<`bookState/${bookStateActionNames}`, string>; 
-
-type ActionNames = `bookState/${bookStateActionNames}`
-
-
-
-export const SyncedDataActions = new Set<ActionNames>([
-  "bookState/AddHighlight",
-  "bookState/ChangeHighlightColor",
-  "bookState/ChangeHighlightNote",
-  "bookState/DeleteHighlight",
-  "bookState/SetProgress",
-])
-
-// ActionNames['bookState/AddHighlight,
-// ActionNames['bookState/ChangeHighlightColor'],
-// ActionNames['bookState/SetProgress'],
-// ActionNames['bookState/ChangeHighlightNote'],
-// ActionNames['bookState/DeleteHighlight'],
 
 export default bookState.reducer
 

@@ -13,7 +13,7 @@ interface ThemeInterface{
 
 const ThemesContainer = ()=>{
   const dispatch = useAppDispatch()
-  const appThemes = useAppSelector((state) => state.app.themes)
+  const appThemes = useAppSelector((state) => state.appState.themes)
   const fontSize = useAppSelector((state) => state.bookState[0]?.data.theme.fontSize)
   return ( 
     
