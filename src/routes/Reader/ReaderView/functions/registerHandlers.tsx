@@ -233,7 +233,7 @@ export default (renditionInstance:Rendition)=>{
     
   renditionInstance.on('rendered', redrawAnnotations)
 
-  // This code will handle injecting custom fonts into the iframe
+  // This code will handle injecting custom fonts into the iframe. Injects on draw and redraw.
   // TODO: DEBOUNCE THIS CODE
   const LoadFonts = () => {
     console.log("LoadFont")

@@ -15,6 +15,9 @@ const SetFont:epubjs_reducer = (state, action: PayloadAction<SetFontPayload>) =>
     console.log("Font set to ", fontName)
     state[action.payload.view].data.theme.font = font
     state[action.payload.view].instance.themes.font(fontName)
+    if (fontName == "Default"){
+      state[action.payload.view].instance.themes.font("")
+    }
   }
   if(fontSize){
     state[action.payload.view].data.theme.fontSize = fontSize

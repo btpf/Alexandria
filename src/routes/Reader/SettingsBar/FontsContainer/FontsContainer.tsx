@@ -46,7 +46,7 @@ const FontsContainer = ()=>{
   return ( 
     <>
       <div className={styles.fontContainer}>
-        {["monospace",...fontsList].map((item)=>{
+        {["Default",...fontsList].map((item)=>{
           const fontName = item.split(".")[0].replaceAll(" ", "_")
           return (
             <div key={item} onClick={()=>{dispatch(SetFont({view: 0, font: item}))}} style={{fontFamily:fontName}} className={styles.font}>
