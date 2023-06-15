@@ -32,15 +32,28 @@ const Base:Theme = {
 
 export type ThemeDict = {[themeName:string]: Theme}
 
+export type GlobalThemeDict = {[themeName:string]: {
+  primaryBackground: string,
+  secondaryBackground: string,
+  text: string
+}}
 
 interface defaultState {
-    themes: ThemeDict
+    themes: ThemeDict,
+    globalThemes: GlobalThemeDict
   
   }
 const initialState: defaultState = {
   themes:{
     "Default Light": Base,
     "Default Dark": dark,
+  },
+  globalThemes:{
+    "default":{
+      primaryBackground: "#111111",
+      secondaryBackground: "#252525",
+      text: "white"
+    }
   }
 }
 

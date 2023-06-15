@@ -155,6 +155,9 @@ const SliderNavigator = ()=>{
       marks={markers}
       min={0}
       className={styles.slider}
+      // @ts-expect-error This is a hacky workaround for styling. I will never use anything but css in js again.
+      style={{"--slider-track-color":"red"}}
+
       onChange={(e)=>{
         if(typeof e === "number"){
           dispatch(SetProgress({view: 0, progress: e/1000}))

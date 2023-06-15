@@ -25,6 +25,7 @@ import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
 import {useDropzone, Accept} from 'react-dropzone'
 import Epub from 'epubjs-myh';
 import { BookOptions } from 'epubjs-myh/types/book';
+import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 const books = [
   {BookUrl: moby,
@@ -78,6 +79,8 @@ const Home = () =>{
 const Shelf = () =>{
   const [counter, setCounter] = useState(0)
   const [myBooks, setBooks] = useState<BookData[]>([])
+  const globalTheme = useAppSelector((state)=> state.appState.globalThemes)
+
   const onDrop = useCallback((acceptedFiles:File[]) => {
     console.log("ON DROP CALLED")
     // Do something with the files
@@ -156,7 +159,8 @@ const Shelf = () =>{
         setBooks((data as BookData[]))
       })
     }
-
+    console.log("Theme Settings")
+    console.log(globalTheme)
   }, [])
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone(
@@ -170,7 +174,8 @@ const Shelf = () =>{
 
   return (
     <>
-      <div className={styles.titleBar}>
+      <div className={styles.titleBar} style={{"backgroundColor":globalTheme.default.primaryBackground, color: globalTheme.default.text}}>
+        {/* <div className={styles.titleBar}> */}
         <div>Alexandria</div>
         <Search/>
         <Filter/>
@@ -178,12 +183,10 @@ const Shelf = () =>{
           <Settings/>
         </Link>
       </div>
-      <div >
-        
 
-      </div>
       <div {...getRootProps()}
-        className={styles.bookCase}>
+        className={styles.bookCase}
+        style={{"backgroundColor":globalTheme.default.secondaryBackground, color: globalTheme.default.text}}>
         <input {...getInputProps()} />
         {
           isDragActive && <p> Add book to library...</p> 
@@ -202,7 +205,7 @@ const Shelf = () =>{
                       e.preventDefault()
                     }}/>
                   </div>
-                  <img className={styles.bookImage} src={book.BookUrl}/>
+                  <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
                 </div>
               
                 <div className={styles.boxBottomBar} >

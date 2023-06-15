@@ -27,8 +27,9 @@ const root = ReactDOM.createRoot(
 function Root() {
   return (
     <Provider store={store}>
-      <InitializeApp></InitializeApp>
-      <RouterProvider router={createBrowserRouter(Router)} />
+      <InitializeApp>
+        <RouterProvider router={createBrowserRouter(Router)} />
+      </InitializeApp>
     </Provider>
   )
 }
