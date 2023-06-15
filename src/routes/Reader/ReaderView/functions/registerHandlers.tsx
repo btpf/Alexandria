@@ -240,6 +240,9 @@ export default (renditionInstance:Rendition)=>{
     console.log(fontName)
 
     invoke("get_font_url", {name: fontName}).then((path)=>{
+      if(path == null){
+        return
+      }
       const typedPath = path as string
       // this means if the name has an extension like .ttf
       if(fontName.includes(".")){

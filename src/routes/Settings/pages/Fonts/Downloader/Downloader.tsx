@@ -108,13 +108,12 @@ const Downloader = ()=>{
               setSelectedFont(currentDataList[index].name)
               console.log(Object.keys(currentDataList[index].files))
               const mapped = Object.keys(currentDataList[index].files).reduce((a, v)=>{
-                if(v == "regular"){
-                  return {...a, ...{
-                    [v=="regular"?400:v]:{label: <div style={{fontWeight:v}}>{v}</div>}
-                  }}
-                }else{
+                if(v.includes("italic")){
                   return a
                 }
+                return {...a, ...{
+                  [v=="regular"?400:v]:{label: <div style={{fontWeight:v}}>{v}</div>}
+                }}
                 
               },{})
               console.log(mapped)

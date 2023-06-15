@@ -348,14 +348,21 @@ fn load_book_data(checksum: &str) -> updateBookPayload {
 }
 
 #[tauri::command]
-fn get_font_url(name: &str) -> String {
+fn get_font_url(name: &str) -> Option<String> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
 
     let font_folder = format!("{current_dir}/data/fonts");
 
-    return format!("{font_folder}/{name}");
+    let return_string = format!("{font_folder}/{name}");
+
+    let b = std::path::Path::new(return_string.as_str()).exists();
+    if(b){
+        return Some(format!("{return_string}"));
+    }else{
+        return None
+    }
 }
 
 

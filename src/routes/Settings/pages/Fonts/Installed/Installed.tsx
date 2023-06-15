@@ -34,13 +34,14 @@ const Installed = ()=>{
 
   useEffect(()=>{
     invoke("list_fonts").then((response)=>{
-      const typedResponse = response as ListFontsType 
+      const typedResponse = response as ListFontsType
       // console.log(response.fontMap)
       setFontList(typedResponse.fontMap)
       Object.keys(typedResponse.fontMap).forEach((item)=>{
         // console.log(item)
         invoke("get_font_url", {name: item}).then((path)=>{
           const typedPath = path as string
+          if(!path) return
           // this means if the name has an extension like .ttf
           if(item.includes(".")){
             const fontName = item.split(".")[0].replaceAll(" ", "_")

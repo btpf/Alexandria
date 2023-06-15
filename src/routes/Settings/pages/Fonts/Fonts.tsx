@@ -43,6 +43,7 @@ const Fonts = ()=>{
       Object.keys(response2.fontMap).forEach((item)=>{
         // console.log(item)
         invoke("get_font_url", {name: item}).then((path:any)=>{
+          if(!path) return
           // this means if the name has an extension like .ttf
           if(item.includes(".")){
             const fontName = item.split(".")[0].replaceAll(" ", "_")

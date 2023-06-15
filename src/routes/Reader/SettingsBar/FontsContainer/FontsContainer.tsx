@@ -26,6 +26,9 @@ const FontsContainer = ()=>{
           tempList.push(item)
           invoke("get_font_url", {name: item}).then((path)=>{
             const typedPath = path as string
+            if(path == null){
+              return
+            }
             // this means if the name has an extension like .ttf
             if(item.includes(".")){
               const fontName = item.split(".")[0].replaceAll(" ", "_")
