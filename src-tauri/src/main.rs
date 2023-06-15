@@ -281,7 +281,11 @@ struct highlightData {
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct themePayload {
     #[serde(default)]
-    themeName: String
+    themeName: String,
+    #[serde(default)]
+    font: String,
+    #[serde(default)]
+    fontSize: u64
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

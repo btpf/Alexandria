@@ -85,7 +85,12 @@ export const SyncedAddRendition = createAsyncThunk(
         view: 0,
         themeName: result.data.theme.themeName
       }))
-            
+
+      thunkAPI.dispatch(bookState.actions.SetFont({
+        view: 0,
+        font: result.data.theme.font,
+        fontSize: result.data.theme.fontSize
+      }))
       
     }
           

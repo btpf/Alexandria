@@ -1,5 +1,7 @@
 import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import store from "@store/store";
+import { invoke } from "@tauri-apps/api";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { Contents, EpubCFI, Rendition } from "epubjs-myh";
 import View from "epubjs-myh/types/managers/view";
 import { 
@@ -19,6 +21,7 @@ export default (renditionInstance:Rendition)=>{
   let selectedCFI!:string;
   let ThemeMenuActive!:boolean;
   let skipMouseEvent!:boolean
+  let fontName!:string
 
   let timer:any = null;
 
@@ -36,11 +39,13 @@ export default (renditionInstance:Rendition)=>{
     selectedCFI = newState.bookState["0"].state.modals.selectedCFI;
     ThemeMenuActive = newState.bookState["0"].state.themeMenuActive;
     skipMouseEvent = newState.bookState["0"].state.skipMouseEvent
+    fontName = newState.bookState["0"].data.theme.font
 
 
     if(!shallowCompareEqual(newState.bookState["0"].data.theme, oldThemeState)){
       oldThemeState = newState.bookState["0"].data.theme
       redrawAnnotations()
+      LoadFonts()
     }
   })
 
@@ -228,7 +233,36 @@ export default (renditionInstance:Rendition)=>{
     
   renditionInstance.on('rendered', redrawAnnotations)
 
+  // This code will handle injecting custom fonts into the iframe
+  // TODO: DEBOUNCE THIS CODE
+  const LoadFonts = () => {
+    console.log("LoadFont")
+    console.log(fontName)
 
+    invoke("get_font_url", {name: fontName}).then((path)=>{
+      const typedPath = path as string
+      // this means if the name has an extension like .ttf
+      if(fontName.includes(".")){
+        const font = new FontFace(fontName.split(".")[0].replaceAll(" ", "_"), `url(${convertFileSrc(typedPath)})`);
+
+        // If in any case the iframe is not ready, return to prevent crashing
+        // @ts-expect-error - The renditionInstance definitions are not defined since we are using private members
+        if(!renditionInstance || !renditionInstance.manager || !renditionInstance.manager.views || !renditionInstance.manager.views._views || !renditionInstance.manager.views._views[0]){
+          return
+        }
+        // wait for font to be loaded
+        font.load().then(()=>{
+          // @ts-expect-error - The renditionInstance definitions are not defined since we are using private members
+          renditionInstance.manager.views._views[0].iframe.contentWindow.document.fonts.add(font)
+        });
+      }
+    })
+
+    //     })
+    //   }
+    // })
+  }
+  renditionInstance.on('rendered', LoadFonts)
 
   return unsubscribe
 }

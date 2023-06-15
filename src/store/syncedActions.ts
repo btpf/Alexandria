@@ -18,5 +18,6 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   "appState/RenameTheme",
   "appState/UpdateTheme",
   "appState/DeleteTheme",
-  "bookState/setThemeV2/fulfilled"
+  "bookState/setThemeV2/fulfilled",
+  "bookState/SetFont"
 ])
