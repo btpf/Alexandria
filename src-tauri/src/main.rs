@@ -36,7 +36,8 @@ fn main() {
             toggle_font,
             list_fonts,
             get_reader_themes,
-            set_reader_themes
+            set_reader_themes,
+            delete_font
 
         ])
         .run(tauri::generate_context!())
@@ -395,6 +396,36 @@ fn download_font(url: &str, name: &str, weight: &str){
 
     fontsPayload.fonts.fontMap.insert(format!("{name} - {weight}.ttf"), true);
 
+
+    std::fs::write(
+        format!("{font_folder}/fonts.json"),
+        serde_json::to_string_pretty(&fontsPayload).unwrap(),
+    );
+
+}
+
+#[tauri::command]
+fn delete_font(name: &str){
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/fonts");
+
+
+    std::fs::remove_file(format!("{font_folder}/{name}"));
+
+
+
+
+    let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
+
+    fontsPayload.fonts.fontMap.remove(name).unwrap();
 
     std::fs::write(
         format!("{font_folder}/fonts.json"),

@@ -82,7 +82,13 @@ const Installed = ()=>{
           const mappedFontName = Object.keys(fontList)[index]
 
           return (<div className={styles.localThemeContainer}>
-            <TashIcon className={styles.trash}/>     
+            <TashIcon onClick={()=>{
+              const filtered = Object.fromEntries(Object.entries(fontList).filter(([k,v]) => k != mappedFontName));
+              setFontList(filtered)
+              invoke("delete_font", {name: mappedFontName}).then(()=>{
+                console.log("Font deleted")
+              })
+            }} className={styles.trash}/>     
             <input className={styles.selector} checked={fontList[mappedFontName]} type="radio" onChange={()=>{/*Removes error from console */}} onClick={()=>{
               const newObj = {} as {[key: string]: boolean}
               newObj[mappedFontName] = !fontList[mappedFontName]
