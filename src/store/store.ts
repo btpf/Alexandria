@@ -35,7 +35,6 @@ const store =  configureStore({
     }).concat(storeAPI => next => action => {
       
       next(action)
-
       if(SyncedDataActions.has(action.type)){
         const currentState = storeAPI.getState()
         if(action.type.includes("bookState")){
@@ -54,7 +53,8 @@ const store =  configureStore({
               data:{
                 progress: currentBook.data.progress,
                 bookmarks: Array.from(currentBook.data.bookmarks),
-                highlights: currentBook.data.highlights
+                highlights: currentBook.data.highlights,
+                theme:{...currentBook.data.theme}
               }
             }
             console.log("This is the save data: ")

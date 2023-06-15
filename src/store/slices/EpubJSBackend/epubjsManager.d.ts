@@ -1,3 +1,15 @@
+interface dataInterface{
+  highlights:{[cfiRange:string]:highlightData},
+  bookmarks:Set<string>,
+  progress: number,
+  theme:{
+    font: string,
+    fontSize: number,
+    themeName: string
+  }
+}
+
+
 export interface bookStateStructure{
     title: string,
     instance: Rendition,
@@ -15,27 +27,10 @@ export interface bookStateStructure{
         noteModal: {visible: boolean, x:number, y:number}
       },
     },
-    data:{
-      highlights:{[cfiRange:string]:highlightData},
-      bookmarks:Set<string>,
-      progress: number,
-      theme:{
-        font: string,
-        fontSize: number,
-        backgroundColor: string
-        color:string
-      }
-    }
+    data:dataInterface
   }
   
 
-  interface expectedLoadData{
-    data:{
-      progress: number,
-      highlights:{[cfiRange:string]:highlightData},
-      bookmarks:Set<string>,
-    },
-  }
 
   interface loadProgressUpdate{
     view:number,

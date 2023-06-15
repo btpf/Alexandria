@@ -24,7 +24,12 @@ export interface Theme{
     }
 }
 
+// export interface SetThemePayload{
+//     view: number
+//     theme:Theme
+// }
+
 export interface SetThemePayload{
-    view: number
-    theme:Theme
+  view: number
+  themeName: string
 }

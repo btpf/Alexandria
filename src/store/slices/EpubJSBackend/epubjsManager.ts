@@ -6,13 +6,13 @@ import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from "src/r
 import { bookState } from "../bookState"
 
 
-
 // import { bookState } from "../bookStateSlice"
 import { BackendInstance, BookInstances } from "../bookStateTypes"
 import { LOADSTATE } from "../constants"
-import { bookStateStructure, expectedLoadData, loadProgressUpdate } from "./epubjsManager.d"
+import { bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
+import { setThemeThunk } from "./data/theme/themeManager"
 
 
 
@@ -34,8 +34,8 @@ export const SyncedAddRendition = createAsyncThunk(
       
       // Eventually, this should match bookStateStructure.data
 
-            
-      const result:expectedLoadData = await invoke("load_book_data", {checksum: renditionData.hash})
+      type dataInterfacePayload = {data: dataInterface}      
+      const result:dataInterfacePayload = await invoke("load_book_data", {checksum: renditionData.hash})
       console.log("ExpectedLoad", result)
          
       
@@ -80,6 +80,11 @@ export const SyncedAddRendition = createAsyncThunk(
       })
       
       thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress}))
+
+      thunkAPI.dispatch(setThemeThunk({
+        view: 0,
+        themeName: result.data.theme.themeName
+      }))
             
       
     }
@@ -106,8 +111,7 @@ export const builderFunc = (builder:ActionReducerMapBuilder<BookInstances>) =>{
         theme:{
           font:"Helvetica, sans-serif", 
           fontSize:100,
-          backgroundColor:'white',
-          color:'grey'
+          themeName:'Default White'
         }
       }, 
       state:{

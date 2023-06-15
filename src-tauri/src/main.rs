@@ -278,11 +278,19 @@ struct highlightData {
     color: String,
     note: String,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct themePayload {
+    #[serde(default)]
+    themeName: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
 struct updateDataPayload {
     progress: f64,
     bookmarks: Vec<String>,
     highlights: HashMap<String, highlightData>,
+    #[serde(default)]
+    theme: themePayload
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct updateBookPayload {
@@ -292,7 +300,7 @@ struct updateBookPayload {
 
 #[tauri::command]
 fn update_data_by_hash(payload: updateBookPayload, hash: String) {
-    println!("{:?}", payload);
+    // println!("{:?}", payload);
     println!("{:?}", serde_json::to_string_pretty(&payload).unwrap());
 
     let current_dir = current_dir().unwrap();
