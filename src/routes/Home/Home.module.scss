@@ -17,8 +17,10 @@ $bookmarkHeight: 23px;
   justify-content: flex-end;
   align-items: center;
   gap:25px;
-  border-bottom: 1px solid #E6E6E6;
+  // border-bottom: 1px solid var(--background-secondary);
   margin-bottom:25px;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
 }
 
 .titleBar div:first-of-type{
@@ -45,6 +47,8 @@ $bookmarkHeight: 23px;
   gap: 5px 5px;
   grid-template-columns: repeat(auto-fill, var(--book-width));
   grid-template-rows: repeat(auto-fill, var(--book-height));
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
 }
 
 // Begin resize styles
@@ -103,6 +107,9 @@ $bookmarkHeight: 23px;
   // box-shadow: inset 0px -160px 30px -130px rgba(0,0,0,1);
   // V4 for usage when all other elements are removed
   box-shadow: inset 0px -180px 30px -160px rgb(0 0 0 / 71%);
+  
+  // Fixes bug where scrolling down will keep the shadow in place
+  position: sticky;
 }
 
 .boxPlaceholder::before {

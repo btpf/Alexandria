@@ -22,7 +22,8 @@
 }
   
 .sideBar{
-  background-color:white;
+  background-color:var(--background-secondary);
+  color: var(--text-primary);
   width: 50%;
   max-width: 800px;
   min-width: 400px;

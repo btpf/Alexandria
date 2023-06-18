@@ -50,7 +50,6 @@ const Home = () =>{
     }
     return "white"
   })
-  const globalTheme = useAppSelector((state)=> state.appState.globalThemes)
   // const UIColor = useAppSelector((state) => state.appState.themes[state.bookState[0]?.data?.theme?.themeName].body.color)
 
   const navigate = useNavigate();
@@ -88,17 +87,17 @@ const Home = () =>{
   return (
     <div className={styles.readerFlex} style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} >
 
-      <div style={{backgroundColor:menuOpen? globalTheme.default.primaryBackground:ReaderBackgroundColor, color: globalTheme.default.text}} className={`${styles.readerTitleBar}`}>
-        <div style={{ color: globalTheme.default.text}} className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
-          <List style={{ color: globalTheme.default.text}} onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
-          <Bookmark style={{fill:isPageBookmarked? "gold":'none', color: globalTheme.default.text}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
+      <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
+        <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
+          <List onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
+          <Bookmark style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
 
-        <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{color:globalTheme.default.text}} className={styles.title}>
+        <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
         <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
-          <Search style={{color: globalTheme.default.text}} onClick={()=>{
+          <Search onClick={()=>{
             if(sidebarOpen){
               if(sidebarOpen == "Search"){
                 dispatch(SelectSidebarMenu({view:0, state:false}))
@@ -110,10 +109,10 @@ const Home = () =>{
             }
             
           }}/>
-          <Font style={{color: globalTheme.default.text}} onClick={()=>{
+          <Font onClick={()=>{
             dispatch(ToggleThemeMenu(0))
           }}/>
-          <HomeIcon style={{color: globalTheme.default.text}} onClick={()=>navigate('/')}/>
+          <HomeIcon onClick={()=>navigate('/')}/>
         </div>
       </div>
 
@@ -121,14 +120,14 @@ const Home = () =>{
       
       <ReaderView/>
 
-      <div style={{backgroundColor:menuOpen? 'white':ReaderBackgroundColor}} className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
+      <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.menuButtonContainer}`}>
           <ArrowLeft/>
         </div>
-        <div className={styles.sliderContainer} style={{backgroundColor:menuOpen? globalTheme.default.primaryBackground:ReaderBackgroundColor, color: globalTheme.default.text}}>
+        <div className={styles.sliderContainer} style={{backgroundColor:menuOpen? '':ReaderBackgroundColor}}>
           <SliderNavigator/>
         </div>
-        <div style={{backgroundColor:menuOpen? globalTheme.default.primaryBackground:ReaderBackgroundColor, color: globalTheme.default.text}} onClick={()=>renditionInstance?.next()} className={`${styles.menuButtonContainer}`}>
+        <div onClick={()=>renditionInstance?.next()} className={`${styles.menuButtonContainer}`}>
           <ArrowRight/>
         </div>
 

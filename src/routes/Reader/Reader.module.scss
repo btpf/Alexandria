@@ -25,7 +25,8 @@
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: black;
+  color: var(--text-primary);
+  background-color: var(--background-primary);
   padding-top:10px;
   user-select: none;
   grid-area: 1/1;
@@ -35,7 +36,7 @@
   transition: 0.3s;
 }
 .menuButtonContainer{
-  color: black;
+  color: var(--text-primary);
   display:flex;
   gap:10px;
   margin-left:20px;
@@ -50,7 +51,7 @@
 
 .title{
   // color:rgba(0, 0, 0, 0.342);
-  color:black;
+  color:var(--text-primary);
 }
 
 .menuButtonContainer > svg{
@@ -61,12 +62,12 @@
   transform-origin: 0 0 ;
   gap:5px;
   cursor: pointer;
-  color:rgb(121, 121, 121);
+  color:var(--text-secondary);
   // margin-left:20px;
   // margin-right: 20px;
 }
 .menuButtonContainer > svg:hover{
-  color:black;
+  color:var(--text-primary);
 }
 
 
@@ -80,6 +81,7 @@
   user-select: none;
   grid-area: 3/1;
   transition: .3s;
+  background-color: var(--background-primary);
 }
 
 

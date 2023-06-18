@@ -9,7 +9,6 @@ import Fonts from "./pages/Fonts/Fonts"
 import { useAppSelector } from "@store/hooks"
 
 const Settings = ()=>{
-  const globalTheme = useAppSelector((state)=> state.appState.globalThemes)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -24,7 +23,7 @@ const Settings = ()=>{
 
   return (
     <div className={styles.settingsPageContainer}>
-      <div className={styles.titleBar} style={{"backgroundColor":globalTheme.default.primaryBackground, color: globalTheme.default.text}} >
+      <div className={styles.titleBar}>
 
         {/* This is the titlebar for desktop screens */}
         <div onClick={()=> navigate("/")} className={styles.backButtonContainer + " " + styles.hidesm}>
@@ -42,7 +41,7 @@ const Settings = ()=>{
       </div>
 
       <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
-        <div className={styles.navbar} style={{"backgroundColor":globalTheme.default.primaryBackground, color: globalTheme.default.text}} >
+        <div className={styles.navbar}>
           <div onClick={()=>navigate("Global Theme")}>Global Theme</div>
           <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div>
           <div onClick={()=>navigate("Fonts")}>Fonts</div>

@@ -35,7 +35,8 @@ export type ThemeDict = {[themeName:string]: Theme}
 export type GlobalThemeDict = {[themeName:string]: {
   primaryBackground: string,
   secondaryBackground: string,
-  text: string
+  primaryText: string,
+  secondaryText: string
 }}
 
 interface defaultState {
@@ -52,8 +53,15 @@ const initialState: defaultState = {
     "default":{
       primaryBackground: "#111111",
       secondaryBackground: "#252525",
-      text: "white"
-    }
+      primaryText: "white",
+      secondaryText: "grey"
+    },
+    // "default":{
+    //   primaryBackground: "white",
+    //   secondaryBackground: "white",
+    //   primaryText: "black",
+    //   secondaryText: "grey"
+    // }
   }
 }
 

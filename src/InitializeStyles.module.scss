@@ -1,0 +1,73 @@
+.appContainer{
+  color:red;
+  overflow:auto;
+
+
+}
+
+.appContainer div *::-webkit-scrollbar {
+  background-color: var(--background-secondary);
+  width: 16px;
+}
+
+/* https://gist.github.com/spemer/a0e218bbb45433bd611e68446523a00b
+/* total width */
+.appContainer div *::-webkit-scrollbar {
+  // background-color: #fff;
+  width: 16px;
+}
+
+/* background of the scrollbar except button or resizer */
+.appContainer div *::-webkit-scrollbar-track {
+  background-color: 4px solid var(--background-secondary);
+}
+
+/* scrollbar itself */
+.appContainer div *::-webkit-scrollbar-thumb {
+  background-color: var(--background-primary);
+  border-radius: 16px;
+  border: 4px solid var(--background-secondary);
+}
+
+/* set button(top and bottom of the scrollbar) */
+.appContainer div *::-webkit-scrollbar-button {
+  display:none;
+}
+
+
+
+
+
+
+
+
+
+
+.appContainer::-webkit-scrollbar {
+  background-color: var(--background-secondary);
+  width: 16px;
+}
+
+/* https://gist.github.com/spemer/a0e218bbb45433bd611e68446523a00b
+/* total width */
+.appContainer::-webkit-scrollbar {
+  // background-color: #fff;
+  width: 16px;
+}
+
+/* background of the scrollbar except button or resizer */
+.appContainer::-webkit-scrollbar-track {
+  background-color: 4px solid var(--background-secondary);
+}
+
+/* scrollbar itself */
+.appContainer::-webkit-scrollbar-thumb {
+  background-color: var(--background-primary);
+  border-radius: 16px;
+  border: 4px solid var(--background-secondary);
+}
+
+/* set button(top and bottom of the scrollbar) */
+.appContainer::-webkit-scrollbar-button {
+  display:none;
+}
