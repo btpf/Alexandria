@@ -65,7 +65,9 @@ const store =  configureStore({
         }else if (action.type.includes("appState")){
           console.log("Synced App State")
           console.log(currentState.appState.themes)
-          invoke("set_reader_themes", {payload:currentState.appState})
+          invoke("set_reader_themes", {payload:currentState.appState.themes})
+          invoke("set_global_themes", {payload:currentState.appState.globalThemes})
+          invoke("set_settings", {payload:{selectedGlobalTheme: currentState.appState.selectedGlobalTheme}})
         }
         
 

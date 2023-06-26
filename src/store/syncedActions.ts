@@ -14,10 +14,15 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   "bookState/ChangeHighlightNote",
   "bookState/DeleteHighlight",
   "bookState/SetProgress",
-  "appState/AddTheme",
-  "appState/RenameTheme",
-  "appState/UpdateTheme",
-  "appState/DeleteTheme",
   "bookState/setThemeV2/fulfilled",
-  "bookState/SetFont"
+  "bookState/SetFont",
+  "appState/AddReaderTheme",
+  "appState/RenameReaderTheme",
+  "appState/UpdateReaderTheme",
+  "appState/DeleteReaderTheme",
+  "appState/AddGlobalTheme",
+  "appState/DeleteGlobalTheme",
+  "appState/UpdateGlobalTheme",
+  "appState/RenameGlobalTheme",
+  "appState/setSelectedGlobalTheme"
 ])

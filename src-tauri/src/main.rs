@@ -37,7 +37,11 @@ fn main() {
             list_fonts,
             get_reader_themes,
             set_reader_themes,
-            delete_font
+            delete_font,
+            set_global_themes,
+            get_global_themes,
+            set_settings,
+            get_settings
 
         ])
         .run(tauri::generate_context!())
@@ -69,6 +73,8 @@ fn create_or_load_data() -> Option<DataExists> {
 
         std::fs::write(format!("{}/settings.json", &config_path), "").unwrap();
         std::fs::write(format!("{}/ReaderThemes.json", &config_path), "").unwrap();
+        std::fs::write(format!("{}/GlobalThemes.json", &config_path), "").unwrap();
+
         return Some(DataExists::CREATED);
     }
 }
@@ -512,7 +518,6 @@ struct ReaderThemes {
     themes: HashMap<String, ReaderTheme>
 }
 
-
 #[tauri::command]
 fn get_reader_themes() -> ReaderThemes{
     let current_dir = current_dir().unwrap();
@@ -534,7 +539,97 @@ fn get_reader_themes() -> ReaderThemes{
 }
 
 #[tauri::command]
-fn set_reader_themes(payload: ReaderThemes){
+fn set_reader_themes(payload: HashMap<String, ReaderTheme>){
+    println!("{:?}", payload);
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+    let t = ReaderThemes{
+        themes: payload
+    };
+
+    std::fs::write(
+        format!("{font_folder}/ReaderThemes.json"),
+        serde_json::to_string_pretty(&t).unwrap(),
+    )
+    .unwrap();
+
+    // return themesPayload
+
+}
+
+
+#[derive(Serialize, Deserialize, Debug)]
+struct GlobalTheme {
+    #[serde(default)]
+    primaryBackground: String,
+    #[serde(default)]
+    secondaryBackground: String,
+    #[serde(default)]
+    primaryText : String,
+    #[serde(default)]
+    secondaryText: String 
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct GlobalThemes {
+    #[serde(default)]
+    themes: HashMap<String, GlobalTheme>
+}
+
+
+#[tauri::command]
+fn set_global_themes(payload: HashMap<String, GlobalTheme>){
+    println!("{:?}", payload);
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+    let t = GlobalThemes{
+        themes: payload
+    };
+
+    
+    std::fs::write(
+        format!("{font_folder}/GlobalThemes.json"),
+        serde_json::to_string_pretty(&t).unwrap(),
+    )
+    .unwrap();
+
+    // return themesPayload
+
+}
+
+
+#[tauri::command]
+fn get_global_themes() -> GlobalThemes{
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+
+    let file = File::open(format!("{font_folder}/GlobalThemes.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut themesPayload: GlobalThemes = serde_json::from_value(json).unwrap();
+
+    return themesPayload
+
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct SettingsConfig {
+    #[serde(default)]
+    selectedGlobalTheme: String
+}
+
+#[tauri::command]
+fn set_settings(payload: HashMap<String, String>){
     println!("{:?}", payload);
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
@@ -542,11 +637,31 @@ fn set_reader_themes(payload: ReaderThemes){
 
     
     std::fs::write(
-        format!("{font_folder}/ReaderThemes.json"),
+        format!("{font_folder}/settings.json"),
         serde_json::to_string_pretty(&payload).unwrap(),
     )
     .unwrap();
 
     // return themesPayload
+
+}
+
+#[tauri::command]
+fn get_settings() -> SettingsConfig{
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
+    let font_folder = format!("{current_dir}/data/");
+
+
+    let file = File::open(format!("{font_folder}/settings.json")).unwrap();
+
+    let reader = BufReader::new(file);
+
+    let json: serde_json::Value =
+        serde_json::from_reader(reader).expect("JSON was not well-formatted");
+
+    let mut payload: SettingsConfig = serde_json::from_value(json).unwrap();
+
+    return payload
 
 }

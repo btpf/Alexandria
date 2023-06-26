@@ -6,7 +6,7 @@ import styles from './ReaderTheme.module.scss'
 import UndoButton from '@resources/iconmonstr/iconmonstr-undo-7.svg'
 import TrashIcon from '@resources/feathericons/trash-2.svg'
 import { useAppSelector } from "@store/hooks";
-import { AddTheme, DeleteTheme, RenameTheme, UpdateTheme } from "@store/slices/appState";
+import { AddReaderTheme, DeleteReaderTheme, RenameReaderTheme, UpdateReaderTheme } from "@store/slices/appState";
 import { useDispatch } from "react-redux";
 import { invoke } from "@tauri-apps/api";
 
@@ -85,21 +85,21 @@ const ReaderTheme = ()=>{
           
         </select>
         <div onClick={()=>{
-          dispatch(AddTheme())
+          dispatch(AddReaderTheme())
           
         }} className={styles.newCombo}>New</div>
       </div>
 
       <div className={styles.comboContainer}>
         <div className={styles.comboContainerText}>Theme Name</div>
-        <input disabled={lastValidTheme=="Default Light"} onChange={(e)=>{
+        <input disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onChange={(e)=>{
           console.log(e.target.value,e.target.value.length, selectedTheme)
           console.log(appThemes)
           // TODO: FIX 0 length erorr
           if((appThemes[e.target.value] == undefined && e.target.value != selectedTheme) && e.target.value.length != 0){
             console.log("Name does not exist", e.target.value.length)
             toggleError(false)
-            dispatch(RenameTheme({
+            dispatch(RenameReaderTheme({
               oldThemeName: lastValidTheme, newThemeName: e.target.value
             }))
             setLastValidTheme(e.target.value)
@@ -130,7 +130,7 @@ const ReaderTheme = ()=>{
               const bounds = e.currentTarget.getBoundingClientRect()
               setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
               setColorUpdater(()=>(color:string) => {
-                dispatch(UpdateTheme({
+                dispatch(UpdateReaderTheme({
                   themeName: lastValidTheme,
                   theme: {body:{background:color}}
                 })
@@ -144,7 +144,7 @@ const ReaderTheme = ()=>{
               if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
                 return 
               }
-              dispatch(UpdateTheme({
+              dispatch(UpdateReaderTheme({
                 themeName: lastValidTheme,
                 theme: {body:{background:appThemes["Default Light"].body.background}}
               }))
@@ -159,7 +159,7 @@ const ReaderTheme = ()=>{
               const bounds = e.currentTarget.getBoundingClientRect()
               setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
               setColorUpdater(()=>(color:string) => {
-                dispatch(UpdateTheme({
+                dispatch(UpdateReaderTheme({
                   themeName: lastValidTheme,
                   theme: {body:{color}}
                 })
@@ -173,7 +173,7 @@ const ReaderTheme = ()=>{
               if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
                 return 
               }
-              dispatch(UpdateTheme({
+              dispatch(UpdateReaderTheme({
                 themeName: lastValidTheme,
                 theme: {body:{color:appThemes["Default Light"].body.color}}
               }))
@@ -193,7 +193,7 @@ const ReaderTheme = ()=>{
         changeTheme("Default Light")
         setLastValidTheme("Default Light")
         
-        dispatch(DeleteTheme(selectedTheme))
+        dispatch(DeleteReaderTheme(selectedTheme))
         // changeTheme(Object.keys(appThemes).filter((key) => key == selectedTheme)[0])
 
       }} style={{display: lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"?"none":""}} className={styles.deleteButton}><TrashIcon style={{transform:"scale(1.2)", marginRight:10}}/> Delete Theme</div>
