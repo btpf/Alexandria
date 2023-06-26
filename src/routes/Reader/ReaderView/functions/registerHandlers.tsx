@@ -263,7 +263,7 @@ export default (renditionInstance:Rendition)=>{
         // This causes the highlights to be misplaced.
         // Rerendering the views that have been loaded seems to fix this issue, but only once a timeout has been added
         setTimeout(()=>{
-          renditionInstance.views().forEach((view:any) => view.pane ? view.pane.render() : null)
+          redrawAnnotations()
         }, 1)
       }
     })
