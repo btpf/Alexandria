@@ -258,6 +258,13 @@ export default (renditionInstance:Rendition)=>{
           // @ts-expect-error - The renditionInstance definitions are not defined since we are using private members
           renditionInstance.manager.views._views[0].iframe.contentWindow.document.fonts.add(font)
         });
+        // This timeout seems to be required
+        // When setting the font internally, the calculations of the annotation internally will mess up.
+        // This causes the highlights to be misplaced.
+        // Rerendering the views that have been loaded seems to fix this issue, but only once a timeout has been added
+        setTimeout(()=>{
+          renditionInstance.views().forEach((view:any) => view.pane ? view.pane.render() : null)
+        }, 1)
       }
     })
 
