@@ -17,6 +17,7 @@ import { SelectSidebarMenu, ToggleBookmark, ToggleThemeMenu } from '@store/slice
 import SliderNavigator from './SliderNavigator/SliderNavigator'
 import SettingsBar from './SettingsBar/SettingsBar'
 import { useNavigate } from 'react-router-dom'
+import Dictionary from './ReaderView/Dictionary/Dictionary'
 
 
 
@@ -137,6 +138,7 @@ const Home = () =>{
 
       <Sidebar/>
       <SettingsBar/>
+      <Dictionary/>
 
 
       <div onClick={()=>{

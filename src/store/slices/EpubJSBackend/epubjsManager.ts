@@ -124,6 +124,7 @@ export const builderFunc = (builder:ActionReducerMapBuilder<BookInstances>) =>{
         menuToggled: false, 
         themeMenuActive: false,
         skipMouseEvent: false,
+        dictionaryWord: "",
         modals:{
           selectedCFI: "",
           quickbarModal: {visible: false, x:0, y:0},

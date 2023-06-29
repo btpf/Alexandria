@@ -93,6 +93,7 @@ export const {
   ToggleThemeMenu,
   SkipMouseEvent,
   AllowMouseEvent,
+  SetDictionaryWord,
   
   /* Modals */
   MoveQuickbarModal,

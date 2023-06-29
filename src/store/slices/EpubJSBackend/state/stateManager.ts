@@ -1,6 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
-import { sideBarUpdate } from "./stateManager.d";
+import { SetDictionaryWordPayload, sideBarUpdate } from "./stateManager.d";
 
 
 const ToggleThemeMenu:epubjs_reducer =(state, action: PayloadAction<number>) =>{
@@ -29,6 +29,9 @@ const AllowMouseEvent:epubjs_reducer = (state, action: PayloadAction<number>) =>
   state[action.payload].state.skipMouseEvent = false;
 }
 
+const SetDictionaryWord:epubjs_reducer = (state, action: PayloadAction<SetDictionaryWordPayload>) =>{
+  state[action.payload.view].state.dictionaryWord = action.payload.word
+}
 
 export const actions = {
   ToggleThemeMenu,
@@ -36,5 +39,6 @@ export const actions = {
   CloseSidebarMenu,
   ToggleMenu,
   SkipMouseEvent,
-  AllowMouseEvent
+  AllowMouseEvent,
+  SetDictionaryWord
 }

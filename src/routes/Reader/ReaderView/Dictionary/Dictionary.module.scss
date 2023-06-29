@@ -1,0 +1,43 @@
+// This scroll container is necessary because of a visual bug.
+// If there is a scrollbar and a border-radius on the container, the blockiness of the scrollbar will stick out
+// See for example: https://stackoverflow.com/questions/62789354/how-to-hide-scrollbar-thumb-in-border-radius-element
+
+.DictionaryScrollContainer{
+  background-color:var(--background-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.233);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height:300px;
+  width: 100vw;
+  max-width: 500px;
+  z-index: 100;
+  transition:0.5s;
+  // Move the default position a few pixels down
+  // transform: translateY(-40px);
+  padding-top: 10px;
+  padding-right: 50px;
+
+  grid-area: 2/1/4/1;
+  overflow: hidden;
+  
+  align-self: end;
+  justify-self: center;
+}
+.DictionaryScrollContainerCollapsed{
+  height:0px !important;
+  padding-top:0px !important;
+  border:0px;
+}
+
+.DictionaryContainer{
+  height:289px; // height - (border-top  + paddingtop)
+  width: calc(100vw - 10px);
+  max-width: 490px;
+  overflow-y:scroll;
+
+  padding:0 15px 50px 15px;
+  
+
+  transition: 1s;
+  padding-bottom: 100px;
+}

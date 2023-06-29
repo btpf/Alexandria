@@ -21,6 +21,7 @@ export interface bookStateStructure{
       menuToggled: boolean,
       themeMenuActive: boolean,
       skipMouseEvent: boolean,
+      dictionaryWord: string,
       modals:{
         selectedCFI: string,
         quickbarModal: {visible: boolean, x:number, y:number},

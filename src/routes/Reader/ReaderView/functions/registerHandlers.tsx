@@ -1,4 +1,4 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
@@ -22,6 +22,7 @@ export default (renditionInstance:Rendition)=>{
   let ThemeMenuActive!:boolean;
   let skipMouseEvent!:boolean
   let fontName!:string
+  let DictionaryWord!:string
 
   let timer:any = null;
 
@@ -39,6 +40,7 @@ export default (renditionInstance:Rendition)=>{
     selectedCFI = newState.bookState["0"].state.modals.selectedCFI;
     ThemeMenuActive = newState.bookState["0"].state.themeMenuActive;
     skipMouseEvent = newState.bookState["0"].state.skipMouseEvent
+    DictionaryWord = newState.bookState["0"].state.dictionaryWord
     fontName = newState.bookState["0"].data.theme.font
 
 
@@ -81,6 +83,12 @@ export default (renditionInstance:Rendition)=>{
       if (parentNode?.tagName.toLowerCase() == "a" && parentNode.href || null) return;
     // eslint-disable-next-line no-empty
     } catch {}
+
+    // If the dictionary is open and the book is clicked, close the dictionary
+    if(DictionaryWord){
+      store.dispatch(SetDictionaryWord({view:0, word:""}))
+      return
+    }
 
     // Prevent the page from transitioning if we are unclicking a highlight
     //   console.log(contents.window.getSelection().toString(), contents.window.getSelection().toString().length)

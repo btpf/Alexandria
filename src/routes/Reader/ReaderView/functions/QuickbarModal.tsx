@@ -8,6 +8,7 @@ import {
   SkipMouseEvent,
   ShowNoteModal,
   MoveNoteModal,
+  SetDictionaryWord,
   
 } from '@store/slices/bookState'
 
@@ -19,6 +20,7 @@ import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
 import { useAppSelector, useAppDispatch } from '@store/hooks';
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from './ModalUtility';
+import { Rendition } from 'epubjs-myh';
 
 
 const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']
@@ -30,7 +32,7 @@ const QuickbarModal = () =>{
   const modalX = useAppSelector((state) => state.bookState[0]?.state?.modals.quickbarModal.x)
   const modalY = useAppSelector((state) => state.bookState[0]?.state?.modals.quickbarModal.y)
   const selectedCFI = useAppSelector((state) => state.bookState[0]?.state?.modals.selectedCFI)
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
+  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[0]?.instance)
 
 
   function getEpubBounds(){
@@ -46,7 +48,22 @@ const QuickbarModal = () =>{
         <div className={styles.container} style={{top:modalY, left: modalX, width: QUICKBAR_MODAL_WIDTH, height: QUICKBAR_MODAL_HEIGHT}}>
           <div className={styles.actionContainer}>
             <div><Copy/></div>
-            <div><Book/></div>
+            <div><Book onClick={()=>{
+              
+              let result:any = renditionInstance.getRange(selectedCFI)
+              type EpubJSContainer = Node & {data: string}
+              result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset)
+
+              dispatch(SetDictionaryWord({view:0, word:result}))
+              renditionInstance.annotations.remove(selectedCFI, "highlight")
+              dispatch(MoveQuickbarModal({
+                view: 0,
+                x:0,
+                y:0,
+                visible: false
+              }))
+
+            }}/></div>
             <div><Search/></div>
           </div>
           <hr className={styles.divider}/>

@@ -7,4 +7,7 @@ export interface sideBarUpdate{
   
   
 
-  
+export interface SetDictionaryWordPayload{
+    view:number,
+    word: string
+  }
