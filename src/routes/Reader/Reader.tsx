@@ -13,7 +13,7 @@ import HomeIcon from '@resources/feathericons/home.svg'
 import { Rendition } from 'epubjs-myh'
 import Sidebar from './SideBar/SideBar'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SelectSidebarMenu, ToggleBookmark, ToggleThemeMenu } from '@store/slices/bookState'
+import { SelectSidebarMenu, ToggleBookmark, ToggleMenu, ToggleThemeMenu } from '@store/slices/bookState'
 import SliderNavigator from './SliderNavigator/SliderNavigator'
 import SettingsBar from './SettingsBar/SettingsBar'
 import { useNavigate } from 'react-router-dom'
@@ -112,6 +112,7 @@ const Home = () =>{
           }}/>
           <Font onClick={()=>{
             dispatch(ToggleThemeMenu(0))
+            dispatch(ToggleMenu(0))
           }}/>
           <HomeIcon onClick={()=>navigate('/')}/>
         </div>
