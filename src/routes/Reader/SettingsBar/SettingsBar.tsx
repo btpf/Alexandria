@@ -5,7 +5,7 @@ import styles from './SettingsBar.module.scss'
 import { NavItem, Rendition } from 'epubjs-myh'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { SetFont } from '@store/slices/bookState'
-import FontsContainer from './FontsContainer/FontsContainer'
+import FontsContainer from './FontsContainerV2/FontsContainer'
 import ThemesContainer from './ThemesContainer/ThemesContainer'
 
 const menuExpanded = {
@@ -42,7 +42,13 @@ const SettingsBar = ()=>{
     <div style={!MenuToggled?{backgroundColor:ReaderBackgroundColor}:{}} className={styles.overflowContainer}>
       <div style={{transform:!ThemeMenuActive?`translateY(100%)`:''}} className={styles.settingsBarContainer}>
         {/* <div className={styles.opaqueScreenActive}/> */}
-        <div className={styles.touchBar}/>
+        {/* <div className={styles.touchBar}/> */}
+
+        <div className={styles.settingsContainer}>
+        
+          {menu == "Fonts"?<FontsContainer/>:<ThemesContainer/>}
+        </div>
+
         <div className={styles.currentMenuContainer}>
           {['Fonts', 'Themes'].map((item,i)=>{
             return (
@@ -50,10 +56,6 @@ const SettingsBar = ()=>{
               <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
             )
           })}
-        </div>
-        <div className={styles.settingsContainer}>
-        
-          {menu == "Fonts"?<FontsContainer/>:<ThemesContainer/>}
         </div>
       </div>
     </div>

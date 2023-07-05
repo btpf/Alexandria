@@ -18,6 +18,7 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   min-height: 250px;
+  max-width: 650px;
   @include lt-md{
     width: 75%;
   }
@@ -45,6 +46,7 @@
   gap: 25px;
   font-weight: bold;
   font-size: 18px;
+  margin: 10px 0px 10px 0px;
 }
 .currentMenuContainer > div{
   cursor: pointer;
@@ -59,8 +61,13 @@
   height: 100%;
   align-items: center;
   overflow-y: auto;
-  width: 100%;
-  transition: 10s;
+  width: calc(100% - 20px);
+  // transition: 10s;
+
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 5px;
+  overflow-x:hidden;
 }
 
 .overflowContainer{
