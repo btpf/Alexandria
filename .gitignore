@@ -7,3 +7,4 @@ dist
 *.epub
 changelog.txt
 public/resources/webfonts.json
+public/resources/webfonts.json.bak

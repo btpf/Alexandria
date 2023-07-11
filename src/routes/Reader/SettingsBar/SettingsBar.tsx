@@ -4,9 +4,9 @@ import styles from './SettingsBar.module.scss'
 
 import { NavItem, Rendition } from 'epubjs-myh'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetFont } from '@store/slices/bookState'
 import FontsContainer from './FontsContainerV2/FontsContainer'
 import ThemesContainer from './ThemesContainer/ThemesContainer'
+import SpacingContainer from './SpacingContainer/SpacingContainer'
 
 const menuExpanded = {
   transform: `translateY(100%)`,
@@ -46,11 +46,11 @@ const SettingsBar = ()=>{
 
         <div className={styles.settingsContainer}>
         
-          {menu == "Fonts"?<FontsContainer/>:<ThemesContainer/>}
+          {DisplaySubpage(menu)}
         </div>
 
         <div className={styles.currentMenuContainer}>
-          {['Fonts', 'Themes'].map((item,i)=>{
+          {['Fonts', 'Themes', "Spacing", "Display"].map((item,i)=>{
             return (
               // <div key={i} style={{color:item==menu?"#008DDD":"black"}} onClick={()=>setMenu(item)}> {item}</div>
               <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
@@ -62,5 +62,17 @@ const SettingsBar = ()=>{
   )
 }
 
+const DisplaySubpage = (pageName:string)=>{
+  switch (pageName) {
+  case "Fonts":
+    return <FontsContainer/>
+  case "Themes":
+    return <ThemesContainer/>
+  case "Spacing":
+    return <SpacingContainer/>
+  default:
+    break;
+  }
+} 
 
 export default SettingsBar

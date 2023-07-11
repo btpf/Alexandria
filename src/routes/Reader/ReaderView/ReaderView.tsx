@@ -30,7 +30,9 @@ const mapState = (state: RootState) => {
     return {
       LoadState: state.bookState[0].loadState,
       UIBackgroundColor: state.bookState[0].data.theme.backgroundColor,
-      ThemeMenuActive: state.bookState[0].state.themeMenuActive
+      ThemeMenuActive: state.bookState[0].state.themeMenuActive,
+      renderMode:state.bookState[0]?.data.theme.renderMode,
+      readerMargins: state.bookState[0]?.data.theme.readerMargins
     }
     
   }else{
@@ -92,9 +94,11 @@ class Reader extends React.Component<ReaderProps>{
 
     this.rendition = book.renderTo(this.renderWindow.current?.id || "", 
       {
-        width: "100%", 
+        width: "25%", 
         height: "100%",
-        spread: "always"
+        spread: "always",
+        // manager: "continuous",
+        // flow: "scrolled",
       });
     this.rendition.themes.default({
       body: { "padding-top": "10px !important" },
@@ -150,8 +154,19 @@ class Reader extends React.Component<ReaderProps>{
         this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
       }
 
-
-      this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
+      // This is also found in the epubjsManager
+      // If loading the data has finished, when we reach this state, the book parsing is complete
+      // So set the overall state to complete
+      // This allows us to ensure the app is completely loaded before moving forward.
+      switch (store.getState().bookState["0"].loadState) {
+      case LOADSTATE.DATA_PARSING_COMPLETE:
+        this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
+        break;
+      case LOADSTATE.LOADING:
+        this.props.SetLoadState({view:0, state:LOADSTATE.BOOK_PARSING_COMPLETE})
+        break;
+      }
+      
 
       
     })
@@ -186,7 +201,22 @@ class Reader extends React.Component<ReaderProps>{
     const displayed = this.rendition.display();
   }
 
+
+  render(): React.ReactNode {
+    return(
+      <>
+      
+        <div style={{backgroundColor:this.props.UIBackgroundColor, width: `${this.props.readerMargins}%`, marginLeft:"auto", marginRight:"auto"}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
+        {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
+        <QuickbarModal/>
+        <NoteModal/>
+      </>
+    )
+  }
+
+
   componentWillUnmount(){
+    console.log("UNMOUNTING")
     // This handles the edgecase where the locations are loading, but the user exits the page.
     if(this.props.LoadState == LOADSTATE.LOADING){
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
@@ -197,16 +227,61 @@ class Reader extends React.Component<ReaderProps>{
     this.props.RemoveRendition(0)
     this.rendition.destroy();
   }
-  render(): React.ReactNode {
-    return(
-      <>
-      
-        <div style={{backgroundColor:this.props.UIBackgroundColor}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
-        {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
-        <QuickbarModal/>
-        <NoteModal/>
-      </>
-    )
+
+
+  componentDidUpdate(prevProps: any, prevState: any) {
+    if(this.props.renderMode != prevProps.renderMode){
+      if(this.props.renderMode == "continuous"){
+        const bookInstance = this.rendition.book
+        this.rendition.destroy();
+        this.unsubscribeHandlers()
+        this.props.RemoveRendition(0)
+
+
+        // Time to re-create the rendition
+        this.rendition = bookInstance.renderTo(this.renderWindow.current?.id || "", 
+          {
+            width: "95%", 
+            height: "100%",
+            spread: "always",
+            manager: "continuous",
+            flow: "scrolled",
+          });
+        this.rendition.themes.default({
+          body: { "padding-top": "10px !important" },
+        })
+        const {params} = this.props.router
+        this.props.SyncedAddRendition({instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+        
+        this.unsubscribeHandlers = registerHandlers(this.rendition)
+        this.rendition.display();
+      }
+    }
+    if(this.props.readerMargins != prevProps.readerMargins){
+      // This will be undefined on the first load.
+      // Undefined -> Initial default value -> Value from data
+      if(prevProps.readerMargins && this.rendition && this.rendition.currentLocation){
+        let currentLocation = 0;
+
+        if(this.props.readerMargins < prevProps.readerMargins){
+          // @ts-expect-error currentLocation has missing typescript definitions
+          currentLocation = this.rendition.currentLocation().start.cfi
+        }else{
+          // @ts-expect-error currentLocation has missing typescript definitions
+          currentLocation = this.rendition.currentLocation().end.cfi
+        }
+
+        // This will update the injected iframe styles to reflect the new properties of the stage helper
+        // This will adjust the formatting of all text, but will not update
+        // the side scrolling css trick that is used by epubjs
+        // @ts-expect-error updateLayout has no typescript definition
+        this.rendition.manager.updateLayout();
+        // This will 'scroll' to the correct location 
+        this.rendition.display(currentLocation)
+        //   newState.bookState["0"].instance.clear()
+        // 
+      }
+    }
   }
 
 }

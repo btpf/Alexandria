@@ -84,7 +84,7 @@ const SliderNavigator = ()=>{
 
 
   useEffect(() => {
-    if(renditionState != LOADSTATE.COMPLETE){
+    if(renditionState != LOADSTATE.COMPLETE && renditionState != LOADSTATE.BOOK_PARSING_COMPLETE){
       return
     }
 
@@ -109,7 +109,7 @@ const SliderNavigator = ()=>{
   useEffect(()=>{
 
 
-    if(renditionState != LOADSTATE.COMPLETE){
+    if(renditionState != LOADSTATE.COMPLETE && renditionState != LOADSTATE.BOOK_PARSING_COMPLETE){
       return
     }
 

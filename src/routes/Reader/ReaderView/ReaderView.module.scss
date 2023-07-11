@@ -8,3 +8,9 @@
   // of what is needed for the child. By setting overflow to hidden, it prevents that bug. However, this may cause issues in the future...
   overflow: hidden;
 }
+
+// This will force the rendered epubjs container to be centered no matter the margin
+.epubContainer > div{
+  margin-left:auto;
+  margin-right: auto;
+}

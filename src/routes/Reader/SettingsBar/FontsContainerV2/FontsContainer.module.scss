@@ -31,15 +31,20 @@
 
 
 
-
+.settingsContainer{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top:10px;
+}
 
 
 .fontSizeContainer{
   display: flex;
-  gap: 50px;
+  gap: 10px;
   align-items: center;
   font-weight: bold;
-  flex-grow:1;
+  // flex-grow:1;
   margin-top: 10px;
   // height: 52px;
   // padding: 15px 0px 15px 0px;
@@ -58,8 +63,8 @@
   cursor:pointer;
 }
   
-.resizeContainer:last-of-type{
-  font-size: 28px;
+.largeText{
+  font-size: 36px;
 }
   
 .resizeSize{

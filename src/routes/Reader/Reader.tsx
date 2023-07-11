@@ -86,7 +86,10 @@ const Home = () =>{
 
   const dispatch = useAppDispatch()
   return (
-    <div className={styles.readerFlex} style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} >
+    // The id is set here so that the click handler will easily know if a click originated from the readerFlex
+    <div className={styles.readerFlex} id="reader-flex" style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} onClick={(e)=>{
+      console.log(e.target)
+    }}>
 
       <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>

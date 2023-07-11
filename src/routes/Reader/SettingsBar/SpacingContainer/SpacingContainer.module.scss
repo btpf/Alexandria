@@ -1,0 +1,36 @@
+.settingContainer{
+  // border: 1px solid black;
+}
+.settingLabel{
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.527);
+  font-size:14px;
+  margin-bottom: 5px;
+  // margin-left: 30px;
+}
+.settingButtonContainer{
+  display: flex;
+  gap: 80px;
+  align-items: center;
+  font-weight: bold;
+  // height: 52px;
+  // padding: 15px 0px 15px 0px;
+  overflow:hidden;
+}
+.settingButton{
+  display:flex;
+  width: calc(48px * 0.75);
+  height: calc(48px * 0.75);
+  font-weight: bold;
+  border: 1px solid #9A9A9A;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  cursor:pointer;
+}
+
+.resizeSize{
+  width: 50px;
+  text-align: center;
+}

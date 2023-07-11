@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import styles from './FontsContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SetFont } from '@store/slices/bookState'
 import { invoke } from '@tauri-apps/api'
 import { convertFileSrc } from '@tauri-apps/api/tauri'
+import { setFontThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager'
 
 const FontsContainer = ()=>{
   const dispatch = useAppDispatch()
   const fontSize = useAppSelector((state) => state.bookState[0]?.data.theme.fontSize)
+  const fontWeight = useAppSelector((state) => state.bookState[0]?.data.theme.fontWeight)
   const [fontsList, setFontList] = useState<string[]>([])
   type ListFontsType = { fontMap: {[key: string]: boolean} };
 
@@ -25,20 +26,21 @@ const FontsContainer = ()=>{
         if(typedPayload.fontMap[item]){
           tempList.push(item)
           invoke("get_font_url", {name: item}).then((path)=>{
+            console.log("This should be my path::::")
+            console.log(path)
             const typedPath = path as string
             if(path == null){
               return
             }
             // this means if the name has an extension like .ttf
-            if(item.includes(".")){
-              const fontName = item.split(".")[0].replaceAll(" ", "_")
-              const font = new FontFace(fontName, `url(${convertFileSrc(typedPath)})`);
-              // wait for font to be loaded
-              font.load().then(()=>{
-                document.fonts.add(font);
-                console.log()
-              });
-            }
+            const fontName = item.replaceAll(" ", "_")
+            const font = new FontFace(fontName, `url(${convertFileSrc(typedPath)})`);
+            // wait for font to be loaded
+            font.load().then(()=>{
+              document.fonts.add(font);
+              console.log()
+            });
+
 
           })
         }
@@ -50,20 +52,52 @@ const FontsContainer = ()=>{
     <>
       <div className={styles.fontContainer}>
         {["Default",...fontsList].map((item)=>{
-          const fontName = item.split(".")[0].replaceAll(" ", "_")
           return (
-            <div key={item} onClick={()=>{dispatch(SetFont({view: 0, font: item}))}} style={{fontFamily:fontName}} className={styles.font}>
-              <div className={styles.fontName}>{fontName.replaceAll("_", " ")}</div>
+            <div key={item} onClick={()=>{
+              
+              dispatch(setFontThunk({view:0, font:item}))
+              
+            }} style={{fontFamily:item.replaceAll(" ", "_")}} className={styles.font}>
+              <div className={styles.fontName}>{item}</div>
             </div>
           )
         })}
       </div>
 
-      <div className={styles.fontSizeContainer}>
-        <div className={styles.resizeContainer} onClick={()=>{dispatch(SetFont({view: 0, fontSize: fontSize-5}))}}>T</div>
-        <div className={styles.resizeSize}>{fontSize}%</div>
-        <div className={styles.resizeContainer} onClick={()=>{dispatch(SetFont({view: 0, fontSize: fontSize+5}))}}>T</div>
+      <div className={styles.settingsContainer}>
+        <div>
+          <div>Font Size</div>
+          <div className={styles.fontSizeContainer}>
+          
+            <div className={styles.resizeContainer} onClick={()=>{
+              // dispatch(SetFont({view: 0, fontSize: fontSize-5}))
+              dispatch(setFontThunk({view: 0, fontSize: fontSize-5}))
+            }}>-</div>
+            <div className={styles.resizeSize}>{fontSize}%</div>
+            <div className={`${styles.resizeContainer} ${styles.largeText}`} onClick={()=>{
+              dispatch(setFontThunk({view: 0, fontSize: fontSize+5}))
+          
+            }}>+</div>
+          </div>
+        </div>
+
+        <div>
+          <div>Font Weight</div>
+          <div className={styles.fontSizeContainer}>
+            <div className={styles.resizeContainer} style={{fontWeight:100}} onClick={()=>{
+              // dispatch(SetFont({view: 0, fontSize: fontSize-5}))
+              dispatch(setFontThunk({view: 0, fontWeight: fontWeight-100}))
+            }}>-</div>
+            <div className={styles.resizeSize}>{fontWeight}</div>
+            <div className={styles.resizeContainer} style={{fontWeight:900, fontSize:"150%"}} onClick={()=>{
+              dispatch(setFontThunk({view: 0, fontWeight: Math.min(fontWeight+100, 900)}))
+          
+            }}>+</div>
+          </div>
+        </div>
+
       </div>
+      
     </>
   )
 }

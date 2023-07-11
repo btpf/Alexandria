@@ -4,8 +4,14 @@ interface dataInterface{
   progress: number,
   theme:{
     font: string,
+    fontCache: string,
     fontSize: number,
-    themeName: string
+    fontWeight: number,
+    themeName: string,
+    wordSpacing: number,
+    lineHeight: number,
+    readerMargins: number,
+    renderMode: string
   }
 }
 

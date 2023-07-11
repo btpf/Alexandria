@@ -1,3 +1,5 @@
+import { ThemeDict } from "./AppState/readerThemes"
+
 export type GlobalThemeDict = {[themeName:string]: {
     primaryBackground: string,
     secondaryBackground: string,

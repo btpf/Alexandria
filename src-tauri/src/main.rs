@@ -32,6 +32,7 @@ fn main() {
             update_data_by_hash,
             load_book_data,
             get_font_url,
+            get_font_urls,
             download_font,
             toggle_font,
             list_fonts,
@@ -74,6 +75,7 @@ fn create_or_load_data() -> Option<DataExists> {
         std::fs::write(format!("{}/settings.json", &config_path), "").unwrap();
         std::fs::write(format!("{}/ReaderThemes.json", &config_path), "").unwrap();
         std::fs::write(format!("{}/GlobalThemes.json", &config_path), "").unwrap();
+        std::fs::write(format!("{}/fonts/fonts.json", &config_path), "").unwrap();
 
         return Some(DataExists::CREATED);
     }
@@ -292,7 +294,9 @@ struct themePayload {
     #[serde(default)]
     font: String,
     #[serde(default)]
-    fontSize: u64
+    fontSize: u64,
+    #[serde(default)]
+    fontWeight: u64
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -359,9 +363,9 @@ fn get_font_url(name: &str) -> Option<String> {
     let current_dir = current_dir.as_path().to_str().unwrap();
 
 
-    let font_folder = format!("{current_dir}/data/fonts");
+    let font_folder = format!("{current_dir}/data/fonts/");
 
-    let return_string = format!("{font_folder}/{name}");
+    let return_string = format!("{font_folder}/{name}/{name} - 400.ttf");
 
     let b = std::path::Path::new(return_string.as_str()).exists();
     if(b){
@@ -371,15 +375,40 @@ fn get_font_url(name: &str) -> Option<String> {
     }
 }
 
+#[tauri::command]
+fn get_font_urls(name: &str) -> Option<Vec<String>> {
+    let current_dir = current_dir().unwrap();
+    let current_dir = current_dir.as_path().to_str().unwrap();
 
-#[derive(Serialize, Deserialize, Debug)]
+
+    let font_folder = format!("{current_dir}/data/fonts/{name}");
+    let font_folder_path = Path::new(&font_folder);
+    let b = font_folder_path.exists();
+    if(b){
+    let font_folder_dir = fs::read_dir(&font_folder).unwrap();
+        let mut vec = Vec::new();
+
+        for font_file in font_folder_dir {
+            let font_file = font_file.unwrap().path().display().to_string();
+            vec.push(font_file);
+        }
+        return Some(vec);
+    }else{
+        return None
+    }
+}
+
+
+#[derive(Serialize, Deserialize, Debug, Default)]
 struct fontStatus {
+    #[serde(default)]
     fontMap: HashMap<String, bool>
 }
 
 
 #[derive(Serialize, Deserialize, Debug)]
 struct fontsJSON {
+    #[serde(default)]
     fonts: fontStatus,
 }
 
@@ -391,7 +420,9 @@ fn download_font(url: &str, name: &str, weight: &str){
 
     let resp = reqwest::blocking::get(url).expect("request failed");
     let body = resp.bytes().expect("body invalid");
-    std::fs::write(format!("{font_folder}/{name} - {weight}.ttf"), &body);
+    fs::create_dir_all(format!("{font_folder}/{name}"));
+
+    std::fs::write(format!("{font_folder}/{name}/{name} - {weight}.ttf"), &body);
 
 
 
@@ -407,7 +438,7 @@ fn download_font(url: &str, name: &str, weight: &str){
     // println!("File Hash: {}", &fontsPayload);
     println!("{:?}", serde_json::to_string_pretty(&fontsPayload).unwrap());
 
-    fontsPayload.fonts.fontMap.insert(format!("{name} - {weight}.ttf"), true);
+    fontsPayload.fonts.fontMap.insert(format!("{name}"), true);
 
 
     std::fs::write(

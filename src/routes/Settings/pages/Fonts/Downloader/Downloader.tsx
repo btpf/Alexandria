@@ -12,7 +12,7 @@ import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 import webfonts from '../../../../../../public/resources/webfonts.json'
-const myStyle = webfonts.items.map((item) => { return {name:item.family, link:item.files.regular, files: item.files}})
+const myStyle = webfonts.items.map((item) => { return {name:item.family, link:item.files.regular,menu:item.menu, files: item.files}})
 
 // import styles from './Settings.module.scss'
 
@@ -37,32 +37,25 @@ const Downloader = ()=>{
       <div className={styles.fontRow}>
         <div></div>
         <div style={{fontFamily:selectedFont, fontWeight: selectedWeight}}>{selectedFont}</div> <SaveIcon onClick={async ()=>{
-          const response = await fetch(`https://fonts.googleapis.com/css2?family=${selectedFont}:wght@${selectedWeight}&display=swap`);
-          const data = await response.text();
-          
-          /* This Code is for handing when the request is made in a browser. It seems a ttf instead of a woff2 list is returned when using curl without headers 
-          const fontList = data.split("/*").filter(s=>s.includes("latin"))
-          console.log(fontList)
-          let fontFace = ''
-          fontFace = fontList.filter(s=>s.includes("latin-ext"))[0]
-          if(fontFace == undefined){
-            fontFace = fontList.filter(s=>s.includes("latin"))[0]
-          }
-          console.log(fontFace)
 
-          const matches = fontFace.match(/src: url\((.+woff2)\)\s/);
-          
-          console.log(matches[1]);
-          */
-          const matches = data.match(/src: url\((.+ttf)\)\s/);
-          if (matches == null){
-            console.log("No Matches Found")
-            return
+          const found = currentDataList.find(element => element.name == selectedFont);
+          console.log("Hi")
+          const myFiles = found.files;
+          if (myFiles["regular"] != undefined){
+            myFiles["400"] = myFiles["regular"]
+            delete myFiles["regular"]
           }
-          const fontUrl = matches[1]
 
-          
-          invoke("download_font", {url:fontUrl, name: selectedFont, weight: "" + selectedWeight})
+          console.log(myFiles)
+
+          Object.keys(myFiles).forEach((weight)=>{
+            if(weight.includes("italic")) {return}
+
+            invoke("download_font", {url:myFiles[weight], name: selectedFont, weight: "" + weight})
+          })
+
+
+          // invoke("download_font", {url:fontUrl, name: selectedFont, weight: "" + selectedWeight})
 
         }}/>
       </div>
@@ -128,7 +121,13 @@ const Downloader = ()=>{
                 fontFamily:currentDataList[index].name}
               
             }>{currentDataList[index].name}
-              <link href={`https://fonts.googleapis.com/css2?family=${currentDataList[index].name.replace(" ","+")}&display=swap`} rel="stylesheet"></link>
+              <style>
+                {`@font-face {
+    font-family: ${currentDataList[index].name};
+    src: url(${currentDataList[index].menu});
+}`}
+              </style>
+              {/* <link href={`https://fonts.googleapis.com/css2?family=${currentDataList[index].name.replace(" ","+")}&display=swap`} rel="stylesheet"></link> */}
             </div>
             
           </div>)}} />

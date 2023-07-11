@@ -61,6 +61,18 @@ export const CalculateBoxPosition = (renditionInstance:Rendition, cfiRange:strin
   const trueX = rangeBoxBounds.x % wrapperBounds.width
     
   let xpos = trueX + rangeBoxBounds.width /2 - boxWidth/2
+  
+  // This will handle the case where Reader Margins are set.
+  // In this case, the xposition will need to be offset by the amount that there is margins
+  // on the left side of the parent container
+  const element = renditionInstance?.manager?.container?.parentElement
+  if(element){
+    const marginLeftValue = window.getComputedStyle(element).marginLeft
+    xpos += Number(marginLeftValue.replace("px", ""))
+  }
+
+
+
   xpos = Math.min(xpos, xRightLimit - boxWidth)
   xpos = Math.max(xpos, 0)
     

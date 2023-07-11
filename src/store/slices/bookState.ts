@@ -1,13 +1,11 @@
-import { createAction, createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { ActionReducerMapBuilder, createAction, createSlice, current, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {BookInstances} from './bookStateTypes'
 
 import {actions as modalActions} from './EpubJSBackend/state/modals/modals';
 import {actions as stateActions} from './EpubJSBackend/state/stateManager';
 import {actions as dataActions} from './EpubJSBackend/data/dataManager';
-import {actions as epubjsManagerActions} from './EpubJSBackend/epubjsManager';
-import {actions as themeManagerActions, setThemeThunk} from './EpubJSBackend/data/theme/themeManager';
-
-import { builderFunc} from './EpubJSBackend/epubjsManager'
+import {actions as epubjsManagerActions, RenditionBuilder} from './EpubJSBackend/epubjsManager';
+import {actions as themeManagerActions, setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk} from './EpubJSBackend/data/theme/themeManager';
 
 // Define the initial state using that type
 const initialState: BookInstances = {}
@@ -15,6 +13,52 @@ const initialState: BookInstances = {}
 
 const uuid = require("uuid");
 
+
+const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
+  // This should take the following design for action
+
+  // {
+  //   View: View Number,
+  //   theme: Basic theme details which are modified
+  //   themeBase: the base theme css
+  // }
+
+  // This pending case is needed because when initially loading the book
+  // Two thunks, setTheme and setFont are called
+  // SetFontThunk will execute before setThemeThunk has been fulfilled
+  // It will then override the theme with the default one, since it has not been set
+  builder.addCase(setThemeThunk.pending, (state, action)=>{
+    state[action.meta.arg.view].data.theme.themeName = action.meta.arg.themeName
+  })
+  builder.addMatcher(isAnyOf(setThemeThunk.fulfilled, setFontThunk.fulfilled, setWordSpacingThunk.fulfilled, setLineHeightThunk.fulfilled), (state, action)=>{
+    const theme = action.payload.themeBase
+    console.log(action.payload.theme.fontSize)
+    let css = 
+    `body{
+      background-color: ${theme.body.background} !important;
+      color: ${theme.body.color} !important;
+      font-family: "${action.payload.theme.font}" !important;
+      font-size: ${action.payload.theme.fontSize}% !important;
+      font-weight: ${action.payload.theme.fontWeight} !important;
+      word-spacing: ${action.payload.theme.wordSpacing}% !important;
+      line-height: ${action.payload.theme.lineHeight}% !important;
+      margin-left: 200px !important;
+    }
+    `
+    css += action.payload.theme.fontCache
+
+    state[action.payload.view].data.theme = {...action.payload.theme}
+
+    const id = uuid.v4();
+    // Register Theme object
+    state[action.payload.view].instance.themes.registerCss(id,css);
+    // state[action.payload.view].instance.themes.registerRules(id + "WOW", {body:{color:theme.body.color, background:theme.body.background}});
+    // Select Theme
+    state[action.payload.view].instance.themes.select(id)
+  
+    
+  })
+}
 
 export const bookState = createSlice({
   name: 'bookState',
@@ -34,34 +78,8 @@ export const bookState = createSlice({
   },
 
   extraReducers: (builder) => {
-    builderFunc(builder),
-    builder.addCase(setThemeThunk.fulfilled, (state, action)=>{
-      const themeName = action.payload.themeName
-      const rendition = state[action.payload.view].instance
-      const theme = action.payload.theme
-    
-     
-    
-      // console.log(themeObject)
-      // if(!themeObject){
-      //   rendition.themes.select("default")
-      //   // Force the current page to rerender
-      //   // This will break entire project since .start() will also remove all event handlers
-      //   if(rendition.manager){
-      //     rendition.start();
-      //   }
-      //   return
-      // }
-      const id = uuid.v4();
-      // Register Theme object
-      state[action.payload.view].instance.themes.registerRules(id,theme);
-      // Select Theme
-      state[action.payload.view].instance.themes.select(id)
-    
-      state[action.payload.view].data.theme.themeName = themeName
-      
-    
-    })
+    RenditionBuilder(builder)
+    ThemeBuilder(builder)
   },
 })
 
@@ -75,8 +93,10 @@ export const {
   SetLoadState, 
 
   /* themeManager */
-  SetFont,
+  // SetFont,
   // SetTheme,
+  setRenderMode,
+  setReaderMargins,
 
   /* dataManager */
   ToggleBookmark,

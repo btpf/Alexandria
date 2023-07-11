@@ -12,7 +12,7 @@ import { LOADSTATE } from "../constants"
 import { bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
-import { setThemeThunk } from "./data/theme/themeManager"
+import { setFontThunk, setThemeThunk } from "./data/theme/themeManager"
 
 
 
@@ -85,13 +85,13 @@ export const SyncedAddRendition = createAsyncThunk(
         view: 0,
         themeName: result.data.theme.themeName
       }))
-
-      thunkAPI.dispatch(bookState.actions.SetFont({
+      
+      thunkAPI.dispatch(setFontThunk({
         view: 0,
         font: result.data.theme.font,
-        fontSize: result.data.theme.fontSize
+        fontSize: result.data.theme.fontSize,
+        fontWeight: result.data.theme.fontWeight
       }))
-      
     }
           
     return true
@@ -100,7 +100,7 @@ export const SyncedAddRendition = createAsyncThunk(
 
 
 
-export const builderFunc = (builder:ActionReducerMapBuilder<BookInstances>) =>{
+export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>) =>{
   builder.addCase(SyncedAddRendition.pending, (state, action) => {
     console.log("PENDING CASE")
     const t:bookStateStructure = {
@@ -115,8 +115,14 @@ export const builderFunc = (builder:ActionReducerMapBuilder<BookInstances>) =>{
         bookmarks: new Set(), 
         theme:{
           font:"Helvetica, sans-serif", 
+          fontCache: "",
           fontSize:100,
-          themeName:'Default White'
+          fontWeight: 400,
+          themeName:'Default Light',
+          wordSpacing: 0,
+          lineHeight: 100,
+          readerMargins: 100,
+          renderMode: "default"
         }
       }, 
       state:{
@@ -138,6 +144,16 @@ export const builderFunc = (builder:ActionReducerMapBuilder<BookInstances>) =>{
   
   builder.addCase(SyncedAddRendition.fulfilled, (state, action) => {
     console.log("Fulfulled Initial Load")
+
+    switch (state[action.meta.arg.UID].loadState) {
+    case LOADSTATE.BOOK_PARSING_COMPLETE:
+      state[action.meta.arg.UID].loadState = LOADSTATE.COMPLETE
+      break;
+    case LOADSTATE.LOADING:
+      state[action.meta.arg.UID].loadState = LOADSTATE.DATA_PARSING_COMPLETE
+      break;
+    }
+
   })
 }
   

@@ -39,18 +39,25 @@ const Installed = ()=>{
       setFontList(typedResponse.fontMap)
       Object.keys(typedResponse.fontMap).forEach((item)=>{
         // console.log(item)
-        invoke("get_font_url", {name: item}).then((path)=>{
-          const typedPath = path as string
-          if(!path) return
-          // this means if the name has an extension like .ttf
-          if(item.includes(".")){
-            const fontName = item.split(".")[0].replaceAll(" ", "_")
-            const font = new FontFace(fontName, `url(${convertFileSrc(typedPath)})`);
-            // wait for font to be loaded
-            font.load().then(()=>{
-              document.fonts.add(font);
-            });
+        invoke("get_font_urls", {name: item}).then((paths)=>{
+          const typedPaths = paths as [string]
+          const newPath = typedPaths.find((path)=> path.includes("400.ttf"))
+          if(newPath == undefined){
+            console.log("font was not found")
+            return
           }
+          console.log(newPath)
+          // if(!path) return
+          // // this means if the name has an extension like .ttf
+          // if(item.includes(".")){
+          const fontName = item.split(".")[0].replaceAll(" ", "_")
+          console.log("LOADING", fontName, "With path", newPath)
+          const font = new FontFace(fontName, `url(${convertFileSrc(newPath)})`);
+          //   // wait for font to be loaded
+          font.load().then(()=>{
+            document.fonts.add(font);
+          });
+          // }
 
         })
       })

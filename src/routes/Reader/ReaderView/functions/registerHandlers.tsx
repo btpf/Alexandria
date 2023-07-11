@@ -12,6 +12,7 @@ import {
   QUICKBAR_MODAL_WIDTH 
 } from "./ModalUtility";
 
+// import {bookStateStructure} from 'src/store/slices/EpubJSBackend/epubjsManager.d'
 
 export default (renditionInstance:Rendition)=>{
 
@@ -26,31 +27,37 @@ export default (renditionInstance:Rendition)=>{
 
   let timer:any = null;
 
+  let flexContainer:(HTMLElement | null | undefined) = null;
+
   // https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
   const shallowCompareEqual = (obj1:any, obj2:any) =>
     Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(key => obj1[key] === obj2[key]);
 
-
+  // type themeStateType = bookStateStructure["data"]["theme"]
+  
   let oldThemeState = {};
-  const unsubscribe = store.subscribe(()=>{
+  const unsubscribeRedux = store.subscribe(()=>{
     const newState = store.getState()
-    NoteModalVisible = newState.bookState["0"].state.modals.noteModal.visible
-    QuickbarModalVisible = newState.bookState["0"].state.modals.quickbarModal.visible;
-    selectedCFI = newState.bookState["0"].state.modals.selectedCFI;
-    ThemeMenuActive = newState.bookState["0"].state.themeMenuActive;
-    skipMouseEvent = newState.bookState["0"].state.skipMouseEvent
-    DictionaryWord = newState.bookState["0"].state.dictionaryWord
-    fontName = newState.bookState["0"].data.theme.font
+    NoteModalVisible = newState.bookState["0"]?.state.modals?.noteModal?.visible
+    QuickbarModalVisible = newState.bookState["0"]?.state?.modals?.quickbarModal?.visible;
+    selectedCFI = newState.bookState["0"]?.state?.modals?.selectedCFI;
+    ThemeMenuActive = newState.bookState["0"]?.state?.themeMenuActive;
+    skipMouseEvent = newState.bookState["0"]?.state?.skipMouseEvent
+    DictionaryWord = newState.bookState["0"]?.state?.dictionaryWord
+    fontName = newState.bookState["0"]?.data?.theme?.font
 
-
-    if(!shallowCompareEqual(newState.bookState["0"].data.theme, oldThemeState)){
+    const theme = newState.bookState["0"]?.data?.theme
+    if(theme && !shallowCompareEqual(theme, oldThemeState)){
       oldThemeState = newState.bookState["0"].data.theme
       redrawAnnotations()
-      LoadFonts()
     }
   })
 
+  const unsubscribe = ()=>{
+    unsubscribeRedux()
+    flexContainer?.removeEventListener("click", flexClickHandler)
+  }
 
 
 
@@ -63,10 +70,16 @@ export default (renditionInstance:Rendition)=>{
       timer = null
     }
   })
+  console.log("REGISTERING HANDLER FOR HANDLER")
 
-  renditionInstance.on("click", (event:any, contents:any) =>{
-    console.log("click event")
+  
 
+  const clickHandler = (event:any) =>{
+    
+    // If the element clicked was the 'reader-flex' container,
+    // then the epub iframe was not clicked (Margins were set and click landed outside of epubjs width)
+
+    const whitespaceClicked = event.target.id == "reader-flex"
 
     // If a triple click, prevent it from going through (As this is a useless feature)
     if (event.detail > 2){
@@ -100,9 +113,13 @@ export default (renditionInstance:Rendition)=>{
 
 
     if(event.detail == 1 && timer == null){
-    // If text is current selected and the quickbar is visible
-    // This is important because when selecting text, a click event will register. 
-    // However, in this state, text will be selected. If we are in this state, we know we can invalidate it. 
+      // Helper functions courtesy of https://github.com/johnfactotum/epubjs-tips
+      const getSelections = () => renditionInstance.getContents().map(contents => contents.window.getSelection())
+      const clearSelection = () => getSelections().forEach(s => s.removeAllRanges())
+        
+      const getSelectedText = () => getSelections().reduce((acc, cur) => acc+cur, "")
+
+
       if(NoteModalVisible || QuickbarModalVisible){
 
         // If the note popup is visible
@@ -118,9 +135,15 @@ export default (renditionInstance:Rendition)=>{
 
         }
 
-        // If text is current selected and the quickbar is visible
-        if(QuickbarModalVisible && contents.window.getSelection().toString().length == 0){
+        //If text is current selected and the quickbar is visible
+        // Selected will trigger first. When text is selected, the quickbar will show
+        // However, if this passes, then it will immediately unshow, without having the change to deselect (As it should)
+        console.log("GETTING ALL SELECTIONS")
 
+
+        if(QuickbarModalVisible && getSelectedText().length == 0){
+          console.log("QUICKBAR CLICK ACTIVATED")
+          console.log(renditionInstance.manager?.container)
 
           // Deselect the text
           renditionInstance.annotations.remove(selectedCFI, "highlight")
@@ -130,7 +153,7 @@ export default (renditionInstance:Rendition)=>{
         }
 
         console.log("Contents remove all ranges")
-        contents.window.getSelection().removeAllRanges();
+        clearSelection()
       }else{
         
         const wrapper = renditionInstance?.manager?.container;
@@ -140,10 +163,27 @@ export default (renditionInstance:Rendition)=>{
           return
         }
 
-        const third = wrapper.clientWidth / 3;
-        // event.pageX is where the mouse was on the page
-        // wrapper.scrollLeft is how far from the left the wrapper is
-        const x = event.pageX - wrapper.scrollLeft;
+        let totalMargins = 0
+        let third = 0
+        let x = 0
+
+        // If the epubjs iframe was clicked
+        if(!whitespaceClicked){
+        // Here, the X is how far away from the left side of the screen the wrapper is.
+        // This will be affected by the reader margins in settings.
+          totalMargins = (wrapper.getBoundingClientRect().x * 2)
+
+          third = (wrapper.clientWidth + totalMargins) / 3;
+          // event.pageX is where the mouse was on the page
+          // wrapper.scrollLeft is how far from the left the wrapper is
+          // wrapper here refers to the css epub.js uses to hide loaded, but not visible pages.
+          x = (event.pageX + totalMargins/2) - wrapper.scrollLeft;
+        }else{
+          third = event.target.getBoundingClientRect().width / 3
+          x = event.pageX
+        }
+
+
 
         timer = setTimeout(()=>{
 
@@ -152,13 +192,13 @@ export default (renditionInstance:Rendition)=>{
         
             // This will prevent a crash.
             // Found in f914e547, When clicking from TOC, app will crash.
-            if(contents.window.getSelection() == null){
+            if(getSelectedText() == null){
               console.log("Crash Prevented")
               timer = null
               return
             }
             // This will prevent case where text is quickly highlighted causing page to transition
-            if (contents.window.getSelection().toString().length == 0) {
+            if (getSelectedText().length == 0) {
               if (x < third) {
                 renditionInstance.prev()
               } else if (x > (third * 2)) {
@@ -185,11 +225,14 @@ export default (renditionInstance:Rendition)=>{
       }
     }
 
-  });
+  }
+  renditionInstance.on("click", clickHandler);
+
+
 
 
   renditionInstance.on("selected", (cfiRange:any, contents:Contents)=>{
-
+    console.log("SELECTED ACTIVATED")
     // store.dispatch(SkipMouseEvent(0))
     renditionInstance.annotations.highlight(cfiRange, {}, (e:MouseEvent) => {
       console.log("Skip event id: 3")
@@ -241,46 +284,18 @@ export default (renditionInstance:Rendition)=>{
     
   renditionInstance.on('rendered', redrawAnnotations)
 
-  // This code will handle injecting custom fonts into the iframe. Injects on draw and redraw.
-  // TODO: DEBOUNCE THIS CODE
-  const LoadFonts = () => {
-    console.log("LoadFont")
-    console.log(fontName)
-
-    invoke("get_font_url", {name: fontName}).then((path)=>{
-      if(path == null){
-        return
-      }
-      const typedPath = path as string
-      // this means if the name has an extension like .ttf
-      if(fontName.includes(".")){
-        const font = new FontFace(fontName.split(".")[0].replaceAll(" ", "_"), `url(${convertFileSrc(typedPath)})`);
-
-        // If in any case the iframe is not ready, return to prevent crashing
-        // @ts-expect-error - The renditionInstance definitions are not defined since we are using private members
-        if(!renditionInstance || !renditionInstance.manager || !renditionInstance.manager.views || !renditionInstance.manager.views._views || !renditionInstance.manager.views._views[0]){
-          return
-        }
-        // wait for font to be loaded
-        font.load().then(()=>{
-          // @ts-expect-error - The renditionInstance definitions are not defined since we are using private members
-          renditionInstance.manager.views._views[0].iframe.contentWindow.document.fonts.add(font)
-        });
-        // This timeout seems to be required
-        // When setting the font internally, the calculations of the annotation internally will mess up.
-        // This causes the highlights to be misplaced.
-        // Rerendering the views that have been loaded seems to fix this issue, but only once a timeout has been added
-        setTimeout(()=>{
-          redrawAnnotations()
-        }, 1)
-      }
-    })
-
-    //     })
-    //   }
-    // })
+  const flexClickHandler = (e)=>{
+    if(e.target == flexContainer){
+      clickHandler(e)
+    }
   }
-  renditionInstance.on('rendered', LoadFonts)
+  renditionInstance.on("attached",()=>{
+    flexContainer = renditionInstance.manager?.container.parentElement?.parentElement
+    if(flexContainer != null){
+      flexContainer.addEventListener("click", flexClickHandler)
+    }
 
+  })
   return unsubscribe
 }
+
