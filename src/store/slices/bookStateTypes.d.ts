@@ -5,7 +5,9 @@ interface BackendInstance{
   instance: Rendition
   UID: number,
   hash: string,
-  title: string
+  title: string,
+  renderMode?: string,
+  readerMargins?: number,
 }
 
 export interface BookInstances {

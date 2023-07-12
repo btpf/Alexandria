@@ -231,37 +231,57 @@ class Reader extends React.Component<ReaderProps>{
 
 
   componentDidUpdate(prevProps: any, prevState: any) {
-    if(this.props.renderMode != prevProps.renderMode){
-      if(this.props.renderMode == "continuous"){
-        const bookInstance = this.rendition.book
-        this.rendition.destroy();
-        this.unsubscribeHandlers()
-        this.props.RemoveRendition(0)
+    if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode){
+      // if(this.props.renderMode == "continuous"){
+      const bookInstance = this.rendition.book
+      this.rendition.destroy();
+      this.unsubscribeHandlers()
+      this.props.RemoveRendition(0)
+      const renderMode = this.props.renderMode
+
+      let mySettings:any = {
+        width: "100%", 
+        height: "100%",
+        spread: "always",
+        allowScriptedContent: true}
 
 
-        // Time to re-create the rendition
-        this.rendition = bookInstance.renderTo(this.renderWindow.current?.id || "", 
-          {
-            width: "95%", 
-            height: "100%",
-            spread: "always",
-            manager: "continuous",
-            flow: "scrolled",
-          });
-        this.rendition.themes.default({
-          body: { "padding-top": "10px !important" },
-        })
-        const {params} = this.props.router
-        this.props.SyncedAddRendition({instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+      const layouts = {
+        'auto': { width: '100%', flow: 'paginated', maxSpreadColumns: 2 },
         
-        this.unsubscribeHandlers = registerHandlers(this.rendition)
-        this.rendition.display();
+        'single': { width: '100%', flow: 'paginated', spread: 'none' },
+        
+        'scrolled': { width: '100%', flow: 'scrolled-doc' },
+        
+        'continuous': { width: '100%', flow: 'scrolled', manager: 'continuous' },
+        
       }
+
+      mySettings = {...mySettings, 
+        ...layouts[renderMode]
+      }
+      
+      console.log("LOGGING BOOK INSTANCE", this.props.renderMode, prevProps.renderMode)
+      console.log(bookInstance)
+      // Time to re-create the rendition
+      this.rendition = bookInstance.renderTo(this.renderWindow.current?.id || "", 
+        mySettings);
+      this.rendition.themes.default({
+        body: { "padding-top": "10px !important" },
+      })
+      const {params} = this.props.router
+      this.props.SyncedAddRendition({readerMargins: this.props.readerMargins, renderMode, instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+        
+      this.unsubscribeHandlers = registerHandlers(this.rendition)
+      this.rendition.display();
+      // }
     }
     if(this.props.readerMargins != prevProps.readerMargins){
+      console.log("DID I CRASH HERE?", this.rendition)
       // This will be undefined on the first load.
       // Undefined -> Initial default value -> Value from data
       if(prevProps.readerMargins && this.rendition && this.rendition.currentLocation){
+        console.log("2 reset", this.props.readerMargins)
         let currentLocation = 0;
 
         // // Logic if using [epubjs-myh](MrMYHuang/epub.js)
@@ -291,6 +311,7 @@ class Reader extends React.Component<ReaderProps>{
         //   newState.bookState["0"].instance.clear()
         // 
       }
+      console.log("3")
     }
   }
 

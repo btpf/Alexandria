@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import FontsContainer from './FontsContainerV2/FontsContainer'
 import ThemesContainer from './ThemesContainer/ThemesContainer'
 import SpacingContainer from './SpacingContainer/SpacingContainer'
+import DisplayContainer from './DisplayContainer/DisplayContainer'
 
 const menuExpanded = {
   transform: `translateY(100%)`,
@@ -70,6 +71,8 @@ const DisplaySubpage = (pageName:string)=>{
     return <ThemesContainer/>
   case "Spacing":
     return <SpacingContainer/>
+  case "Display":
+    return <DisplayContainer/>
   default:
     break;
   }

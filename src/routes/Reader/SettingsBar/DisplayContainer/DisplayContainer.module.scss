@@ -1,0 +1,37 @@
+.optionsContainer{
+  display:flex;
+  flex-direction: row;
+  gap:10px;
+  justify-content: space-evenly;
+  width:100%;
+}
+
+.optionContainer{
+  // font-size:28px;
+  // display:flex;
+  // flex-direction: column;
+  height:90px;
+  width:200px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 600;
+  cursor:pointer;
+  color:rgba(0, 0, 0, 0.8);
+  // justify-content: space-between;
+}
+.optionContainer > svg{
+  display:block;
+}
+.doubleColumnIcon{
+  // width:calc(24px * 3* 2);
+  // height:calc(24px * 3 );
+}
+.doubleColumnIcon > svg{
+  // display:flex;
+  // align-items: center;
+  // scale:3;
+  // height: 10em;
+}

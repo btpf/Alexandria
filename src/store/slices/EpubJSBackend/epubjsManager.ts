@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api"
 import { castDraft } from "immer"
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from "src/routes/Reader/ReaderView/functions/ModalUtility"
 // import { bookState } from "../bookStateSlice"
-import { bookState } from "../bookState"
+import { bookState, setRenderMode } from "../bookState"
 
 
 // import { bookState } from "../bookStateSlice"
@@ -92,6 +92,8 @@ export const SyncedAddRendition = createAsyncThunk(
         fontSize: result.data.theme.fontSize,
         fontWeight: result.data.theme.fontWeight
       }))
+      // if(renditionData.renderMode)
+      //   thunkAPI.dispatch(setRenderMode({view:0, renderMode: renditionData.renderMode}))
     }
           
     return true
@@ -121,8 +123,8 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           themeName:'Default Light',
           wordSpacing: 0,
           lineHeight: 100,
-          readerMargins: 100,
-          renderMode: "default"
+          readerMargins: action.meta.arg.readerMargins? action.meta.arg.readerMargins: 100,
+          renderMode: action.meta.arg.renderMode?action.meta.arg.renderMode: "default"
         }
       }, 
       state:{
