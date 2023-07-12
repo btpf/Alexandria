@@ -7,9 +7,6 @@
 }
 
 .optionContainer{
-  // font-size:28px;
-  // display:flex;
-  // flex-direction: column;
   height:90px;
   width:200px;
   display:flex;
@@ -20,18 +17,7 @@
   font-weight: 600;
   cursor:pointer;
   color:rgba(0, 0, 0, 0.8);
-  // justify-content: space-between;
 }
 .optionContainer > svg{
   display:block;
-}
-.doubleColumnIcon{
-  // width:calc(24px * 3* 2);
-  // height:calc(24px * 3 );
-}
-.doubleColumnIcon > svg{
-  // display:flex;
-  // align-items: center;
-  // scale:3;
-  // height: 10em;
 }
