@@ -41,8 +41,6 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-size: ${action.payload.theme.fontSize}% !important;
       font-weight: ${action.payload.theme.fontWeight} !important;
       word-spacing: ${action.payload.theme.wordSpacing}% !important;
-      line-height: ${action.payload.theme.lineHeight}% !important;
-      margin-left: 200px !important;
     }
     `
     css += action.payload.theme.fontCache

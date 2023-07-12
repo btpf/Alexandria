@@ -1,13 +1,13 @@
 import styles from './Search.module.scss'
 import React, { useState } from 'react'
-import { NavItem, Rendition } from 'epubjs-myh';
+import { NavItem, Rendition } from 'epubjs';
 import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
 import { CloseSidebarMenu } from '@store/slices/bookState'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { FindResults } from 'epubjs-myh/types/section';
+import { FindResults } from 'epubjs/types/section';
 
 
 const Search = ()=>{

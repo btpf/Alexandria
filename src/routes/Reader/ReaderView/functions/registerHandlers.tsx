@@ -2,8 +2,8 @@ import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQ
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { Contents, EpubCFI, Rendition } from "epubjs-myh";
-import View from "epubjs-myh/types/managers/view";
+import { Contents, EpubCFI, Rendition } from "epubjs";
+import View from "epubjs/types/managers/view";
 import { 
   CalculateBoxPosition, 
   NOTE_MODAL_HEIGHT, 

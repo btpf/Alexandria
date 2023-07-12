@@ -1,4 +1,4 @@
-import { Contents, EpubCFI, Rendition } from "epubjs-myh";
+import { Contents, EpubCFI, Rendition } from "epubjs";
 
 
 export const QUICKBAR_MODAL_WIDTH = 200

@@ -23,8 +23,8 @@ import jah from "@resources/images/jah.jpg"
 
 import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
 import {useDropzone, Accept} from 'react-dropzone'
-import Epub from 'epubjs-myh';
-import { BookOptions } from 'epubjs-myh/types/book';
+import Epub from 'epubjs';
+import { BookOptions } from 'epubjs/types/book';
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 const books = [

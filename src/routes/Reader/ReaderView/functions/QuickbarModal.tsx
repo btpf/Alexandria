@@ -20,7 +20,7 @@ import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
 import { useAppSelector, useAppDispatch } from '@store/hooks';
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from './ModalUtility';
-import { Rendition } from 'epubjs-myh';
+import { Rendition } from 'epubjs';
 
 
 const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']

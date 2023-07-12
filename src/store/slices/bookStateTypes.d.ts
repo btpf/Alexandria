@@ -1,4 +1,4 @@
-import { Rendition } from 'epubjs-myh'
+import { Rendition } from 'epubjs'
 import { bookStateStructure } from "./EpubJSBackend/epubjsManager.d.ts"
 
 interface BackendInstance{

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './SideBar.module.scss'
 
 
-import { NavItem, Rendition } from 'epubjs-myh'
+import { NavItem, Rendition } from 'epubjs'
 import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { SelectSidebarMenu } from '@store/slices/bookState'

@@ -10,7 +10,7 @@ import ArrowLeft from '@resources/feathericons/arrow-left.svg'
 import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import HomeIcon from '@resources/feathericons/home.svg'
 
-import { Rendition } from 'epubjs-myh'
+import { Rendition } from 'epubjs'
 import Sidebar from './SideBar/SideBar'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { SelectSidebarMenu, ToggleBookmark, ToggleMenu, ToggleThemeMenu } from '@store/slices/bookState'
