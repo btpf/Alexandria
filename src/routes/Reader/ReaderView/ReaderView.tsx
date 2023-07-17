@@ -32,7 +32,8 @@ const mapState = (state: RootState) => {
       UIBackgroundColor: state.bookState[0].data.theme.backgroundColor,
       ThemeMenuActive: state.bookState[0].state.themeMenuActive,
       renderMode:state.bookState[0]?.data.theme.renderMode,
-      readerMargins: state.bookState[0]?.data.theme.readerMargins
+      readerMargins: state.bookState[0]?.data.theme.readerMargins,
+      progress: state.bookState[0]?.data?.progress
     }
     
   }else{
@@ -229,6 +230,9 @@ class Reader extends React.Component<ReaderProps>{
 
 
   componentDidUpdate(prevProps: any, prevState: any) {
+    if(this.props.LoadState != prevProps.loadState && this.props.LoadState == LOADSTATE.COMPLETE){
+      this.rendition.display(this.props.progress)
+    }
     if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode){
       // if(this.props.renderMode == "continuous"){
       const bookInstance = this.rendition.book

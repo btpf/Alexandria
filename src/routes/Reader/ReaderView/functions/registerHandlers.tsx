@@ -26,6 +26,7 @@ export default (renditionInstance:Rendition)=>{
   let fontName!:string
   let DictionaryWord!:string
   let isProgrammaticProgressUpdate!:boolean
+  let loadState!:LOADSTATE
 
   let timer:any = null;
 
@@ -49,6 +50,7 @@ export default (renditionInstance:Rendition)=>{
     DictionaryWord = newState.bookState["0"]?.state?.dictionaryWord
     fontName = newState.bookState["0"]?.data?.theme?.font
     isProgrammaticProgressUpdate = newState.bookState['0']?.state?.isProgrammaticProgressUpdate
+    loadState = newState.bookState['0']?.loadState
 
     const theme = newState.bookState["0"]?.data?.theme
     if(theme && !shallowCompareEqual(theme, oldThemeState)){
@@ -302,8 +304,9 @@ export default (renditionInstance:Rendition)=>{
       
   })
 
+  // Handle case where epubJS dispatches it's own event (Like if the user scrolled onto a new page)
   const pageTurnHandler = (e:any)=>{
-
+    if(loadState != LOADSTATE.COMPLETE) return
     if(isProgrammaticProgressUpdate){
       store.dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
       return
