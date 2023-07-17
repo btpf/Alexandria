@@ -45,7 +45,10 @@ const SliderNavigator = ()=>{
 
 
   const [markers, setMarkers] = useState<MarkType>(defaultMarks)
+  const [mouseOnSlider, setMouseOnSlider] = useState(false)
 
+  // This is used to animate the mouse if scrolling
+  const [placeholderProgress, setPlaceholderProgress] = useState(0)
 
 
 
@@ -83,7 +86,6 @@ const SliderNavigator = ()=>{
     if(renditionState != LOADSTATE.COMPLETE && renditionState != LOADSTATE.BOOK_PARSING_COMPLETE){
       return
     }
-
     // If the previous update event was because of the epub reader
     // cancel the event
     if(isProgrammaticProgressUpdate){
@@ -130,13 +132,35 @@ const SliderNavigator = ()=>{
       style={{"--slider-track-color":"red"}}
 
       onChange={(e)=>{
-        if(typeof e === "number"){
-          dispatch(SetProgress({view: 0, progress: e/1000}))
-          
+        if(typeof e !== "number"){
+          return
         }
 
+        if(mouseOnSlider){
+          setPlaceholderProgress(e)
+          return
+        }
+
+        // This complicates logic and can likely be removed.
+        // dispatch(SetProgress({view: 0, progress: e/1000}))
+
+
       }}
-      value={currentPercent * 1000}
+
+
+      onBeforeChange={(e)=>{
+        setMouseOnSlider(true)
+      }}
+      onAfterChange={(e)=>{
+        if(typeof e !== "number"){
+          return
+        }
+
+        setMouseOnSlider(false)
+
+        dispatch(SetProgress({view: 0, progress: e/1000}))
+      }}
+      value={mouseOnSlider? placeholderProgress: currentPercent * 1000}
       max={1000}/>
   )
 }

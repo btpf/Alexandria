@@ -25,6 +25,7 @@ export default (renditionInstance:Rendition)=>{
   let skipMouseEvent!:boolean
   let fontName!:string
   let DictionaryWord!:string
+  let isProgrammaticProgressUpdate!:boolean
 
   let timer:any = null;
 
@@ -47,6 +48,7 @@ export default (renditionInstance:Rendition)=>{
     skipMouseEvent = newState.bookState["0"]?.state?.skipMouseEvent
     DictionaryWord = newState.bookState["0"]?.state?.dictionaryWord
     fontName = newState.bookState["0"]?.data?.theme?.font
+    isProgrammaticProgressUpdate = newState.bookState['0']?.state?.isProgrammaticProgressUpdate
 
     const theme = newState.bookState["0"]?.data?.theme
     if(theme && !shallowCompareEqual(theme, oldThemeState)){
@@ -301,6 +303,11 @@ export default (renditionInstance:Rendition)=>{
   })
 
   const pageTurnHandler = (e:any)=>{
+
+    if(isProgrammaticProgressUpdate){
+      store.dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
+      return
+    }
     console.log("pageturnhandler called")
     // On the event from epubjs, set the epubNavigate to true
     // This will cancel out a loop of the epub reader changing
