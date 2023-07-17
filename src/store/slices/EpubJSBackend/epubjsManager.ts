@@ -110,7 +110,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
       instance: action.meta.arg.instance,
       UID: action.meta.arg.UID, 
       hash: action.meta.arg.hash,
-      loadState:LOADSTATE.LOADING, 
+      loadState:action.meta.arg.initialLoadState? action.meta.arg.initialLoadState:LOADSTATE.LOADING, 
       data:{
         progress: 0,
         highlights:{},
@@ -128,6 +128,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
         }
       }, 
       state:{
+        isProgrammaticProgressUpdate: false,
         sidebarMenuSelected: false,
         menuToggled: false, 
         themeMenuActive: false,

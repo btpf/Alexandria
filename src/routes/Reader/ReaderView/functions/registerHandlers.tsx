@@ -1,4 +1,5 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetModalCFI, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { LOADSTATE } from "@store/slices/constants";
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
@@ -295,7 +296,35 @@ export default (renditionInstance:Rendition)=>{
       flexContainer.addEventListener("click", flexClickHandler)
     }
 
+
+      
   })
+
+  const pageTurnHandler = (e:any)=>{
+    console.log("pageturnhandler called")
+    // On the event from epubjs, set the epubNavigate to true
+    // This will cancel out a loop of the epub reader changing
+    store.dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
+
+    // This may be preventing a race condition with setEpubNavigate
+    setTimeout(()=>{
+      store.dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+    }, 1)
+  }
+
+
+  renditionInstance.on("locationChanged", pageTurnHandler)
+
+
+  renditionInstance.on("started", ()=>{
+    console.log("Book started")
+  })
+
+  // renditionInstance.on("displayed", ()=>{
+
+  // })
+
+
   return unsubscribe
 }
 

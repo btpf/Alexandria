@@ -7,6 +7,15 @@ const ToggleThemeMenu:epubjs_reducer =(state, action: PayloadAction<number>) =>{
   state[action.payload].state.themeMenuActive = !state[action.payload].state.themeMenuActive
 }
 
+type ProgrammaticProgressUpdatePayload = {
+  view: number,
+  state: boolean
+}
+
+const setProgrammaticProgressUpdate:epubjs_reducer =(state, action: PayloadAction<ProgrammaticProgressUpdatePayload>) =>{
+  state[action.payload.view].state.isProgrammaticProgressUpdate = action.payload.state
+}
+
 const SelectSidebarMenu:epubjs_reducer = (state, action: PayloadAction<sideBarUpdate>) =>{
   state[action.payload.view].state.sidebarMenuSelected = action.payload.state
 }
@@ -40,5 +49,6 @@ export const actions = {
   ToggleMenu,
   SkipMouseEvent,
   AllowMouseEvent,
-  SetDictionaryWord
+  SetDictionaryWord,
+  setProgrammaticProgressUpdate
 }

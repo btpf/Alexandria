@@ -23,6 +23,7 @@ export interface bookStateStructure{
     hash: string
     loadState: LOADSTATE,
     state:{
+      isProgrammaticProgressUpdate: boolean,
       sidebarMenuSelected: boolean|string,
       menuToggled: boolean,
       themeMenuActive: boolean,

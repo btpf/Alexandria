@@ -9,7 +9,7 @@ import 'rc-slider/assets/index.css';
 
 import { NavItem, Rendition } from 'epubjs'
 import Spine from 'epubjs/types/spine'
-import { SetProgress } from '@store/slices/bookState';
+import { setProgrammaticProgressUpdate, SetProgress } from '@store/slices/bookState';
 import { LOADSTATE } from '@store/slices/constants';
 
 
@@ -36,16 +36,12 @@ const SliderNavigator = ()=>{
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const renditionState = useAppSelector((state) => state.bookState[0]?.loadState)
   const currentPercent = useAppSelector((state) => state.bookState[0]?.data.progress)
+  const isProgrammaticProgressUpdate = useAppSelector((state) => state.bookState[0]?.state.isProgrammaticProgressUpdate)
 
 
   const dispatch = useAppDispatch()
 
 
-  // const [currentPercent, setPercent] = useState(0)
-
-  // This will track whether the slider was updated because of a locationChanged event
-  // or it was because of a mousedown event
-  const [isEpubNavigate, setEpubNavigate] = useState(false)
 
 
   const [markers, setMarkers] = useState<MarkType>(defaultMarks)
@@ -90,13 +86,12 @@ const SliderNavigator = ()=>{
 
     // If the previous update event was because of the epub reader
     // cancel the event
-    console.log("EFFECT CALLED WITH", isEpubNavigate)
-    if(isEpubNavigate){
-      setEpubNavigate(false)
+    if(isProgrammaticProgressUpdate){
+      dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
       return
     }
     const handler = setTimeout(() =>{ 
-      setEpubNavigate(true)
+      dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
       if(currentPercent)
         renditionInstance.display(renditionInstance.book.locations.cfiFromPercentage(currentPercent))
     }, 100);
@@ -105,33 +100,14 @@ const SliderNavigator = ()=>{
   }, [currentPercent]);
 
 
-  // Handles case where new annotation is made
+
   useEffect(()=>{
 
 
-    if(renditionState != LOADSTATE.COMPLETE && renditionState != LOADSTATE.BOOK_PARSING_COMPLETE){
+    if(renditionState != LOADSTATE.COMPLETE){
       return
     }
 
-    const pageTurnHandler = (e:any)=>{
-      // On the event from epubjs, set the epubNavigate to true
-      // This will cancel out a loop of the epub reader changing
-      setEpubNavigate(true)
-
-      // This may be preventing a race condition with setEpubNavigate
-      setTimeout(()=>{
-        dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
-      }, 1)
-    }
-
-    renditionInstance.on("locationChanged", pageTurnHandler)
-
-
-    
-
-    console.log("Change y")
-    console.log(markers, defaultMarks)
-    console.log(renditionInstance.book.locations)
 
     const chapterCFIMap = getChapterCFIMap(renditionInstance)
 
@@ -140,13 +116,8 @@ const SliderNavigator = ()=>{
     chapterCFIMap.forEach((item)=>{
       markerObject[renditionInstance.book.locations.percentageFromCfi(item.cfi) * 1000] = <strong>|</strong>
     })
-    console.log("SD")
-    console.log(markerObject)
-    setMarkers(markerObject)
 
-    return ()=>{
-      renditionInstance.off("locationChanged", pageTurnHandler)
-    }
+    setMarkers(markerObject)
 
   }, [renditionState])
 

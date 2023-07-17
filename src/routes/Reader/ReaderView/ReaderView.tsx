@@ -191,9 +191,7 @@ class Reader extends React.Component<ReaderProps>{
     
     // let readerInstanceVariables = require('./ReaderViewTypes.ts').readerInstanceVariables
 
-    this.rendition.on("started", ()=>{
-      console.log("Book started")
-    })
+
 
     this.unsubscribeHandlers = registerHandlers(this.rendition)
 
@@ -270,7 +268,7 @@ class Reader extends React.Component<ReaderProps>{
         body: { "padding-top": "10px !important" },
       })
       const {params} = this.props.router
-      this.props.SyncedAddRendition({readerMargins: this.props.readerMargins, renderMode, instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+      this.props.SyncedAddRendition({initialLoadState: LOADSTATE.BOOK_PARSING_COMPLETE, readerMargins: this.props.readerMargins, renderMode, instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
         
       this.unsubscribeHandlers = registerHandlers(this.rendition)
       this.rendition.display();

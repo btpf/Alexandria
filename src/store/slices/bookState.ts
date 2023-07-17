@@ -112,6 +112,7 @@ export const {
   SkipMouseEvent,
   AllowMouseEvent,
   SetDictionaryWord,
+  setProgrammaticProgressUpdate,
   
   /* Modals */
   MoveQuickbarModal,
