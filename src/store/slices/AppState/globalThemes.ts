@@ -25,8 +25,8 @@ export const BaseGlobalThemeDark = {
 export const BaseGlobalThemeLight = {
   primaryBackground: "white",
   secondaryBackground: "#FAF9F6",
-  primaryText: "black",
-  secondaryText: "grey"
+  primaryText: "rgba(0, 0, 0, 0.8)",
+  secondaryText: "rgba(0, 0, 0, 0.6)"
 }
 
 const AddGlobalTheme:appStateReducerSingle = (state) =>{

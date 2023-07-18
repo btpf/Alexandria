@@ -93,15 +93,15 @@ const Home = () =>{
 
       <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
-          <List onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
-          <Bookmark style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
+          <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
+          <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
 
         <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
         <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
-          <Search onClick={()=>{
+          <Search viewBox="0 0 24 24" onClick={()=>{
             if(sidebarOpen){
               if(sidebarOpen == "Search"){
                 dispatch(SelectSidebarMenu({view:0, state:false}))
@@ -113,11 +113,11 @@ const Home = () =>{
             }
             
           }}/>
-          <Font onClick={()=>{
+          <Font viewBox="0 0 24 24" onClick={()=>{
             dispatch(ToggleThemeMenu(0))
             dispatch(ToggleMenu(0))
           }}/>
-          <HomeIcon onClick={()=>navigate('/')}/>
+          <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
         </div>
       </div>
 
@@ -125,15 +125,15 @@ const Home = () =>{
       
       <ReaderView/>
 
-      <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
-        <div onClick={()=>renditionInstance?.prev()} className={`${styles.menuButtonContainer}`}>
-          <ArrowLeft/>
+      <div className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
+        <div onClick={()=>renditionInstance?.prev()} className={`${styles.arrowButtonContainer}`}>
+          <ArrowLeft viewBox={"0 0 24 24"} />
         </div>
-        <div className={styles.sliderContainer} style={{backgroundColor:menuOpen? '':ReaderBackgroundColor}}>
+        <div className={styles.sliderContainer}>
           <SliderNavigator/>
         </div>
-        <div onClick={()=>renditionInstance?.next()} className={`${styles.menuButtonContainer}`}>
-          <ArrowRight/>
+        <div onClick={()=>renditionInstance?.next()} className={`${styles.arrowButtonContainer}`}>
+          <ArrowRight style={{marginLeft:"auto", marginRight:"auto"}} viewBox={"0 0 24 24"}/>
         </div>
 
       </div>

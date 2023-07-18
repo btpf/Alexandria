@@ -41,7 +41,12 @@
   gap:10px;
   margin-left:20px;
   margin-right:20px;
+  width:calc(26px * 4);
   transition: 0.3s;
+
+  @include lt-md{
+    width:calc(24px * 4);
+  }
 }
 
 .optionsToggled{
@@ -55,11 +60,15 @@
 }
 
 .menuButtonContainer > svg{
-  stroke-width: 2.5;
-  height: 28px;
-  width: 28px;
-  transform: scale(calc(28 / 24));
-  transform-origin: 0 0 ;
+  // stroke-width: 2.5;
+  height: 26px;
+  width: 26px;
+  @include lt-md{
+    height: 24px;
+    width: 24px;
+  }
+  // transform: scale(calc(28 / 24));
+  // transform-origin: 0 0 ;
   gap:5px;
   cursor: pointer;
   color:var(--text-secondary);
@@ -70,7 +79,20 @@
   color:var(--text-primary);
 }
 
+.arrowButtonContainer {
+  cursor:pointer;
+  flex-grow:1;
+  height:100%;
+  color:var(--text-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 50px;
+}
 
+.arrowButtonContainer:hover{
+  color: var(--text-primary);
+}
 
 .readerFooterBar{
   height: 50px;
@@ -90,9 +112,7 @@
 
 .sliderContainer{
   height: 100%;
-  width: 100%;
-  padding-left:25px;
-  padding-right: 25px;
+  flex-grow:1;
   display: flex;
   align-items: center;
   transition: 0.3s;

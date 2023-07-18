@@ -1,9 +1,12 @@
 .searchbar{
   width: 80%;
   align-self: center;
-  border-radius: 25px;
+  border-radius: 5px;
   margin-top:25px;
   border-color: gray;
+}
+.searchbar:focus{
+  outline: none;
 }
 
 .searchContainer{

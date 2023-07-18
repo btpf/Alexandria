@@ -7,6 +7,10 @@ import Search from '@resources/feathericons/search.svg'
 import Filter from '@resources/feathericons/filter.svg'
 import Settings from '@resources/feathericons/settings.svg'
 
+
+import Font from '@resources/iconmonstr/text-3.svg'
+import Article from '@resources/material/article_black_24dp.svg'
+
 import Boomark from '@resources/figma/Bookmark.svg'
 
 
@@ -180,7 +184,6 @@ const Shelf = () =>{
           <Settings/>
         </Link>
       </div>
-
       <div {...getRootProps()}
         className={styles.bookCase}>
         <input {...getInputProps()} />
