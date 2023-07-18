@@ -142,6 +142,7 @@ fn import_book(payload: ImportBookPayload) {
         "title": payload.title,
         "data":{
             "progress": 0,
+            "cfi": "",
             "highlights":{},
             "bookmarks": []
         }
@@ -302,6 +303,7 @@ struct themePayload {
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct updateDataPayload {
     progress: f64,
+    cfi: String,
     bookmarks: Vec<String>,
     highlights: HashMap<String, highlightData>,
     #[serde(default)]

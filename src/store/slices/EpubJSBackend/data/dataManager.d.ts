@@ -10,7 +10,8 @@ export interface highlightAction extends highlightData {
   
 export interface progressUpdate{
     view: number,
-    progress: number
+    progress: number,
+    cfi: string
   }
   
 export interface bookmarkAction {

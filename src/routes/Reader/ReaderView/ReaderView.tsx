@@ -230,7 +230,7 @@ class Reader extends React.Component<ReaderProps>{
 
 
   componentDidUpdate(prevProps: any, prevState: any) {
-    if(this.props.LoadState != prevProps.loadState && this.props.LoadState == LOADSTATE.COMPLETE){
+    if(this.props.LoadState != prevProps.LoadState && this.props.LoadState == LOADSTATE.COMPLETE){
       this.rendition.display(this.props.progress)
     }
     if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode){

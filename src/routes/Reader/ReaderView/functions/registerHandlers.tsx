@@ -311,14 +311,13 @@ export default (renditionInstance:Rendition)=>{
       store.dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
       return
     }
-    console.log("pageturnhandler called")
     // On the event from epubjs, set the epubNavigate to true
     // This will cancel out a loop of the epub reader changing
     store.dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
 
     // This may be preventing a race condition with setEpubNavigate
     setTimeout(()=>{
-      store.dispatch(SetProgress({view: 0, progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+      store.dispatch(SetProgress({view: 0, cfi: e.start,  progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
     }, 1)
   }
 

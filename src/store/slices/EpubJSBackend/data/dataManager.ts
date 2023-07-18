@@ -28,6 +28,8 @@ const ChangeHighlightNote:epubjs_reducer = (state, action: PayloadAction<highlig
 }
 const SetProgress:epubjs_reducer = (state, action: PayloadAction<progressUpdate>) =>{
   state[action.payload.view].data.progress = action.payload.progress
+  state[action.payload.view].data.cfi = action.payload.cfi
+
 }
 
 

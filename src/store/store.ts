@@ -52,6 +52,7 @@ const store =  configureStore({
               title: currentBook.title,
               data:{
                 progress: currentBook.data.progress,
+                cfi: currentBook.data.cfi,
                 bookmarks: Array.from(currentBook.data.bookmarks),
                 highlights: currentBook.data.highlights,
                 theme:{...currentBook.data.theme}

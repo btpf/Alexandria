@@ -36,6 +36,7 @@ const SliderNavigator = ()=>{
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const renditionState = useAppSelector((state) => state.bookState[0]?.loadState)
   const currentPercent = useAppSelector((state) => state.bookState[0]?.data.progress)
+  const currentCfi = useAppSelector((state) => state.bookState[0]?.data.cfi)
   const isProgrammaticProgressUpdate = useAppSelector((state) => state.bookState[0]?.state.isProgrammaticProgressUpdate)
 
 
@@ -94,12 +95,12 @@ const SliderNavigator = ()=>{
     }
     const handler = setTimeout(() =>{ 
       dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
-      if(currentPercent)
-        renditionInstance.display(renditionInstance.book.locations.cfiFromPercentage(currentPercent))
+      if(currentCfi)
+        renditionInstance.display(currentCfi)
     }, 100);
 
     return () => clearTimeout(handler);
-  }, [currentPercent]);
+  }, [currentCfi]);
 
 
 
@@ -158,7 +159,7 @@ const SliderNavigator = ()=>{
 
         setMouseOnSlider(false)
 
-        dispatch(SetProgress({view: 0, progress: e/1000}))
+        dispatch(SetProgress({view: 0, progress: e/1000, cfi: renditionInstance.book.locations.cfiFromPercentage(e/1000)}))
       }}
       value={mouseOnSlider? placeholderProgress: currentPercent * 1000}
       max={1000}/>

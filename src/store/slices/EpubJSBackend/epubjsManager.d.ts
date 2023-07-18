@@ -2,6 +2,7 @@ interface dataInterface{
   highlights:{[cfiRange:string]:highlightData},
   bookmarks:Set<string>,
   progress: number,
+  cfi: string,
   theme:{
     font: string,
     fontCache: string,

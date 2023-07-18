@@ -79,7 +79,7 @@ export const SyncedAddRendition = createAsyncThunk(
         }))
       })
       
-      thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress}))
+      thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress, cfi: result.data.cfi}))
 
       thunkAPI.dispatch(setThemeThunk({
         view: 0,
@@ -113,6 +113,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
       loadState:action.meta.arg.initialLoadState? action.meta.arg.initialLoadState:LOADSTATE.LOADING, 
       data:{
         progress: 0,
+        cfi:"",
         highlights:{},
         bookmarks: new Set(), 
         theme:{
