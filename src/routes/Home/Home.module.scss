@@ -28,8 +28,20 @@ $bookmarkHeight: 23px;
   font-weight: bold;
   font-size: 24px;
 }
-.titleBar svg:last-of-type{
-  margin-right: 25px;
+
+.rightContainer{
+  display:flex;
+  align-items: center;
+  height:100%;
+}
+
+.unstyleLink{
+  text-decoration: none;
+
+  &:focus, &:hover, &:visited, &:link, &:active {
+    text-decoration: none;
+  }
+  color: inherit;
 }
 
 /* End TitleBar Styling */

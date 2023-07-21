@@ -1,0 +1,28 @@
+.titleBarButtonsContainer{
+  // width: auto;
+  height: 100%;
+  display:inline-flex;
+  align-items: center;
+  margin-right: 13px;
+  margin-left: 30px;
+}
+
+.titleBarButton{
+  height: 100%;
+  width: calc(15px + 20px);
+  opacity: 0.8;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.3s;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.titleBarButton:hover{
+  opacity: 1;
+}
+
+.titleBarExit:hover{
+  color:red;
+}

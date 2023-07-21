@@ -33,6 +33,10 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
 
+
+
+import TitleBarButtons  from '@shared/components/TitleBarButtons';
+
 const books = [
   {BookUrl: moby,
     title:"Moby Dick",
@@ -182,7 +186,7 @@ const Shelf = () =>{
 
   return (
     <>
-      <div className={styles.titleBar}>
+      <div data-tauri-drag-region className={styles.titleBar}>
         {/* <div className={styles.titleBar}> */}
         <div className={styles.titleBarTitle}>Alexandria</div>
         <div className={styles.searchbarContainer}>
@@ -203,12 +207,16 @@ const Shelf = () =>{
             onChange={(e)=>setSearchValue(e.target.value)} value={searchValue}/>
 
         </div>
-        <div>
-          <Filter onClick={()=>setBottomBarActive(!bottomBarActive)}/>
-          <Link  to="/settings">
-            <Settings/>
+        <div className={styles.rightContainer}>
+          <Filter style={{marginRight:10, strokeWidth: 1}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
+          <Link className={styles.unstyleLink} to="/settings">
+            <Settings style={{strokeWidth: 1}}/>
           </Link>
+          <TitleBarButtons/>
         </div>
+
+
+        
 
       </div>
       <div {...getRootProps()}
@@ -230,7 +238,7 @@ const Shelf = () =>{
           })
           .map((book)=>{
             return (
-              <Link key={book.title} to="/reader">
+              <Link className={styles.unstyleLink}  key={book.title} to="/reader">
                 <div className={styles.boxPlaceholder}>
 
                   {/* This container is used to handle top bar in CSS in case where book is a short height */}
@@ -267,7 +275,7 @@ const Shelf = () =>{
           })
           .map((book)=>{
             return (
-              <Link key={book.hash} to={"/reader/" + book.hash}>
+              <Link className={styles.unstyleLink}  key={book.hash} to={"/reader/" + book.hash}>
                 <div className={styles.boxPlaceholder}>
 
                   {/* This container is used to handle top bar in CSS in case where book is a short height */}

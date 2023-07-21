@@ -6,7 +6,8 @@
         "baseUrl": "./",
         "paths": {
             "@resources/*": ["public/resources/*"],
-            "@store/*": ["src/store/*"]
+            "@store/*": ["src/store/*"],
+            "@shared/*": ["src/shared/*"]
          },
         // https://stackoverflow.com/a/49112420
         // https://stackoverflow.com/a/67227887
