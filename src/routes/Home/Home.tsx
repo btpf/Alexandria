@@ -31,6 +31,8 @@ import Epub from 'epubjs';
 import { BookOptions } from 'epubjs/types/book';
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
+import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
+
 const books = [
   {BookUrl: moby,
     title:"Moby Dick",
@@ -81,7 +83,12 @@ const Home = () =>{
 } 
 
 const Shelf = () =>{
-  const [counter, setCounter] = useState(0)
+  const [searchValue, setSearchValue] = useState("")
+  const [filterValue, setFilterValue] = useState("Title")
+  const [sortDirection, setSortDirection] = useState("ASC")
+
+  const [bottomBarActive, setBottomBarActive] = useState(false)
+
   const [myBooks, setBooks] = useState<BookData[]>([])
 
   const onDrop = useCallback((acceptedFiles:File[]) => {
@@ -177,12 +184,32 @@ const Shelf = () =>{
     <>
       <div className={styles.titleBar}>
         {/* <div className={styles.titleBar}> */}
-        <div>Alexandria</div>
-        <Search/>
-        <Filter/>
-        <Link  to="/settings">
-          <Settings/>
-        </Link>
+        <div className={styles.titleBarTitle}>Alexandria</div>
+        <div className={styles.searchbarContainer}>
+          <Search
+            viewBox="0 0 24 24 "
+            height={16}
+            width={16}
+            style={{
+              position:"absolute", 
+              marginLeft:"5px",
+              opacity: 0.6, 
+              marginTop:"8px", 
+              color:"var(--text-secondary)",
+              strokeWidth:"2px"
+            }} 
+          />
+          <input style={{paddingLeft:"26px"}} placeholder={"Search Book Titles"} className={styles.searchbarDesktop}
+            onChange={(e)=>setSearchValue(e.target.value)} value={searchValue}/>
+
+        </div>
+        <div>
+          <Filter onClick={()=>setBottomBarActive(!bottomBarActive)}/>
+          <Link  to="/settings">
+            <Settings/>
+          </Link>
+        </div>
+
       </div>
       <div {...getRootProps()}
         className={styles.bookCase}>
@@ -190,65 +217,105 @@ const Shelf = () =>{
         {
           isDragActive && <p> Add book to library...</p> 
         }
-        {books.map((book)=>{
-          return (
-            <Link key={book.title} to="/reader">
-              <div className={styles.boxPlaceholder}>
+        {books
+          .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
+          .sort((a, b) =>{
+            // TODO: Make a dictionary here for a switch with the selected sortby option 
+            if(sortDirection =="ASC"){
+              return (a.title > b.title) ? 1 : -1
+            }else{
+              return (a.title < b.title) ? 1 : -1
+            }
+          
+          })
+          .map((book)=>{
+            return (
+              <Link key={book.title} to="/reader">
+                <div className={styles.boxPlaceholder}>
 
-                {/* This container is used to handle top bar in CSS in case where book is a short height */}
-                <div className={styles.bookImageContainer}>
-                  <div className={styles.boxTopBar}>
-                    <Boomark/>
-                    <div>{book.percent}</div>
-                    <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
-                      e.preventDefault()
-                    }}/>
+                  {/* This container is used to handle top bar in CSS in case where book is a short height */}
+                  <div className={styles.bookImageContainer}>
+                    <div className={styles.boxTopBar}>
+                      <Boomark/>
+                      <div>{book.percent}</div>
+                      <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
+                        e.preventDefault()
+                      }}/>
+                    </div>
+                    <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
                   </div>
-                  <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
-                </div>
               
-                <div className={styles.boxBottomBar} >
-                  <div>{book.title}</div>
+                  <div className={styles.boxBottomBar} >
+                    <div>{book.title}</div>
 
-                </div>
-              </div>
-            </Link>
-          )
-        })}
-
-
-        {myBooks.map((book)=>{
-          return (
-            <Link key={book.hash} to={"/reader/" + book.hash}>
-              <div className={styles.boxPlaceholder}>
-
-                {/* This container is used to handle top bar in CSS in case where book is a short height */}
-                <div className={styles.bookImageContainer}>
-                  <div className={styles.boxTopBar}>
-                    <Boomark/>
-                    <div>{Math.round(book.progress*100)}%</div>
-                    <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
-                      e.preventDefault()
-                    }}/>
                   </div>
-                  <img className={styles.bookImage} src={book.cover_url.includes("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
                 </div>
-              
-                <div className={styles.boxBottomBar} >
-                  <div>{book.title}</div>
+              </Link>
+            )
+          })}
 
+
+        {myBooks
+          .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
+          .sort((a, b) =>{ 
+            if(sortDirection =="ASC"){
+              return (a.title > b.title) ? 1 : -1
+            }else{
+              return (a.title < b.title) ? 1 : -1
+            }
+            
+          })
+          .map((book)=>{
+            return (
+              <Link key={book.hash} to={"/reader/" + book.hash}>
+                <div className={styles.boxPlaceholder}>
+
+                  {/* This container is used to handle top bar in CSS in case where book is a short height */}
+                  <div className={styles.bookImageContainer}>
+                    <div className={styles.boxTopBar}>
+                      <Boomark/>
+                      <div>{Math.round(book.progress*100)}%</div>
+                      <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
+                        e.preventDefault()
+                      }}/>
+                    </div>
+                    <img className={styles.bookImage} src={book.cover_url.includes("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
+                  </div>
+              
+                  <div className={styles.boxBottomBar} >
+                    <div>{book.title}</div>
+
+                  </div>
                 </div>
-              </div>
-            </Link>
-          )
-        })}
+              </Link>
+            )
+          })}
         <button onClick={async ()=>{
           invoke("get_books").then((data)=>{
             console.log(data)
           })
         }}/>
       </div>
-      
+      <div style={!bottomBarActive?{transform:"translateY(110%)"}:{}} className={styles.bottomBar}>
+        <div className={styles.bottomBarContainer}>
+          <div style={{display:"flex", justifyContent: "space-between",fontSize: "14px", marginBottom:0, color:"var(--text-secondary)", fontWeight:'500'}}>
+            SORT BY
+            <SortIcon className={styles.optionSortButton}
+              style={sortDirection=="ASC"?{transform:"scale(1,-1)"}:{}}
+              onClick={()=>setSortDirection((sortDirection=="ASC"?"DESC":"ASC"))}/>
+          </div>
+          <div className={styles.optionContainer}>
+            {["Title", "Progress", "Recently Updated"].map((item)=>{
+              return (<div onClick={()=>setFilterValue(item)} className={styles.sortOption} key={item}>{item} {(item == filterValue)?<input checked type="radio"/>:<div/>}</div>)
+            })}
+          </div>
+
+        </div>
+
+
+
+
+      </div>
     </>
 
   )

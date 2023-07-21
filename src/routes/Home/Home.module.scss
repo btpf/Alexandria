@@ -14,17 +14,16 @@ $bookmarkHeight: 23px;
   height: 50px;
   width: 100%;
   display:flex;
-  justify-content: flex-end;
   align-items: center;
   gap:25px;
   // border-bottom: 1px solid var(--background-secondary);
   margin-bottom:25px;
   background-color: var(--background-primary);
   color: var(--text-primary);
+  justify-content: space-between;
 }
 
-.titleBar div:first-of-type{
-  margin-right: auto;
+.titleBarTitle {
   margin-left: 20px;
   font-weight: bold;
   font-size: 24px;
@@ -41,7 +40,7 @@ $bookmarkHeight: 23px;
 /* Begin Book Case */
 .bookCase {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 75px);
   display: grid;
   justify-content: center;
   gap: 5px 5px;
@@ -49,6 +48,7 @@ $bookmarkHeight: 23px;
   grid-template-rows: repeat(auto-fill, var(--book-height));
   background-color: var(--background-secondary);
   color: var(--text-primary);
+  overflow: auto;
 }
 
 // Begin resize styles
@@ -259,3 +259,93 @@ $bookmarkHeight: 23px;
 
 }
 
+.searchbarDesktop{
+  width: 100%;
+  border-radius: 10px;
+  background-color: var(--background-secondary);
+  color: var(--text-primary);
+  border: none;
+}
+
+.searchbarDesktop:focus{
+  outline: none;
+}
+
+.searchbarContainer{
+  flex-grow:1;
+  max-width: 300px !important;
+  min-width: 200px !important;
+}
+
+
+
+/* All Code For Bottom Bar */
+
+$bottom-bar-height-standard: 300px;
+$bottom-bar-width-standard: 650px;
+
+
+
+.bottomBar{
+  background-color:var(--background-primary);
+  transition:0.5s;
+  width: $bottom-bar-width-standard;
+  height: $bottom-bar-height-standard;
+  top: calc(100% - $bottom-bar-height-standard);
+  left: calc((100% / 2) - $bottom-bar-width-standard / 2);
+  position:absolute;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.25);
+
+
+  @include lt-md{
+    width: 100%;
+    left: 0;
+  }
+
+  // @include lt-sm{
+  //   top: 100%;
+  //   height:0px;
+  // }
+}
+
+.bottomBarContainer{
+  padding-left:15px;
+  margin-top:15px;
+  height: $bottom-bar-height-standard;
+}
+
+.sortOption{
+  display:flex;
+  flex-direction: row;
+  width:calc(100% - 20px);
+  justify-content: space-between;
+  font-weight: 500;
+  font-size:24px;
+  flex-grow:1;
+  cursor:pointer;
+  max-height:50px;
+  align-items: center;
+}
+
+.sortOption > input{
+  height:24px;
+  width:24px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.optionContainer{
+  display:flex;
+  flex-direction: column;
+  height:100%;
+  margin-top:5px;
+}
+
+.optionSortButton{
+  transform-origin: center;
+  margin-right:20px;
+  cursor: pointer;
+  // transform: scale(1,-1);
+}
