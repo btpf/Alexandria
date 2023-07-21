@@ -303,8 +303,11 @@ struct themePayload {
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct updateDataPayload {
     progress: f64,
+    #[serde(default)]
     cfi: String,
+    #[serde(default)]
     bookmarks: Vec<String>,
+    #[serde(default)]
     highlights: HashMap<String, highlightData>,
     #[serde(default)]
     theme: themePayload
