@@ -95,7 +95,7 @@ struct ImportBookPayload {
     cover: FileStruct,
 }
 #[tauri::command]
-fn import_book(payload: ImportBookPayload) {
+fn import_book(payload: ImportBookPayload) -> String{
     // let t = String::from_utf8(data).unwrap();
 
     println!("Book imported");
@@ -113,7 +113,7 @@ fn import_book(payload: ImportBookPayload) {
         Ok(_file) => println!("Book is Unique, Creating Directory"),
         Err(_error) => {
             println!("Error: Book is duplicate");
-            return;
+            return checksum;
         }
     };
 
@@ -155,6 +155,8 @@ fn import_book(payload: ImportBookPayload) {
         initial_data,
     )
     .unwrap();
+
+    return checksum;
 }
 
 fn get_hash(data: &Vec<u8>) -> String {

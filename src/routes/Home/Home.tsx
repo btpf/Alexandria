@@ -146,12 +146,17 @@ const Shelf = () =>{
                 console.log("COVER TOO")
                 payload.title = book.packaging.metadata.title
                 payload.cover.data = Array.from(new Uint8Array(await data.arrayBuffer()))
-                invoke('import_book', {payload})
+                const checksum:string = await invoke('import_book', {payload})
+
+                // If there is a duplicate book
+                if(checksum == ""){
+                  return
+                }
                 console.log(url)
 
                 // Todo, make setBooks contain the hash that is returned by import_book, this way the book will load properly.
                 
-                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url, progress: 0, hash:"Placeholder"}])
+                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url, progress: 0, hash:checksum}])
               });
             })
 
