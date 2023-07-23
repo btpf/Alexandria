@@ -3,11 +3,20 @@
   height: 100%;
   display:inline-flex;
   align-items: center;
-  margin-right: 13px;
-  margin-left: 30px;
-  pointer-events: all;
+  padding-right: 13px;
+  padding-left: 30px;
+  pointer-events:none;
+  > svg{
+    pointer-events: auto;
+  }
 }
 
+.disabled{
+  > svg{
+    pointer-events:none;
+  }
+  
+}
 .titleBarButton{
   height: 100%;
   width: calc(15px + 20px);

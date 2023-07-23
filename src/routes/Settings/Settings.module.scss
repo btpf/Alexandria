@@ -29,6 +29,7 @@
 
 .titleText{
   font-size:25px;
+  pointer-events: none;
 }
 
 
@@ -66,6 +67,16 @@
 
   }
 }
+
+.titleBarButtonsContainer{
+  margin-left:auto;
+  height:100%;
+  pointer-events: none;
+  @include lt-sm{
+    display:none;
+  }
+}
+
 
 .hidesm{
   @include lt-sm{

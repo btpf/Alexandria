@@ -28,7 +28,7 @@ const TitleBarButtons = (props:TitleBarButtonsProps)=>{
   }, []);
 
   return (
-    <div style={props.disabled?{pointerEvents:"none"}:{pointerEvents:"all"}} className={styles.titleBarButtonsContainer}>
+    <div className={`${styles.titleBarButtonsContainer} ${props.disabled?styles.disabled:""}`}>
       <MinimizeIcon onClick={async ()=>{
         await appWindow.minimize();
       }} viewBox="10 10 20 20"className={styles.titleBarButton} color="white"/>

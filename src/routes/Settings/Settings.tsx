@@ -7,6 +7,7 @@ import ReaderTheme from "./pages/ReaderTheme"
 import GlobalTheme from "./pages/GlobalTheme"
 import Fonts from "./pages/Fonts/Fonts"
 import { useAppSelector } from "@store/hooks"
+import TitleBarButtons from "@shared/components/TitleBarButtons"
 
 const Settings = ()=>{
   const navigate = useNavigate()
@@ -23,7 +24,7 @@ const Settings = ()=>{
 
   return (
     <div className={styles.settingsPageContainer}>
-      <div className={styles.titleBar}>
+      <div data-tauri-drag-region className={styles.titleBar}>
 
         {/* This is the titlebar for desktop screens */}
         <div onClick={()=> navigate("/")} className={styles.backButtonContainer + " " + styles.hidesm}>
@@ -37,7 +38,10 @@ const Settings = ()=>{
           <BackArrow/>
         </div>
         <div className={styles.titleText  + " " + styles.hidegtsm}>{mobileTitle.replace("%20", " ")}</div>
-        
+        <div className={styles.titleBarButtonsContainer}>
+          <TitleBarButtons/>
+
+        </div>
       </div>
 
       <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
