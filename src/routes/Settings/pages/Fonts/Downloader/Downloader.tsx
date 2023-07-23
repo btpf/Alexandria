@@ -29,7 +29,7 @@ const defaultMarks = [100,200,300,400,500,600,700,800].reduce((a, v)=>{
 const Downloader = ()=>{
   const [textFiltered, setTextFilter] = useState("")
   const [currentDataList, setCurrentDataList] = useState(myStyle)
-  const [selectedFont, setSelectedFont] = useState("FontName")
+  const [selectedFont, setSelectedFont] = useState("Roboto")
   const [selectedWeight, setSelectedWeight] = useState(500)
   const [availableMarks, setAvailableMarks] = useState(defaultMarks)
   return (
@@ -116,8 +116,8 @@ const Downloader = ()=>{
             style={
               {textAlign:"center",
                 fontWeight:(selectedFont == currentDataList[index].name? "bold":""), 
-                backgroundColor:(selectedFont == currentDataList[index].name? "#E5F3FB":""), 
-                border:(selectedFont == currentDataList[index].name? "1px solid #70C0E7":""), 
+                backgroundColor:(selectedFont == currentDataList[index].name? "var(--background-secondary)":""), 
+                border:(selectedFont == currentDataList[index].name? "2px solid var(--background-primary)":""), 
                 fontFamily:currentDataList[index].name}
               
             }>{currentDataList[index].name}

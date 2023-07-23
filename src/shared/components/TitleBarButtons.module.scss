@@ -21,7 +21,7 @@
   height: 100%;
   width: calc(15px + 20px);
   opacity: 0.8;
-  color: white;
+  color: var(--text-primary);
   cursor: pointer;
   user-select: none;
   transition: 0.3s;

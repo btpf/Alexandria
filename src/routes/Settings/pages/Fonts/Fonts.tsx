@@ -65,12 +65,12 @@ const Fonts = ()=>{
     <div className={styles.themeContainer}>
       <div className={styles.navigatorContainer}>
         <div className={styles.navigatorButton} 
-          style={{color:(selectedPage=="Installed")?"black":""}}
+          style={{color:(selectedPage=="Installed")?"var(--text-primary)":""}}
           onClick={()=>setSelectedPage("Installed")}>
         Installed
         </div>
         <div className={styles.navigatorButton} 
-          style={{color:(selectedPage=="Downloaded")?"black":""}}
+          style={{color:(selectedPage=="Downloaded")?"var(--text-primary)":""}}
           onClick={()=>setSelectedPage("Downloaded")}>
         Downloaded
         </div>

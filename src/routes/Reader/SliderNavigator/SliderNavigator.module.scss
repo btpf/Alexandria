@@ -4,18 +4,20 @@
 
 
 .slider > div[class=rc-slider-rail]{
-  background-color:#B9B9B9 !important;
+  background-color:var(--text-secondary) !important;
   height: 6px;
 }
 
 .slider > div[class=rc-slider-track]{
-  background-color:dodgerblue !important;
+  background-color:var(--text-primary) !important;
   // background-color: var(--slider-track-color) !important;
   height: 6px;
 }
 
 .slider > div[class=rc-slider-handle]{
-  border-color: gray;
+  // border-color: var(--text-secondary);
+  border: 1px solid var(--text-secondary);
+  background-color:var(--background-primary);
   z-index: 1;
   height: 22px;
   width: 22px;

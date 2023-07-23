@@ -14,7 +14,7 @@
   height: 100%;
   margin-bottom:25px;
 
-  border: 2px solid rgba(0, 0, 0, 0.37);
+  background-color: var(--background-primary);
   border-radius: 8px;
   padding-right:5px;
 }
@@ -32,7 +32,7 @@
   width: 200px;
   height: 30px;
   border-radius: 5px;
-  border-color:rgba(0, 0, 0, 0.2);
+  border-color:var(--text-secondary);
   margin-right: calc(50px + (8px * 2));
 }
 

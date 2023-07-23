@@ -3,7 +3,7 @@
 }
 .settingLabel{
   font-weight: bold;
-  color: rgba(0, 0, 0, 0.527);
+  color: var(--text-primary);
   font-size:14px;
   margin-bottom: 5px;
   // margin-left: 30px;
@@ -22,7 +22,7 @@
   width: calc(48px * 0.75);
   height: calc(48px * 0.75);
   font-weight: bold;
-  border: 1px solid #9A9A9A;
+  border: 1px solid var(--text-secondary);
   border-radius: 5px;
   justify-content: center;
   align-items: center;
