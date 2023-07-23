@@ -143,8 +143,6 @@ fn import_book(payload: ImportBookPayload) -> String{
         "data":{
             "progress": 0,
             "cfi": "",
-            "highlights":{},
-            "bookmarks": []
         }
     });
 
@@ -340,7 +338,7 @@ fn update_data_by_hash(payload: updateBookPayload, hash: String) {
 }
 
 #[tauri::command]
-fn load_book_data(checksum: &str) -> updateBookPayload {
+fn load_book_data(checksum: &str) -> Result<updateBookPayload, String> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
@@ -352,9 +350,14 @@ fn load_book_data(checksum: &str) -> updateBookPayload {
 
     let json: serde_json::Value =
         serde_json::from_reader(reader).expect("JSON was not well-formatted");
-
-    let bookPayload: updateBookPayload = serde_json::from_value(json).unwrap();
-    return bookPayload;
+        println!("About to check malformed");
+    let bookPayload: updateBookPayload = serde_json::from_value(json).map_err(|e| format!("Malformed Data: {}", e))?;
+    if(bookPayload.data.cfi == ""){
+        println!("RETURNING FIRST READ");
+        return Err(String::from("First Read"));
+    }
+    println!("About return payload");
+    return Ok(bookPayload);
     // println!("Data Read: {}","hi")
 
     // let mut f = File::open(book_file).unwrap();

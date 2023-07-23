@@ -34,9 +34,19 @@ export const SyncedAddRendition = createAsyncThunk(
       
       // Eventually, this should match bookStateStructure.data
 
-      type dataInterfacePayload = {data: dataInterface}      
-      const result:dataInterfacePayload = await invoke("load_book_data", {checksum: renditionData.hash})
-      console.log("ExpectedLoad", result)
+      type dataInterfacePayload = {data: dataInterface}
+      let result:dataInterfacePayload;
+
+      try {
+        result = await invoke("load_book_data", {checksum: renditionData.hash})
+      } catch (error) {
+        if(error == "First Read"){
+          console.log("First Read, Populating with default data")
+          return
+        }
+        console.log("Error Caught in invoke Load_book_data:", error)
+        return 
+      }
          
       
       const bookmarks = result.data.bookmarks
@@ -117,7 +127,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
         highlights:{},
         bookmarks: new Set(), 
         theme:{
-          font:"Helvetica, sans-serif", 
+          font:"", 
           fontCache: "",
           fontSize:100,
           fontWeight: 400,
