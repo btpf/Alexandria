@@ -8,7 +8,15 @@ import MinimizeIcon from '@resources/figma/Minimize.svg'
 import { exit } from '@tauri-apps/api/process';
 import { appWindow } from '@tauri-apps/api/window';
 
-const TitleBarButtons = ()=>{
+interface TitleBarButtonsProps {
+  disabled: boolean,
+}
+
+const defaultProps: TitleBarButtonsProps = {
+  disabled: false
+}
+
+const TitleBarButtons = (props:TitleBarButtonsProps)=>{
   const [maximized, setMaximized] = useState(false);
   useLayoutEffect(() => {
     async function updateSize() {
@@ -20,7 +28,7 @@ const TitleBarButtons = ()=>{
   }, []);
 
   return (
-    <div className={styles.titleBarButtonsContainer}>
+    <div style={props.disabled?{pointerEvents:"none"}:{pointerEvents:"all"}} className={styles.titleBarButtonsContainer}>
       <MinimizeIcon onClick={async ()=>{
         await appWindow.minimize();
       }} viewBox="10 10 20 20"className={styles.titleBarButton} color="white"/>
@@ -40,5 +48,6 @@ const TitleBarButtons = ()=>{
     </div>
   )
 }
+TitleBarButtons.defaultProps = defaultProps
 
 export default TitleBarButtons

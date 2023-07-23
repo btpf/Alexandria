@@ -27,7 +27,7 @@
   font-size: 12px;
   color: var(--text-primary);
   background-color: var(--background-primary);
-  padding-top:10px;
+  // padding-top:10px;
   user-select: none;
   grid-area: 1/1;
   transition: .3s;
@@ -35,48 +35,82 @@
 .readerTitleBar div{
   transition: 0.3s;
 }
-.menuButtonContainer{
-  color: var(--text-primary);
+
+@mixin buttonContainer{
+  flex-grow: 1;
   display:flex;
   gap:10px;
-  margin-left:20px;
-  margin-right:20px;
-  width:calc(26px * 4);
   transition: 0.3s;
+  height:100%;
+  align-items: center;
+  
 
-  @include lt-md{
-    width:calc(24px * 4);
+  // This allows pointer events to passthrough to the tauri dragable parent titlebar element.
+  user-select: none;
+  pointer-events: none;
+
+  & > svg{
+    // default
+    pointer-events:auto;
+    // stroke-width: 1px;
+    cursor:pointer;
+    color: var(--text-secondary);
   }
+  & > svg:hover{
+    color:var(--text-primary);
+  }
+
+}
+
+
+.menuButtonContainerLeft{
+  @include buttonContainer;
+
+  padding-left:20px;
+  flex-basis: 75px;
+
+}
+
+.menuButtonContainerRight{
+  @include buttonContainer;
+  overflow: hidden;
+  // flex-grow: 1;
+  display: flex;
+  justify-content: end;
+  flex-basis: 75px;
+  min-width: 280px;
+  padding-left:20px;
+
+  @include lt-sm{
+    padding-right:20px;
+    min-width: 75px;
+    & > div:last-of-type{
+      display: none;
+    }
+  }
+
 }
 
 .optionsToggled{
   opacity: 0;
-  pointer-events: none;
+  pointer-events: none !important;
+
+  & > svg{
+    pointer-events: none !important;
+  }
 }
 
 .title{
-  // color:rgba(0, 0, 0, 0.342);
   color:var(--text-primary);
+  width: fit-content;
+  flex-grow: 1;
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
 }
 
-.menuButtonContainer > svg{
-  // stroke-width: 2.5;
-  height: 26px;
-  width: 26px;
-  @include lt-md{
-    height: 24px;
-    width: 24px;
-  }
-  // transform: scale(calc(28 / 24));
-  // transform-origin: 0 0 ;
-  gap:5px;
-  cursor: pointer;
-  color:var(--text-secondary);
-  // margin-left:20px;
-  // margin-right: 20px;
-}
-.menuButtonContainer > svg:hover{
-  color:var(--text-primary);
+.titleBarButtonsContainer{
+  display:none;
 }
 
 .arrowButtonContainer {

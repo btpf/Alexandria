@@ -19,7 +19,7 @@ import SettingsBar from './SettingsBar/SettingsBar'
 import { useNavigate } from 'react-router-dom'
 import Dictionary from './ReaderView/Dictionary/Dictionary'
 
-
+import TitleBarButtons  from '@shared/components/TitleBarButtons';
 
 
 
@@ -91,8 +91,8 @@ const Home = () =>{
       console.log(e.target)
     }}>
 
-      <div style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
-        <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
+      <div data-tauri-drag-region style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
+        <div className={`${styles.menuButtonContainerLeft} ${!menuOpen && styles.optionsToggled}`}>
           <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
           <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
@@ -100,7 +100,7 @@ const Home = () =>{
         <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
-        <div className={`${styles.menuButtonContainer} ${!menuOpen && styles.optionsToggled}`}>
+        <div className={`${styles.menuButtonContainerRight} ${!menuOpen && styles.optionsToggled}`}>
           <Search viewBox="0 0 24 24" onClick={()=>{
             if(sidebarOpen){
               if(sidebarOpen == "Search"){
@@ -118,6 +118,8 @@ const Home = () =>{
             dispatch(ToggleMenu(0))
           }}/>
           <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
+
+          <TitleBarButtons disabled={!menuOpen}/>
         </div>
       </div>
 
