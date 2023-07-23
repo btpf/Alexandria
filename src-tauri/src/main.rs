@@ -72,10 +72,10 @@ fn create_or_load_data() -> Option<DataExists> {
         
         std::fs::create_dir(format!("{}/fonts", &config_path.to_string())).unwrap();
 
-        std::fs::write(format!("{}/settings.json", &config_path), "").unwrap();
-        std::fs::write(format!("{}/ReaderThemes.json", &config_path), "").unwrap();
-        std::fs::write(format!("{}/GlobalThemes.json", &config_path), "").unwrap();
-        std::fs::write(format!("{}/fonts/fonts.json", &config_path), "").unwrap();
+        std::fs::write(format!("{}/settings.json", &config_path), "{}").unwrap();
+        std::fs::write(format!("{}/ReaderThemes.json", &config_path), "{}").unwrap();
+        std::fs::write(format!("{}/GlobalThemes.json", &config_path), "{}").unwrap();
+        std::fs::write(format!("{}/fonts/fonts.json", &config_path), "{}").unwrap();
 
         return Some(DataExists::CREATED);
     }
