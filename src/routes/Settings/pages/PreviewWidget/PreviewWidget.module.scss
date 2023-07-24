@@ -10,6 +10,7 @@ $widgetBorderRadius: 5px;
   border-radius: $widgetBorderRadius;
   // https://css-tricks.com/absolute-positioning-inside-relative-positioning/
   position:relative;
+  user-select: none; /* standard syntax */
 }
 
 .widgetTopBar{
@@ -48,6 +49,7 @@ $widgetBorderRadius: 5px;
 }
 .widgetIconContainer{
   display:inline;
+  cursor:pointer;
 
 }
 .topBarLeft{

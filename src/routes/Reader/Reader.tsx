@@ -88,7 +88,7 @@ const Home = () =>{
       <div data-tauri-drag-region style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainerLeft} ${!menuOpen && styles.optionsToggled}`}>
           <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
-          <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none'}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
+          <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
 
         <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
