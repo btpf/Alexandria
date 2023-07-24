@@ -42,7 +42,7 @@ export const BaseThemeDark = {
   },
   reader:{
     body: {
-      background: `#444`,
+      background: `#181818`,
       color: `#fff`,
     },
     'a:link': {
@@ -57,8 +57,8 @@ export const BaseThemeDark = {
 }
 export const BaseThemeLight = {
   ui:{
-    primaryBackground: "white",
-    secondaryBackground: "#FAF9F6",
+    primaryBackground: "#fef3e7",
+    secondaryBackground: "#ffffff",
     primaryText: "rgba(0, 0, 0, 0.8)",
     secondaryText: "rgba(0, 0, 0, 0.6)"
   },
