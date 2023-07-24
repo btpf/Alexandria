@@ -8,9 +8,8 @@ $widgetBorderRadius: 5px;
   border: 1px solid black;
   margin-top:25px;
   border-radius: $widgetBorderRadius;
-
-  // Magic number - first try
-  // margin-right: 75px;
+  // https://css-tricks.com/absolute-positioning-inside-relative-positioning/
+  position:relative;
 }
 
 .widgetTopBar{
