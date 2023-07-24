@@ -46,7 +46,7 @@ const Settings = ()=>{
 
       <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
         <div className={styles.navbar}>
-          <div onClick={()=>navigate("Global Theme")}>Global Theme</div>
+          <div onClick={()=>navigate("Themes")}>Themes</div>
           {/* <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div> */}
           <div onClick={()=>navigate("Fonts")}>Fonts</div>
         </div>
@@ -54,7 +54,7 @@ const Settings = ()=>{
         <div className={styles.contentContainer}>
           <Routes>
             <Route path="/" element={<GlobalTheme />} />
-            <Route  path="/Global Theme" element={<GlobalTheme />} />
+            <Route  path="/Themes" element={<GlobalTheme />} />
             {/* <Route path="/Reader Theme" element={<ReaderTheme />} /> */}
             <Route path="/Fonts" element={<Fonts />} />
           </Routes>

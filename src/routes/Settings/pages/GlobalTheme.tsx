@@ -12,6 +12,21 @@ import { invoke } from "@tauri-apps/api";
 
 import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
 import { GetAllKeys } from "@store/utlity";
+import TitleBarButtons from "@shared/components/TitleBarButtons";
+
+
+import ExitIcon from '@resources/figma/Exit.svg'
+import MaximizeIcon from '@resources/figma/Maximize.svg'
+import MinimizeIcon from '@resources/figma/Minimize.svg'
+import Bookmark from '@resources/feathericons/bookmark.svg'
+import List from '@resources/feathericons/list.svg'
+import Search from '@resources/feathericons/search.svg'
+import Font from '@resources/iconmonstr/text-3.svg'
+import ArrowLeft from '@resources/feathericons/arrow-left.svg'
+import ArrowRight from '@resources/feathericons/arrow-right.svg'
+import HomeIcon from '@resources/feathericons/home.svg'
+import PreviewWidget from "./PreviewWidget/PreviewWidget";
+
 
 // import styles from './Settings.module.scss'
 
@@ -26,7 +41,7 @@ const uiOptions = [
 
 const readerOptions = [
   {path:["reader","body", "color"], label: "Color"},
-  {path:["reader","body", "backgroundColor"], label: "Background Color"},
+  {path:["reader","body", "background"], label: "Background Color"},
   // {path:["reader","primaryText"], label: "Primary Text"},
   // {path:["reader","secondaryText"], label: "Secondary Text"}
 ]
@@ -80,6 +95,9 @@ const GlobalTheme = ()=>{
     }
   }, [appThemes])
 
+  const readerColor = (readerOptions[0].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
+  const readerBackgroundColor = (readerOptions[1].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
+
   return (
     <div className={styles.themeContainer} onClick={()=>{
       if(pickerPosition.x != -500){
@@ -87,7 +105,7 @@ const GlobalTheme = ()=>{
       }
     }}>
 
-      <div style={{position:"absolute", left:pickerPosition.x, top:pickerPosition.y}}>
+      <div style={{zIndex: 100, position:"absolute", left:pickerPosition.x, top:pickerPosition.y}}>
         <HexColorPicker onClick={(e)=>{
         // If the color picker is clicked, prevent the event from being propagated up to the themeContainer and the position being set offscreen
           e.stopPropagation()
@@ -106,6 +124,12 @@ const GlobalTheme = ()=>{
           colorUpdater(color)
         }} /> */}
       </div>
+
+      <PreviewWidget readerOptions={readerOptions}/>
+
+
+
+
 
 
       <div className={styles.comboContainer}>

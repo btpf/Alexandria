@@ -1,0 +1,86 @@
+/* --- Widget Theme --- */
+
+$widgetBorderRadius: 5px;
+
+.widgetContainer{
+  width: 250px;
+  height: 175px;
+  border: 1px solid black;
+  margin-top:25px;
+  border-radius: $widgetBorderRadius;
+
+  // Magic number - first try
+  // margin-right: 75px;
+}
+
+.widgetTopBar{
+  width: 248px;
+  background-color: var(--background-primary);
+  height: 25px;
+  position: absolute;
+  z-index: 2;
+  border-top-right-radius: $widgetBorderRadius;
+  border-top-left-radius: $widgetBorderRadius;
+}
+.widgetSideBar{
+  background-color: var(--background-secondary);
+  width: 50px;
+  height: 173px;
+  position: absolute;
+  z-index: 1;
+  border-bottom-left-radius: $widgetBorderRadius;
+  border-top-left-radius: $widgetBorderRadius;
+  box-shadow: 4px 0 10px -2px #0000006c;
+  font-size:8px;
+  padding-top:30px;
+  display:flex;
+  flex-direction: column;
+  padding-left:2px;
+}
+.widgetContentContainer{
+  height: 173px;
+  width: 248px;
+  padding-top: 30px;
+  padding-left: calc(40px + 20px);
+  padding-right: 20px;
+  font-size:8px;
+  position: absolute;
+  border-radius: $widgetBorderRadius;
+}
+.widgetIconContainer{
+  display:inline;
+
+}
+.topBarLeft{
+  margin-left: 5px;
+  display:inline;
+  > .widgetIconContainer{
+    margin-left: 2px;
+    color: var(--text-secondary);
+
+    :hover{
+      color:var(--text-primary);
+    }
+  }
+}
+.topBarRight{
+  margin-left: 175px;
+  display:inline;
+  > .widgetIconContainer{
+    margin-left: 2px;
+    color: var(--text-secondary);
+
+    :hover{
+      color:var(--text-primary);
+    }
+  }
+}
+
+.topBarTitle{
+  color:var(--text-primary);
+  position: absolute;
+  margin-left: 112px;
+  margin-top: 8px;
+  font-size:8px;
+}
+/* --- End Widget Theme --- */
