@@ -36,20 +36,14 @@ const Home = () =>{
 
   // const ThemeName = useAppSelector((state)=> state.bookState[0]?.data?.theme?.themeName)
   const ReaderBackgroundColor = useAppSelector((state) => {
-    const themeName = state.bookState[0]?.data?.theme?.themeName
-    if(themeName){
-      return state.appState.themes[state.bookState[0]?.data?.theme?.themeName]?.body?.background
-    
-    }
-    return "white"
+
+    return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.background
+
   })
   const ReaderColor = useAppSelector((state) => {
-    const themeName = state.bookState[0]?.data?.theme?.themeName
-    if(themeName){
-      return state.appState.themes[state.bookState[0]?.data?.theme?.themeName]?.body?.color
-    
-    }
-    return "white"
+
+    return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.color
+
   })
   // const UIColor = useAppSelector((state) => state.appState.themes[state.bookState[0]?.data?.theme?.themeName].body.color)
 

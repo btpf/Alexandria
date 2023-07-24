@@ -34,7 +34,7 @@ export const setFontThunk = createAsyncThunk(
     
 
     const currentBookInstance:bookStateStructure = state.bookState[view]
-    const themeSpecs = state.appState.themes[currentBookInstance.data.theme.themeName]
+    const themeSpecs = state.appState.themes[state.appState.selectedTheme]
     const newObj = ({} as {font?: string, fontSize?: number, fontCache?: string, fontWeight?:number})
 
     if(fontPayload.fontSize){
@@ -148,7 +148,7 @@ export const setWordSpacingThunk = createAsyncThunk(
     const state = (thunkAPI.getState() as RootState)
 
     const currentBookInstance:bookStateStructure = state.bookState[payload.view]
-    const themeSpecs = state.appState.themes[currentBookInstance.data.theme.themeName]
+    const themeSpecs = state.appState.themes[state.appState.selectedTheme]
 
 
     const newTheme = {...currentBookInstance.data.theme, wordSpacing:payload.value}
@@ -168,7 +168,7 @@ export const setLineHeightThunk = createAsyncThunk(
     const state = (thunkAPI.getState() as RootState)
 
     const currentBookInstance:bookStateStructure = state.bookState[payload.view]
-    const themeSpecs = state.appState.themes[currentBookInstance.data.theme.themeName]
+    const themeSpecs = state.appState.themes[state.appState.selectedTheme]
 
 
     const newTheme = {...currentBookInstance.data.theme, lineHeight:payload.value}

@@ -91,10 +91,10 @@ export const SyncedAddRendition = createAsyncThunk(
       
       thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress, cfi: result.data.cfi}))
 
-      thunkAPI.dispatch(setThemeThunk({
-        view: 0,
-        themeName: result.data.theme.themeName
-      }))
+      // thunkAPI.dispatch(setThemeThunk({
+      //   view: 0,
+      //   themeName: result.data.theme.themeName
+      // }))
       
       thunkAPI.dispatch(setFontThunk({
         view: 0,
@@ -131,7 +131,6 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontCache: "",
           fontSize:100,
           fontWeight: 400,
-          themeName:'Default Light',
           wordSpacing: 0,
           lineHeight: 100,
           readerMargins: action.meta.arg.readerMargins? action.meta.arg.readerMargins: 100,

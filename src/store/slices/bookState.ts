@@ -35,8 +35,8 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
     console.log(action.payload.theme.fontSize)
     let css = 
     `body{
-      background-color: ${theme.body.background} !important;
-      color: ${theme.body.color} !important;
+      background-color: ${theme.reader.body.background} !important;
+      color: ${theme.reader.body.color} !important;
       font-family: "${action.payload.theme.font}" !important;
       font-size: ${action.payload.theme.fontSize}% !important;
       font-weight: ${action.payload.theme.fontWeight} !important;

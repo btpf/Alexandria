@@ -9,7 +9,7 @@ interface BackendInstance{
   title: string,
   renderMode?: string,
   readerMargins?: number,
-  initialLoadState: LOADSTATE
+  initialLoadState?: LOADSTATE
 }
 
 export interface BookInstances {

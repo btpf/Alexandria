@@ -19,7 +19,7 @@ const ThemesContainer = ()=>{
     
     <div className={styles.themeSelectorContainer}>
       {Object.keys(appThemes).map((item)=>{
-        const {background, color} = (appThemes[item]).body
+        const {background, color} = (appThemes[item].reader).body
         return (
           <div key={item} onClick={()=>{
             // dispatch(SetTheme({view:0, theme:appThemes[item]}))

@@ -1,10 +1,10 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { WritableDraft } from 'immer/dist/internal';
 import {Theme} from './EpubJSBackend/data/theme/themeManager.d'
-import {actions as readerThemeActions, BaseReaderThemeDark, BaseReaderThemeLight} from './AppState/readerThemes';
 import {actions as globalThemeActions} from './AppState/globalThemes'
 import { defaultAppState } from './appStateTypes';
-import { BaseGlobalThemeDark, BaseGlobalThemeLight } from './AppState/globalThemes';
+import { BaseThemeDark, BaseThemeLight } from './AppState/globalThemes';
+import { setThemeThunk } from './EpubJSBackend/data/theme/themeManager';
 
 
 
@@ -14,14 +14,10 @@ export type appStateReducerSingle = (state: WritableDraft<defaultAppState>) => a
 
 const initialState: defaultAppState = {
   themes:{
-    "Default Light": BaseReaderThemeLight,
-    "Default Dark": BaseReaderThemeDark,
+    "Default Dark":BaseThemeDark,
+    "Default Light":BaseThemeLight
   },
-  globalThemes:{
-    "Default Dark":BaseGlobalThemeDark,
-    "Default Light":BaseGlobalThemeLight
-  },
-  selectedGlobalTheme: "Default Dark"
+  selectedTheme: "Default Light"
 }
 
 
@@ -29,25 +25,30 @@ export const appState = createSlice({
   name: 'appState',
   initialState,
   reducers: {
-    ...readerThemeActions,
+    // ...readerThemeActions,
     ...globalThemeActions
-  }
+  },
+  extraReducers(builder) {
+    builder.addCase(setThemeThunk.pending, (state, action)=>{
+      state.selectedTheme = action.meta.arg.themeName
+    })
+  },
 })
 
 // Action creators are generated for each case reducer function
 export const { 
-  AddReaderTheme,
-  RenameReaderTheme,
-  LoadReaderThemes,
-  DeleteReaderTheme,
-  UpdateReaderTheme,
+  // AddReaderTheme,
+  // RenameReaderTheme,
+  // LoadReaderThemes,
+  // DeleteReaderTheme,
+  // UpdateReaderTheme,
   /* Global Theme Actions */
-  AddGlobalTheme,
-  RenameGlobalTheme,
-  DeleteGlobalTheme,
-  UpdateGlobalTheme,
-  setSelectedGlobalTheme,
-  LoadGlobalThemes
+  AddTheme,
+  RenameTheme,
+  DeleteTheme,
+  UpdateTheme,
+  setSelectedTheme,
+  LoadThemes
 } = appState.actions
 
 export default appState.reducer

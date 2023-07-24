@@ -8,7 +8,6 @@ interface dataInterface{
     fontCache: string,
     fontSize: number,
     fontWeight: number,
-    themeName: string,
     wordSpacing: number,
     lineHeight: number,
     readerMargins: number,
@@ -22,7 +21,7 @@ export interface bookStateStructure{
     instance: Rendition,
     UID: number,
     hash: string
-    loadState: LOADSTATE,
+    loadState?: LOADSTATE,
     state:{
       isProgrammaticProgressUpdate: boolean,
       sidebarMenuSelected: boolean|string,

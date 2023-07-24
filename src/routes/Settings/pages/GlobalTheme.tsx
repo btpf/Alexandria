@@ -6,19 +6,29 @@ import styles from './ReaderTheme.module.scss'
 import UndoButton from '@resources/iconmonstr/iconmonstr-undo-7.svg'
 import TrashIcon from '@resources/feathericons/trash-2.svg'
 import { useAppSelector } from "@store/hooks";
-import { AddGlobalTheme, DeleteGlobalTheme, RenameGlobalTheme, setSelectedGlobalTheme, UpdateGlobalTheme } from "@store/slices/appState";
+import {  AddTheme, DeleteTheme, RenameTheme, setSelectedTheme, UpdateTheme } from "@store/slices/appState";
 import { useDispatch } from "react-redux";
 import { invoke } from "@tauri-apps/api";
+
+import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
+import { GetAllKeys } from "@store/utlity";
 
 // import styles from './Settings.module.scss'
 
 // import BackArrow from '@resources/feathericons/arrow-left.svg'
 // import { Link } from "react-router-dom"
-const options = [
-  {path:"primaryBackground", label: "Primary Background"},
-  {path:"secondaryBackground", label: "Secondary Background"},
-  {path:"primaryText", label: "Primary Text"},
-  {path:"secondaryText", label: "Secondary Text"}
+const uiOptions = [
+  {path:["ui","primaryBackground"], label: "Primary Background"},
+  {path:["ui","secondaryBackground"], label: "Secondary Background"},
+  {path:["ui","primaryText"], label: "Primary Text"},
+  {path:["ui","secondaryText"], label: "Secondary Text"}
+]
+
+const readerOptions = [
+  {path:["reader","body", "color"], label: "Color"},
+  {path:["reader","body", "backgroundColor"], label: "Background Color"},
+  // {path:["reader","primaryText"], label: "Primary Text"},
+  // {path:["reader","secondaryText"], label: "Secondary Text"}
 ]
 
 const GlobalTheme = ()=>{
@@ -32,8 +42,8 @@ const GlobalTheme = ()=>{
   const [color, setIntialColor] = useState("#000000");
   const [pickerPosition, setPosition] = useState({x:-500, y:-500})
 
-  const appThemes = useAppSelector((state) => state.appState.globalThemes)
-  const defaultSelectedGlobalTheme = useAppSelector((state) => state.appState.selectedGlobalTheme)
+  const appThemes = useAppSelector((state) => state.appState.themes)
+  const defaultSelectedGlobalTheme = useAppSelector((state) => state.appState.selectedTheme)
 
   // This will keep track of the current state of the theme
   const prevAppThemes = useRef({appThemes}).current;
@@ -63,7 +73,7 @@ const GlobalTheme = ()=>{
       const filteredArr = newThemesKeys.filter(x => !prevThemesKeys.includes(x));
       changeTheme(filteredArr[0])
       setLastValidTheme(filteredArr[0])
-      dispatch(setSelectedGlobalTheme(filteredArr[0]))
+      dispatch(setSelectedTheme(filteredArr[0]))
       return () =>{
         prevAppThemes.appThemes = appThemes
       }
@@ -103,7 +113,7 @@ const GlobalTheme = ()=>{
         <select value={selectedTheme} onChange={(e)=>{
           changeTheme(e.target.value)
           setLastValidTheme(e.target.value)
-          dispatch(setSelectedGlobalTheme(e.target.value))
+          dispatch(setSelectedTheme(e.target.value))
         }} className={styles.comboBox}>
           {Object.keys(appThemes).map((themeName, index)=>{
             return <option key={index} value={themeName}>{themeName}</option>
@@ -111,7 +121,7 @@ const GlobalTheme = ()=>{
           
         </select>
         <div onClick={()=>{
-          dispatch(AddGlobalTheme())
+          dispatch(AddTheme())
           
         }} className={styles.newCombo}>New</div>
       </div>
@@ -125,10 +135,10 @@ const GlobalTheme = ()=>{
           if((appThemes[e.target.value] == undefined && e.target.value != selectedTheme) && e.target.value.length != 0){
             console.log("Name does not exist", e.target.value.length)
             toggleError(false)
-            dispatch(RenameGlobalTheme({
+            dispatch(RenameTheme({
               oldThemeName: lastValidTheme, newThemeName: e.target.value
             }))
-            dispatch(setSelectedGlobalTheme(e.target.value))
+            dispatch(setSelectedTheme(e.target.value))
             setLastValidTheme(e.target.value)
           }else{
             toggleError(true)
@@ -145,46 +155,48 @@ const GlobalTheme = ()=>{
       </div>
 
       <div className={styles.themePropertyContainer}>
+        
         <div className={styles.themeTargetContainer}>
           <div className={styles.themeTarget}>
             Global Theme Settings
           </div>
 
 
-          {options.map((item)=>{
+          {uiOptions.map((item)=>{
+            const currentThemeColor = (item.path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
             return (
-              <div key={item.path} className={styles.themePropertyRow}>
+              <div key={item.path.reduce((a, c) => a + c)} className={styles.themePropertyRow}>
                 <div className={styles.themePropertyName}>
                   {item.label}
                 </div>
                 <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
-                  type GuaranteeKeySafety = keyof typeof appThemes[typeof lastValidTheme]
+                  type GuaranteeKeySafety = keyof uiTheme
 
                   const bounds = e.currentTarget.getBoundingClientRect()
                   setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
                   setColorUpdater(()=>(color:string) => {
-                    const newObj = {...appThemes[lastValidTheme]}
-                    newObj[item.path as GuaranteeKeySafety] = color
-                    dispatch(UpdateGlobalTheme({
+                    console.log(lastValidTheme, color, item.path)
+                    dispatch(UpdateTheme({
                       themeName: lastValidTheme,
-                      theme: newObj
+                      newColor: color,
+                      path: item.path
                     })
                     )})
-                  const newInitialColor = appThemes[lastValidTheme][item.path as GuaranteeKeySafety]
+                  const newInitialColor = currentThemeColor
                   if(newInitialColor !== undefined){
                     setIntialColor(newInitialColor)
                   }
-                }} style={{backgroundColor:appThemes[lastValidTheme][item.path as keyof typeof appThemes[typeof lastValidTheme]]}} className={styles.themeColor}/>
+                }} style={{backgroundColor:currentThemeColor}} className={styles.themeColor}/>
                 <UndoButton onClick={()=>{
                   if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
                     return 
                   }
-                  type GuaranteeKeySafety = keyof typeof appThemes[typeof lastValidTheme]
-                  const newObj = {...appThemes[lastValidTheme]}
-                  newObj[item.path as GuaranteeKeySafety] = appThemes["Default Light"][item.path as GuaranteeKeySafety]
-                  dispatch(UpdateGlobalTheme({
+
+                  const defaultValue = (item.path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes["Default Light"])
+                  dispatch(UpdateTheme({
                     themeName: lastValidTheme,
-                    theme: newObj
+                    newColor: defaultValue,
+                    path: item.path
                   }))
                 }} className={styles.resetButton}/>
               </div>
@@ -198,6 +210,60 @@ const GlobalTheme = ()=>{
         </div>
 
 
+
+
+        <div className={styles.themeTargetContainer}>
+          <div className={styles.themeTarget}>
+            Reader Theme Settings
+          </div>
+
+
+          {readerOptions.map((item)=>{
+            const currentThemeColor = (item.path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
+            return (
+              <div key={item.path.reduce((a, c) => a + c)} className={styles.themePropertyRow}>
+                <div className={styles.themePropertyName}>
+                  {item.label}
+                </div>
+                <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
+                  type GuaranteeKeySafety = keyof uiTheme
+
+                  const bounds = e.currentTarget.getBoundingClientRect()
+                  setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
+                  setColorUpdater(()=>(color:string) => {
+                    console.log(lastValidTheme, color, item.path)
+                    dispatch(UpdateTheme({
+                      themeName: lastValidTheme,
+                      newColor: color,
+                      path: item.path
+                    })
+                    )})
+                  const newInitialColor = currentThemeColor
+                  if(newInitialColor !== undefined){
+                    setIntialColor(newInitialColor)
+                  }
+                }} style={{backgroundColor:currentThemeColor}} className={styles.themeColor}/>
+                <UndoButton onClick={()=>{
+                  if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
+                    return 
+                  }
+
+                  const defaultValue = (item.path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes["Default Light"])
+                  dispatch(UpdateTheme({
+                    themeName: lastValidTheme,
+                    newColor: defaultValue,
+                    path: item.path
+                  }))
+                }} className={styles.resetButton}/>
+              </div>
+            )
+          })}
+          
+
+          
+
+          
+        </div>
       </div>
 
 
@@ -207,8 +273,8 @@ const GlobalTheme = ()=>{
         changeTheme("Default Light")
         setLastValidTheme("Default Light")
         
-        dispatch(DeleteGlobalTheme(selectedTheme))
-        dispatch(setSelectedGlobalTheme("Default Light"))
+        dispatch(DeleteTheme(selectedTheme))
+        dispatch(setSelectedTheme("Default Light"))
         // changeTheme(Object.keys(appThemes).filter((key) => key == selectedTheme)[0])
 
       }} style={{display: lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"?"none":""}} className={styles.deleteButton}><TrashIcon style={{transform:"scale(1.2)", marginRight:10}}/> Delete Theme</div>

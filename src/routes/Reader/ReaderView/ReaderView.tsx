@@ -29,7 +29,7 @@ const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
       LoadState: state.bookState[0].loadState,
-      UIBackgroundColor: state.bookState[0].data.theme.backgroundColor,
+      UIBackgroundColor: state.appState.themes[state.appState.selectedTheme].ui.primaryBackground,
       ThemeMenuActive: state.bookState[0].state.themeMenuActive,
       renderMode:state.bookState[0]?.data.theme.renderMode,
       readerMargins: state.bookState[0]?.data.theme.readerMargins,
@@ -205,7 +205,7 @@ class Reader extends React.Component<ReaderProps>{
   render(): React.ReactNode {
     return(
       <>
-      
+        {/* This will help prevent flashbang */}
         <div style={{backgroundColor:this.props.UIBackgroundColor, width: `${this.props.readerMargins}%`, marginLeft:"auto", marginRight:"auto"}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
         {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
         <QuickbarModal/>
@@ -239,7 +239,7 @@ class Reader extends React.Component<ReaderProps>{
       this.rendition.destroy();
       this.unsubscribeHandlers()
       this.props.RemoveRendition(0)
-      const renderMode = this.props.renderMode
+      
 
       let mySettings:any = {
         width: "100%", 
@@ -255,9 +255,11 @@ class Reader extends React.Component<ReaderProps>{
         
         'scrolled': { width: '100%', flow: 'scrolled-doc' },
         
-        'continuous': { width: '100%', flow: 'scrolled', manager: 'continuous' },
-        
+        'continuous': { width: '100%', flow: 'scrolled', manager: 'continuous' },  
       }
+
+      type layoutTypes = keyof typeof layouts
+      const renderMode:layoutTypes = this.props.renderMode
 
       mySettings = {...mySettings, 
         ...layouts[renderMode]
@@ -296,6 +298,7 @@ class Reader extends React.Component<ReaderProps>{
         // }
 
         // Logic if using epub-js
+        // @ts-expect-error Missing Definition
         currentLocation = this.rendition.currentLocation().end.cfi
 
 

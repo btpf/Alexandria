@@ -1,15 +1,8 @@
-import { ThemeDict } from "./AppState/readerThemes"
+import { ThemeType } from "./AppState/globalThemes";
 
-export type GlobalThemeDict = {[themeName:string]: {
-    primaryBackground: string,
-    secondaryBackground: string,
-    primaryText: string,
-    secondaryText: string
-  }}
   
 export interface defaultAppState {
-      themes: ThemeDict,
-      globalThemes: GlobalThemeDict,
-      selectedGlobalTheme: string
+      themes: {[themeName:string]: ThemeType},
+      selectedTheme: string
     
     }

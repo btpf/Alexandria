@@ -3,7 +3,7 @@ import styles from './Settings.module.scss'
 
 import BackArrow from '@resources/feathericons/arrow-left.svg'
 import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
-import ReaderTheme from "./pages/ReaderTheme"
+// import ReaderTheme from "./pages/ReaderTheme"
 import GlobalTheme from "./pages/GlobalTheme"
 import Fonts from "./pages/Fonts/Fonts"
 import { useAppSelector } from "@store/hooks"
@@ -47,7 +47,7 @@ const Settings = ()=>{
       <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
         <div className={styles.navbar}>
           <div onClick={()=>navigate("Global Theme")}>Global Theme</div>
-          <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div>
+          {/* <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div> */}
           <div onClick={()=>navigate("Fonts")}>Fonts</div>
         </div>
 
@@ -55,7 +55,7 @@ const Settings = ()=>{
           <Routes>
             <Route path="/" element={<GlobalTheme />} />
             <Route  path="/Global Theme" element={<GlobalTheme />} />
-            <Route path="/Reader Theme" element={<ReaderTheme />} />
+            {/* <Route path="/Reader Theme" element={<ReaderTheme />} /> */}
             <Route path="/Fonts" element={<Fonts />} />
           </Routes>
         </div>

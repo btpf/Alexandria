@@ -1,5 +1,5 @@
-import { PayloadAction } from "@reduxjs/toolkit"
-import { WritableDraft } from "immer/dist/internal";
+import { PayloadAction, current } from "@reduxjs/toolkit"
+// import { current, WritableDraft } from "immer/dist/internal";
 import { appStateReducer, appStateReducerSingle } from "../appState";
 import { defaultAppState } from "../appStateTypes";
 
@@ -7,29 +7,78 @@ interface RenameThemePayload{
   oldThemeName: string,
   newThemeName: string
 }
-
-interface globalThemeType {
+export type uiTheme = {
   primaryBackground: string,
   secondaryBackground: string,
   primaryText : string,
   secondaryText: string 
 }
 
-
-export const BaseGlobalThemeDark = {
-  primaryBackground: "#111111",
-  secondaryBackground: "#252525",
-  primaryText: "white",
-  secondaryText: "grey"
+export type ThemeType = {
+  ui:uiTheme,
+  reader:{
+    body: {
+      background: string,
+      color: string,
+    },
+    
+    'a:link': {
+      color: string,
+      'text-decoration': string,
+    },
+    'a:link:hover': {
+      background: string,
+    },
+  }
 }
-export const BaseGlobalThemeLight = {
-  primaryBackground: "white",
-  secondaryBackground: "#FAF9F6",
-  primaryText: "rgba(0, 0, 0, 0.8)",
-  secondaryText: "rgba(0, 0, 0, 0.6)"
+
+
+export const BaseThemeDark = {
+  ui:{
+    primaryBackground: "#111111",
+    secondaryBackground: "#252525",
+    primaryText: "white",
+    secondaryText: "grey"
+  },
+  reader:{
+    body: {
+      background: `#444`,
+      color: `#fff`,
+    },
+    'a:link': {
+      color: `#1e83d2`,
+      'text-decoration': 'none',
+    },
+    'a:link:hover': {
+      background: 'rgba(0, 0, 0, 0.1)',
+    },
+  }
+
+}
+export const BaseThemeLight = {
+  ui:{
+    primaryBackground: "white",
+    secondaryBackground: "#FAF9F6",
+    primaryText: "rgba(0, 0, 0, 0.8)",
+    secondaryText: "rgba(0, 0, 0, 0.6)"
+  },
+  reader:{
+    body: {
+      background: `white`,
+      color: `black`,
+    },
+    
+    'a:link': {
+      color: `#0000EE`,
+      'text-decoration': 'inherit',
+    },
+    'a:link:hover': {
+      background: 'inherit',
+    },
+  }
 }
 
-const AddGlobalTheme:appStateReducerSingle = (state) =>{
+const AddTheme:appStateReducerSingle = (state) =>{
 
   console.log("ADDING THEME")
   let i = 0
@@ -37,13 +86,13 @@ const AddGlobalTheme:appStateReducerSingle = (state) =>{
   while(true){
     if(i == 0){
       
-      if(state.globalThemes[`New Theme`] == undefined){
+      if(state.themes[`New Theme`] == undefined){
               
         break
       }
 
     }else{
-      if(state.globalThemes[`New Theme (${i})`] == undefined){
+      if(state.themes[`New Theme (${i})`] == undefined){
         break
       }
 
@@ -52,67 +101,86 @@ const AddGlobalTheme:appStateReducerSingle = (state) =>{
   }
 
   if(i==0){
-    state.globalThemes[`New Theme`] = BaseGlobalThemeLight
+    state.themes[`New Theme`] = BaseThemeLight
   }else{
-    state.globalThemes[`New Theme (${i})`] = BaseGlobalThemeLight
+    state.themes[`New Theme (${i})`] = BaseThemeLight
   }
 
 }
 
-const RenameGlobalTheme:appStateReducer = (state, action: PayloadAction<RenameThemePayload>) =>{
-  if(state.globalThemes[action.payload.newThemeName] == undefined){
-    state.globalThemes[action.payload.newThemeName] = state.globalThemes[action.payload.oldThemeName]
-    delete state.globalThemes[action.payload.oldThemeName]
+const RenameTheme:appStateReducer = (state, action: PayloadAction<RenameThemePayload>) =>{
+  if(state.themes[action.payload.newThemeName] == undefined){
+    state.themes[action.payload.newThemeName] = state.themes[action.payload.oldThemeName]
+    delete state.themes[action.payload.oldThemeName]
   }
 }
-const DeleteGlobalTheme:appStateReducer = (state, action) =>{
-  delete state.globalThemes[action.payload]
+const DeleteTheme:appStateReducer = (state, action) =>{
+  delete state.themes[action.payload]
 }
+
+type GetAllKeys<T> = T extends object
+  ? {
+      [K in keyof T]-?: K extends string | number
+        ? `${K}` | `${GetAllKeys<T[K]>}`
+        : never;
+    }[keyof T]
+  : never;
+
 
 type UpdateThemePayload = {
   themeName: string,
-  theme: globalThemeType
-}
-const UpdateGlobalTheme:appStateReducer = (state, action: PayloadAction<UpdateThemePayload>) =>{
-  console.log(action.payload)
-      type bodyTypes = Array<keyof typeof BaseGlobalThemeLight>
-      if(state.globalThemes[action.payload.themeName] !== undefined){
-        (Object.keys(action.payload.theme) as bodyTypes).forEach((key)=>{
-        
-          state.globalThemes[action.payload.themeName][key] = action.payload.theme[key]
-
-        })
-      }
+  newColor: ThemeType,
+  path: GetAllKeys<ThemeType>
 }
 
-const setSelectedGlobalTheme:appStateReducer = (state, action: PayloadAction<string>) =>{
+
+const UpdateTheme:appStateReducer = (state, action: PayloadAction<UpdateThemePayload>) =>{
+
+  if(state.themes[action.payload.themeName] !== undefined){
+
+    let currentObject:any = state.themes[action.payload.themeName]
+    const path = action.payload.path
+    for (let index = 0; index < path.length - 1; index++) {
+      currentObject = currentObject[path[index]]
+      
+    }
+
+    currentObject[path[path.length - 1]] = action.payload.newColor
+
+
+
+
+  }
+}
+
+const setSelectedTheme:appStateReducer = (state, action: PayloadAction<string>) =>{
   // Return in the case where the config file is empty
   if(action.payload == ""){
     return
   }
 
   // In the case we are setting the theme to one which doesn't exists, Do not crash the application.
-  if(!Object.keys(state.globalThemes).includes(action.payload)){
+  if(!Object.keys(state.themes).includes(action.payload)){
     return
   }
   console.log("SELECTED GLOBAL THEME CHANGE")
-  state.selectedGlobalTheme = action.payload
+  state.selectedTheme = action.payload
   console.log(state)
 }
 
-const LoadGlobalThemes:appStateReducer = (state, action: PayloadAction<defaultAppState>) =>{
+const LoadThemes:appStateReducer = (state, action: PayloadAction<defaultAppState>) =>{
   if(Object.keys(action.payload.themes).length == 0){
     return
   }
-  state.globalThemes = action.payload.themes
+  state.themes = action.payload.themes
 }
 
 
 export const actions = {
-  AddGlobalTheme,
-  RenameGlobalTheme,
-  DeleteGlobalTheme,
-  UpdateGlobalTheme,
-  setSelectedGlobalTheme,
-  LoadGlobalThemes
+  AddTheme,
+  RenameTheme,
+  DeleteTheme,
+  UpdateTheme,
+  setSelectedTheme,
+  LoadThemes
 }
