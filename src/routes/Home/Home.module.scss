@@ -141,7 +141,7 @@ $bookmarkHeight: 23px;
 .bookImageContainer{
   grid-row: 1/3;
   grid-column: 1;
-  align-self: end;
+  align-self: flex-end;
 
   max-height: 100%;
   display:grid;
@@ -184,7 +184,7 @@ $bookmarkHeight: 23px;
 
 .boxTopBar svg:last-of-type{
   grid-column: 2;
-  justify-self: end;
+  justify-self: flex-end;
   color: white;
   // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, .75));
@@ -224,7 +224,7 @@ $bookmarkHeight: 23px;
 
 .bookImage{
   object-fit: revert-layer;
-  align-self: end;
+  align-self: flex-end;
   width:100%;
   max-height: 100%;
   grid-row: 1/3;
@@ -238,7 +238,7 @@ $bookmarkHeight: 23px;
   height: 40px;
   display:flex;
   flex-direction: row;
-  align-items: end;
+  align-items: flex-end;
   color:white;
   text-align: center;
   grid-column: 1;

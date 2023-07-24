@@ -5,6 +5,9 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+// This will force the Autoprefixer to be activated in non-production
+// Useful because conistency is important across development environments
+const FORCE_AUTOPREFIXER = true
 
 module.exports = {
   //...
@@ -72,7 +75,7 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
-                  !isDevelopment && ['autoprefixer',
+                  (!isDevelopment || FORCE_AUTOPREFIXER) && ['autoprefixer',
                     {
                       overrideBrowserslist: "last 2 versions" // https://github.com/browserslist/browserslist#full-list
                     }

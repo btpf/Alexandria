@@ -46,7 +46,7 @@
   width: 400px;
   display:flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom:10px;
   :first-child{
     justify-self: flex-end;
