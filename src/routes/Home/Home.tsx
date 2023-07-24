@@ -213,9 +213,9 @@ const Shelf = () =>{
 
         </div>
         <div className={styles.rightContainer}>
-          <Filter style={{marginRight:10, strokeWidth: 1}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
+          <Filter style={{marginRight:10, strokeWidth: 1.5, cursor:"pointer"}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
           <Link className={styles.unstyleLink} to="/settings">
-            <Settings style={{strokeWidth: 1}}/>
+            <Settings style={{strokeWidth: 1.5}}/>
           </Link>
           <TitleBarButtons/>
         </div>
