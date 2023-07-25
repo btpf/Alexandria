@@ -305,7 +305,7 @@ const Shelf = () =>{
                       }}/>
                     </div>
                     {book.cover_url?
-                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={convertFileSrc(book.cover_url)}/>
+                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.cover_url.startsWith("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
                       :
                       <FakeCover title={book.title} author="author"/>
                     }
