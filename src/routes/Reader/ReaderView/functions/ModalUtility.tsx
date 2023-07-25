@@ -67,8 +67,12 @@ export const CalculateBoxPosition = (renditionInstance:Rendition, cfiRange:strin
   // on the left side of the parent container
   const element = renditionInstance?.manager?.container?.parentElement
   if(element){
-    const marginLeftValue = window.getComputedStyle(element).marginLeft
-    xpos += Number(marginLeftValue.replace("px", ""))
+    // For some reason this does not work on chromium based engines
+    // const marginLeftValue = window.getComputedStyle(element).marginLeft
+    // xpos += Number(marginLeftValue.replace("px", ""))
+
+    const marginLeftValue = element.getBoundingClientRect().x
+    xpos += marginLeftValue
   }
 
 
