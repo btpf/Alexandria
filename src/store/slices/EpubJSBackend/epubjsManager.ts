@@ -13,6 +13,7 @@ import { bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsM
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 import { setFontThunk, setThemeThunk } from "./data/theme/themeManager"
+import { RootState } from "@store/store"
 
 
 
@@ -42,6 +43,13 @@ export const SyncedAddRendition = createAsyncThunk(
       } catch (error) {
         if(error == "First Read"){
           console.log("First Read, Populating with default data")
+
+          // In the case where nothing else is set, at least set the theme to the globally selected one.
+          thunkAPI.dispatch(setThemeThunk({
+            view: 0,
+            themeName: (thunkAPI.getState() as RootState).appState.selectedTheme
+          }))
+
           return
         }
         console.log("Error Caught in invoke Load_book_data:", error)
@@ -91,10 +99,6 @@ export const SyncedAddRendition = createAsyncThunk(
       
       thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress, cfi: result.data.cfi}))
 
-      // thunkAPI.dispatch(setThemeThunk({
-      //   view: 0,
-      //   themeName: result.data.theme.themeName
-      // }))
       
       thunkAPI.dispatch(setFontThunk({
         view: 0,
