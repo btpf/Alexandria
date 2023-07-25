@@ -36,6 +36,7 @@ import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
 
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
+import FakeCover from './FakeCover/FakeCover';
 
 const books = [
   {BookUrl: moby,
@@ -128,7 +129,7 @@ const Shelf = () =>{
                 data: tt
               },
               cover: {
-                name: "",
+                has_cover: true,
                 data: [0]
               }
             }
@@ -137,17 +138,23 @@ const Shelf = () =>{
             const book = Epub(fileReader.result);
             book.ready.then(() => {
               book.coverUrl().then(async (url) => {
+
+                payload.title = book.packaging.metadata.title
+
+
                 if(url == null){
                   console.log("Error: No Cover Found For Book")
-                  return
+                  payload.cover.has_cover = false
+                  // return
+                }else{
+                  const response = await fetch(url);
+                  const data = await response.blob();
+                  payload.cover.data = Array.from(new Uint8Array(await data.arrayBuffer()))
+                  
                 }
-                const response = await fetch(url);
-                const data = await response.blob();
-                console.log("COVER TOO")
-                payload.title = book.packaging.metadata.title
-                payload.cover.data = Array.from(new Uint8Array(await data.arrayBuffer()))
-                const checksum:string = await invoke('import_book', {payload})
 
+
+                const checksum:string = await invoke('import_book', {payload})
                 // If there is a duplicate book
                 if(checksum == ""){
                   return
@@ -156,7 +163,7 @@ const Shelf = () =>{
 
                 // Todo, make setBooks contain the hash that is returned by import_book, this way the book will load properly.
                 
-                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url, progress: 0, hash:checksum}])
+                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url || "", progress: 0, hash:checksum}])
               });
             })
 
@@ -255,7 +262,12 @@ const Shelf = () =>{
                         e.preventDefault()
                       }}/>
                     </div>
-                    <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
+                    {book.BookUrl?
+                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
+                      :
+                      <FakeCover title={book.title} author="author"/>
+                    }
+                    
                   </div>
               
                   <div className={styles.boxBottomBar} >
@@ -292,7 +304,11 @@ const Shelf = () =>{
                         e.preventDefault()
                       }}/>
                     </div>
-                    <img className={styles.bookImage} src={book.cover_url.includes("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
+                    {book.cover_url?
+                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={convertFileSrc(book.cover_url)}/>
+                      :
+                      <FakeCover title={book.title} author="author"/>
+                    }
                   </div>
               
                   <div className={styles.boxBottomBar} >

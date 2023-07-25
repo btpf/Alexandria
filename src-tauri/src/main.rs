@@ -89,10 +89,15 @@ struct FileStruct {
 }
 
 #[derive(Deserialize)]
+struct CoverStruct {
+    has_cover: bool,
+    data: Vec<u8>,
+}
+#[derive(Deserialize)]
 struct ImportBookPayload {
     book: FileStruct,
     title: String,
-    cover: FileStruct,
+    cover: CoverStruct,
 }
 #[tauri::command]
 fn import_book(payload: ImportBookPayload) -> String{
@@ -122,11 +127,15 @@ fn import_book(payload: ImportBookPayload) -> String{
         &payload.book.data,
     )
     .unwrap();
-    std::fs::write(
-        format!("{hashed_book_folder}/{}", "cover.jpg"),
-        &payload.cover.data,
-    )
-    .unwrap();
+
+    if(payload.cover.has_cover){
+        std::fs::write(
+            format!("{hashed_book_folder}/{}", "cover.jpg"),
+            &payload.cover.data,
+        )
+        .unwrap();
+    }
+
 
     // struct InitialDataFormat{
     //   title: String,
