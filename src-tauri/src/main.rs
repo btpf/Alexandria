@@ -7,10 +7,11 @@ use std::{
     collections::HashMap,
     env::{self, current_dir},
     fs::{self, File},
-    io::{BufReader, Read},
+    io::{BufReader, Read, Write},
     path::Path,
 };
 
+use epub::doc::EpubDoc;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -81,33 +82,24 @@ fn create_or_load_data() -> Option<DataExists> {
     }
 }
 
-//data: Vec<u8>
-#[derive(Deserialize)]
-struct FileStruct {
-    name: String,
-    data: Vec<u8>,
-}
 
-#[derive(Deserialize)]
-struct CoverStruct {
-    has_cover: bool,
-    data: Vec<u8>,
-}
-#[derive(Deserialize)]
-struct ImportBookPayload {
-    book: FileStruct,
-    title: String,
-    cover: CoverStruct,
-}
+
+
 #[tauri::command]
-fn import_book(payload: ImportBookPayload) -> String{
+fn import_book(payload: String) -> Result<BookHydrate, String>{
     // let t = String::from_utf8(data).unwrap();
 
     println!("Book imported");
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
-    let checksum = get_hash(&payload.book.data);
+    let path = Path::new(&payload);
+    let mut f = File::open(&path).unwrap();
+    let mut buffer = Vec::new();
+    // read the whole file
+    f.read_to_end(&mut buffer).unwrap();
+
+    let checksum = get_hash(&buffer);
 
     println!("{}", checksum);
 
@@ -118,23 +110,48 @@ fn import_book(payload: ImportBookPayload) -> String{
         Ok(_file) => println!("Book is Unique, Creating Directory"),
         Err(_error) => {
             println!("Error: Book is duplicate");
-            return checksum;
+            return Err("Error: Book is duplicate".to_string());
         }
     };
+    use epub::doc::EpubDoc;
+    let doc = EpubDoc::new(&payload);
+    let mut doc = doc.unwrap();
+    let title = doc.mdata("title").unwrap();
+    let author = doc.mdata("creator").unwrap_or("unknown".to_string());
+
+    let bookLocation = format!("{hashed_book_folder}/{}",  path.file_name().unwrap().to_str().unwrap());
 
     std::fs::write(
-        format!("{hashed_book_folder}/{}", payload.book.name),
-        &payload.book.data,
+        &bookLocation,
+        &buffer,
     )
     .unwrap();
 
-    if(payload.cover.has_cover){
-        std::fs::write(
-            format!("{hashed_book_folder}/{}", "cover.jpg"),
-            &payload.cover.data,
-        )
-        .unwrap();
-    }
+    let mut coverExists = true;
+    // if(EPUBHASCOVER){
+
+        match doc.get_cover() {
+            Ok(cover_data) => {
+                let f = fs::File::create(format!("{hashed_book_folder}/{}", "cover.jpg"));
+                let mut f = f.unwrap();
+                let resp = f.write_all(&cover_data);
+            },
+            Err(error) => {
+                coverExists = false;
+                println!("Error: Book does not have cover");
+            }
+        }
+
+
+
+
+
+    // }
+
+    
+    
+
+    
 
 
     // struct InitialDataFormat{
@@ -148,7 +165,8 @@ fn import_book(payload: ImportBookPayload) -> String{
     // };
 
     let initial_data = json!({
-        "title": payload.title,
+        "title": title,
+        "author": author,
         "data":{
             "progress": 0,
             "cfi": "",
@@ -163,7 +181,17 @@ fn import_book(payload: ImportBookPayload) -> String{
     )
     .unwrap();
 
-    return checksum;
+    let response = BookHydrate
+        {
+            cover_url: if coverExists{ format!("{hashed_book_folder}/{}", "cover.jpg")}else{"".to_string()},
+            book_url: bookLocation,
+            hash: checksum,
+            progress: 0.0,
+            title: title,
+        };
+    
+    return Ok(response)
+
 }
 
 fn get_hash(data: &Vec<u8>) -> String {

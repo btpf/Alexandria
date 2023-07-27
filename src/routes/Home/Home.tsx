@@ -13,11 +13,12 @@ import Article from '@resources/material/article_black_24dp.svg'
 
 import Boomark from '@resources/figma/Bookmark.svg'
 
+import { listen } from '@tauri-apps/api/event'
+
 
 
 
 import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
-import {useDropzone, Accept} from 'react-dropzone'
 import Epub from 'epubjs';
 import { BookOptions } from 'epubjs/types/book';
 import { useAppDispatch, useAppSelector } from '@store/hooks'
@@ -46,6 +47,8 @@ const Home = () =>{
 } 
 
 const Shelf = () =>{
+
+
   const [searchValue, setSearchValue] = useState("")
   const [filterValue, setFilterValue] = useState("Title")
   const [sortDirection, setSortDirection] = useState("ASC")
@@ -54,104 +57,57 @@ const Shelf = () =>{
 
   const [myBooks, setBooks] = useState<BookData[]>([])
 
-  const onDrop = useCallback((acceptedFiles:File[]) => {
-    console.log("ON DROP CALLED")
-    // Do something with the files
-    acceptedFiles.forEach(file => {
-      if(file.type == "application/epub+zip"){
-        console.log("COPYING", file.name)
-        const fileReader = new FileReader();
-        fileReader.onload = ()=>{
-          console.log("Done Loading")
 
-          if(!(fileReader.result instanceof ArrayBuffer)){
-            console.log("Non ArrayBuffer Returned")
-            return
-          }
+  useEffect(()=>{
+    const unmountPointer = {pointer:()=>{return}}
+    if(window.__TAURI__){
+      let myBooksState = myBooks;
+      listen('tauri://file-drop', event => {
+        console.log(event)
+        const files:any = event.payload
 
-          const data = new Uint8Array(fileReader.result)
-          const tt = Array.from(data)
+        files.forEach((file:string[])=>{
 
-          // The proper way of doing this is to pass Array.from(new Uint8Array(fileReader.result))
-          // Then on the back end, set the type as vec<u8>
-          console.log("Done Converting")
-          if(window.__TAURI__){
-            // https://github.com/tauri-apps/tauri/discussions/3208
-            // https://github.com/tauri-apps/tauri/issues/1817
-            // JSON serialization is unneccesary for binary and also slow
-            // Let's convert the array into a string to avoid this
-            const payload = {
-              title: "",
-              book: {
-                name: file.name,
-                data: tt
-              },
-              cover: {
-                has_cover: true,
-                data: [0]
-              }
+
+          invoke('import_book', {payload:file}).then((response:any)=>{
+            console.log("IMPORT BOOK RESPONSE", response)
+            if(response){
+              myBooksState = [...myBooksState, {title: response.title, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
+              setBooks(myBooksState)
+        
             }
+          }).catch((err)=>{
+            console.log(err)
+          })
+        })
 
 
-            const book = Epub(fileReader.result);
-            book.ready.then(() => {
-              book.coverUrl().then(async (url) => {
+      }).then((unmount)=>{
+        unmountPointer.pointer = unmount
+      })
+    }
 
-                payload.title = book.packaging.metadata.title
+    return ()=> unmountPointer.pointer()
 
-
-                if(url == null){
-                  console.log("Error: No Cover Found For Book")
-                  payload.cover.has_cover = false
-                  // return
-                }else{
-                  const response = await fetch(url);
-                  const data = await response.blob();
-                  payload.cover.data = Array.from(new Uint8Array(await data.arrayBuffer()))
-                  
-                }
-
-
-                const checksum:string = await invoke('import_book', {payload})
-                // If there is a duplicate book
-                if(checksum == ""){
-                  return
-                }
-                console.log(url)
-
-                // Todo, make setBooks contain the hash that is returned by import_book, this way the book will load properly.
-                
-                setBooks([...myBooks, {title: book.packaging.metadata.title, cover_url: url || "", progress: 0, hash:checksum}])
-              });
-            })
-
-            
-            
-          }
-        }
-
-        fileReader.readAsArrayBuffer(file)
-      }
-    });
   }, [myBooks])
-
 
   useEffect(()=>{
     console.log("Home Page Loaded")
     if(window.__TAURI__){
+
       invoke("get_books").then((data)=>{
         setBooks((data as BookData[]))
       })
+      
     }
+    
+    
+
+
   }, [])
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone(
-    {
-      onDrop,
-      // Disable click and keydown behavior
-      noClick: true,
-      noKeyboard: true
-    })
+  // https://stackoverflow.com/a/21002544
+  const [isDragActive, setDragActive] = useState(false)
 
 
   return (
@@ -189,14 +145,17 @@ const Shelf = () =>{
         
 
       </div>
-      <div {...getRootProps()}
-        className={styles.bookCase}>
-        <input {...getInputProps()} />
+      <div onDragEnter={()=>{
+        setDragActive(true)
+      }} onDragLeave={()=>{
+        setDragActive(false)
+      }}
+      className={`${styles.bookCase} ${isDragActive && styles.bookCaseDragging}`}>
+        {/* <input {...getInputProps()} /> */}
         {
-          isDragActive && <p> Add book to library...</p> 
+          isDragActive && <div style={{height:"100%", width:"100%", pointerEvents:"none"}}> Add book to library...</div> 
         }
         
-
 
         {myBooks
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))

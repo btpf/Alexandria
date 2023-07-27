@@ -39,7 +39,6 @@ $bookmarkHeight: 23px;
 
 .unstyleLink{
   text-decoration: none;
-
   &:focus, &:hover, &:visited, &:link, &:active {
     text-decoration: none;
   }
@@ -63,6 +62,12 @@ $bookmarkHeight: 23px;
   background-color: var(--background-secondary);
   color: var(--text-primary);
   overflow: auto;
+}
+
+.bookCaseDragging{
+  * {
+    pointer-events: none;
+  }
 }
 
 // Begin resize styles
