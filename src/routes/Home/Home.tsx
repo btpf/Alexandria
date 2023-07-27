@@ -14,15 +14,6 @@ import Article from '@resources/material/article_black_24dp.svg'
 import Boomark from '@resources/figma/Bookmark.svg'
 
 
-import moby from "@resources/images/mobydick.jpg"
-import martian from "@resources/images/martian.jpg"
-import four from "@resources/images/451.jpg"
-import thousand from "@resources/images/1001.jpg"
-import onenine from "@resources/images/1984.webp"
-import af from "@resources/images/af.jpg"
-import tcr6 from "@resources/images/tcr6.jpg"
-import gg from "@resources/images/gg.jpg"
-import jah from "@resources/images/jah.jpg"
 
 
 import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
@@ -37,39 +28,6 @@ import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import FakeCover from './FakeCover/FakeCover';
-
-const books = [
-  {BookUrl: moby,
-    title:"Moby Dick",
-    percent: "54%"},
-  {BookUrl: martian,
-    title:"The Martian",
-    percent: "100%"},
-  {BookUrl: four,
-    title:"Farhenheight 451",
-    percent: "78%"},
-  {BookUrl: thousand,
-    title:"1001 Arabian Nights",
-    percent: "0%"},
-  {BookUrl: onenine,
-    title:"1984",
-    percent: "77%"},
-  {BookUrl: af,
-    title:"Animal Farm",
-    percent: "2%"},
-  {BookUrl: tcr6,
-    title:"Tom Clancy's Rainbow Six",
-    percent: "63%"},
-  {BookUrl: gg,
-    title:"The Great Gatsby",
-    percent: "4%"},
-  {BookUrl: jah,
-    title:"Jeckyl and Hyde",
-    percent: "43%"},
-  {BookUrl: "None",
-    title:"Placeholder",
-    percent: "43%"},
-]
 
 interface BookData {
   title:string,
@@ -237,47 +195,7 @@ const Shelf = () =>{
         {
           isDragActive && <p> Add book to library...</p> 
         }
-        {books
-          .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
-          .sort((a, b) =>{
-            // TODO: Make a dictionary here for a switch with the selected sortby option 
-            if(sortDirection =="ASC"){
-              return (a.title > b.title) ? 1 : -1
-            }else{
-              return (a.title < b.title) ? 1 : -1
-            }
-          
-          })
-          .map((book)=>{
-            return (
-              <Link className={styles.unstyleLink}  key={book.title} to="/reader">
-                <div className={styles.boxPlaceholder}>
-
-                  {/* This container is used to handle top bar in CSS in case where book is a short height */}
-                  <div className={styles.bookImageContainer}>
-                    <div className={styles.boxTopBar}>
-                      <Boomark/>
-                      <div>{book.percent}</div>
-                      <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
-                        e.preventDefault()
-                      }}/>
-                    </div>
-                    {book.BookUrl?
-                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.BookUrl}/>
-                      :
-                      <FakeCover title={book.title} author="author"/>
-                    }
-                    
-                  </div>
-              
-                  <div className={styles.boxBottomBar} >
-                    <div>{book.title}</div>
-
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
+        
 
 
         {myBooks
@@ -319,11 +237,6 @@ const Shelf = () =>{
               </Link>
             )
           })}
-        <button onClick={async ()=>{
-          invoke("get_books").then((data)=>{
-            console.log(data)
-          })
-        }}/>
       </div>
       <div style={!bottomBarActive?{transform:"translateY(110%)"}:{}} className={styles.bottomBar}>
         <div className={styles.bottomBarContainer}>
