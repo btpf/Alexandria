@@ -16,7 +16,7 @@ import { convertFileSrc, invoke } from '@tauri-apps/api/tauri';
 
 import { connect, ConnectedProps } from 'react-redux'
 
-
+import { platform } from '@tauri-apps/api/os';
 
 import store, {RootState} from '@store/store'
 import {RemoveRendition, ToggleMenu, SetLoadState, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookState'
@@ -75,20 +75,24 @@ class Reader extends React.Component<ReaderProps>{
 
   async componentDidMount(){
     console.log("DID MOUNT")
-    type bookData = string | ArrayBuffer
-    let bookUrl: bookData = ""
+    type bookData = string
+    let bookValue: bookData = ""
 
     const {params} = this.props.router
     if(window.__TAURI__ && params.bookHash){
-      const bookBytes:ArrayBuffer = await invoke("get_book_by_hash",{bookHash: params.bookHash})
-      // bookUrl = convertFileSrc(bookUrl);
-      bookUrl = new Uint8Array(bookBytes).buffer
-      // console.log("BOOK URL LOADED", bookUrl)
+      bookValue = await invoke("get_book_by_hash",{bookHash: params.bookHash})
+      if(await platform() == "linux"){
+        const splitPath = bookValue.split('/').slice(-4)
+        // Main Issue:https://github.com/tauri-apps/tauri/issues/3725
+        bookValue = "http://127.0.0.1:16780/" + splitPath.join("/")
+      }else{
+        bookValue = convertFileSrc(bookValue)
+      }
     }else{
-      bookUrl = bookImport
+      bookValue = bookImport
     }
 
-    const book = epubjs((bookUrl as any))
+    const book = epubjs((bookValue as any))
 
 
 

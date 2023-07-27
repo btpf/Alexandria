@@ -15,15 +15,43 @@ use epub::doc::EpubDoc;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+use axum::{
+    http::{HeaderValue, Method},
+    routing::get,
+    Router,
+};
+use tower_http::cors::CorsLayer;
+use tower_http::services::{ServeDir, ServeFile};
 
 extern crate reqwest;
 use std::io;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     tauri::Builder::default()
         .setup(|app| {
             println!("Loading Config Directory");
             let config_path = create_or_load_data();
+
+            // https://github.com/tranxuanthang/lrcget/commit/0a2fe9943e40503a1dc5d9bf291314f31ea66941
+            // https://github.com/tauri-apps/tauri/issues/3725#issuecomment-1552804332
+            #[cfg(target_os = "linux")]
+            tokio::spawn(async move {
+                let current_dir = current_dir().unwrap();
+                let current_dir_str = current_dir.as_path().to_str().unwrap();
+                let serve_dir = ServeDir::new(current_dir_str);
+
+                let axum_app = Router::new().nest_service("/", serve_dir).layer(
+                    CorsLayer::new()
+                        .allow_origin("*".parse::<HeaderValue>().unwrap())
+                        .allow_methods([Method::GET]),
+                );
+                axum::Server::bind(&"127.0.0.1:16780".parse().unwrap())
+                    .serve(axum_app.into_make_service())
+                    .await
+                    .unwrap();
+            });
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -44,7 +72,6 @@ fn main() {
             get_global_themes,
             set_settings,
             get_settings
-
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -70,7 +97,7 @@ fn create_or_load_data() -> Option<DataExists> {
         std::fs::create_dir(&config_path).unwrap();
 
         std::fs::create_dir(format!("{}/books", &config_path.to_string())).unwrap();
-        
+
         std::fs::create_dir(format!("{}/fonts", &config_path.to_string())).unwrap();
 
         std::fs::write(format!("{}/settings.json", &config_path), "{}").unwrap();
@@ -82,11 +109,8 @@ fn create_or_load_data() -> Option<DataExists> {
     }
 }
 
-
-
-
 #[tauri::command]
-fn import_book(payload: String) -> Result<BookHydrate, String>{
+fn import_book(payload: String) -> Result<BookHydrate, String> {
     // let t = String::from_utf8(data).unwrap();
 
     println!("Book imported");
@@ -119,40 +143,29 @@ fn import_book(payload: String) -> Result<BookHydrate, String>{
     let title = doc.mdata("title").unwrap();
     let author = doc.mdata("creator").unwrap_or("unknown".to_string());
 
-    let bookLocation = format!("{hashed_book_folder}/{}",  path.file_name().unwrap().to_str().unwrap());
+    let bookLocation = format!(
+        "{hashed_book_folder}/{}",
+        path.file_name().unwrap().to_str().unwrap()
+    );
 
-    std::fs::write(
-        &bookLocation,
-        &buffer,
-    )
-    .unwrap();
+    std::fs::write(&bookLocation, &buffer).unwrap();
 
     let mut coverExists = true;
     // if(EPUBHASCOVER){
 
-        match doc.get_cover() {
-            Ok(cover_data) => {
-                let f = fs::File::create(format!("{hashed_book_folder}/{}", "cover.jpg"));
-                let mut f = f.unwrap();
-                let resp = f.write_all(&cover_data);
-            },
-            Err(error) => {
-                coverExists = false;
-                println!("Error: Book does not have cover");
-            }
+    match doc.get_cover() {
+        Ok(cover_data) => {
+            let f = fs::File::create(format!("{hashed_book_folder}/{}", "cover.jpg"));
+            let mut f = f.unwrap();
+            let resp = f.write_all(&cover_data);
         }
-
-
-
-
+        Err(error) => {
+            coverExists = false;
+            println!("Error: Book does not have cover");
+        }
+    }
 
     // }
-
-    
-    
-
-    
-
 
     // struct InitialDataFormat{
     //   title: String,
@@ -181,17 +194,19 @@ fn import_book(payload: String) -> Result<BookHydrate, String>{
     )
     .unwrap();
 
-    let response = BookHydrate
-        {
-            cover_url: if coverExists{ format!("{hashed_book_folder}/{}", "cover.jpg")}else{"".to_string()},
-            book_url: bookLocation,
-            hash: checksum,
-            progress: 0.0,
-            title: title,
-        };
-    
-    return Ok(response)
+    let response = BookHydrate {
+        cover_url: if coverExists {
+            format!("{hashed_book_folder}/{}", "cover.jpg")
+        } else {
+            "".to_string()
+        },
+        book_url: bookLocation,
+        hash: checksum,
+        progress: 0.0,
+        title: title,
+    };
 
+    return Ok(response);
 }
 
 fn get_hash(data: &Vec<u8>) -> String {
@@ -297,7 +312,7 @@ fn get_books() -> Vec<BookHydrate> {
 }
 
 #[tauri::command]
-fn get_book_by_hash(bookHash: String) -> Vec<u8> {
+fn get_book_by_hash(bookHash: String) -> String {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
@@ -309,15 +324,11 @@ fn get_book_by_hash(bookHash: String) -> Vec<u8> {
         let is_epub = book_file.contains(".epub");
 
         if is_epub {
-            let mut f = File::open(book_file).unwrap();
-            let mut buffer = Vec::new();
-            // read the whole file
-            f.read_to_end(&mut buffer).unwrap();
-            return buffer;
+            return book_file;
         }
     }
 
-    return Vec::new();
+    return "".to_string();
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -334,7 +345,7 @@ struct themePayload {
     #[serde(default)]
     fontSize: u64,
     #[serde(default)]
-    fontWeight: u64
+    fontWeight: u64,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -347,7 +358,7 @@ struct updateDataPayload {
     #[serde(default)]
     highlights: HashMap<String, highlightData>,
     #[serde(default)]
-    theme: themePayload
+    theme: themePayload,
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct updateBookPayload {
@@ -387,9 +398,10 @@ fn load_book_data(checksum: &str) -> Result<updateBookPayload, String> {
 
     let json: serde_json::Value =
         serde_json::from_reader(reader).expect("JSON was not well-formatted");
-        println!("About to check malformed");
-    let bookPayload: updateBookPayload = serde_json::from_value(json).map_err(|e| format!("Malformed Data: {}", e))?;
-    if(bookPayload.data.cfi == ""){
+    println!("About to check malformed");
+    let bookPayload: updateBookPayload =
+        serde_json::from_value(json).map_err(|e| format!("Malformed Data: {}", e))?;
+    if (bookPayload.data.cfi == "") {
         println!("RETURNING FIRST READ");
         return Err(String::from("First Read"));
     }
@@ -409,16 +421,15 @@ fn get_font_url(name: &str) -> Option<String> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
-
     let font_folder = format!("{current_dir}/data/fonts/");
 
     let return_string = format!("{font_folder}/{name}/{name} - 400.ttf");
 
     let b = std::path::Path::new(return_string.as_str()).exists();
-    if(b){
+    if (b) {
         return Some(format!("{return_string}"));
-    }else{
-        return None
+    } else {
+        return None;
     }
 }
 
@@ -427,12 +438,11 @@ fn get_font_urls(name: &str) -> Option<Vec<String>> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
 
-
     let font_folder = format!("{current_dir}/data/fonts/{name}");
     let font_folder_path = Path::new(&font_folder);
     let b = font_folder_path.exists();
-    if(b){
-    let font_folder_dir = fs::read_dir(&font_folder).unwrap();
+    if (b) {
+        let font_folder_dir = fs::read_dir(&font_folder).unwrap();
         let mut vec = Vec::new();
 
         for font_file in font_folder_dir {
@@ -440,18 +450,16 @@ fn get_font_urls(name: &str) -> Option<Vec<String>> {
             vec.push(font_file);
         }
         return Some(vec);
-    }else{
-        return None
+    } else {
+        return None;
     }
 }
-
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct fontStatus {
     #[serde(default)]
-    fontMap: HashMap<String, bool>
+    fontMap: HashMap<String, bool>,
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 struct fontsJSON {
@@ -460,7 +468,7 @@ struct fontsJSON {
 }
 
 #[tauri::command]
-fn download_font(url: &str, name: &str, weight: &str){
+fn download_font(url: &str, name: &str, weight: &str) {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
@@ -470,9 +478,6 @@ fn download_font(url: &str, name: &str, weight: &str){
     fs::create_dir_all(format!("{font_folder}/{name}"));
 
     std::fs::write(format!("{font_folder}/{name}/{name} - {weight}.ttf"), &body);
-
-
-
 
     let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
 
@@ -487,25 +492,19 @@ fn download_font(url: &str, name: &str, weight: &str){
 
     fontsPayload.fonts.fontMap.insert(format!("{name}"), true);
 
-
     std::fs::write(
         format!("{font_folder}/fonts.json"),
         serde_json::to_string_pretty(&fontsPayload).unwrap(),
     );
-
 }
 
 #[tauri::command]
-fn delete_font(name: &str){
+fn delete_font(name: &str) {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
 
-
     std::fs::remove_file(format!("{font_folder}/{name}"));
-
-
-
 
     let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
 
@@ -522,15 +521,13 @@ fn delete_font(name: &str){
         format!("{font_folder}/fonts.json"),
         serde_json::to_string_pretty(&fontsPayload).unwrap(),
     );
-
 }
 
 #[tauri::command]
-fn toggle_font(name: &str){
+fn toggle_font(name: &str) {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
-
 
     let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
 
@@ -545,20 +542,17 @@ fn toggle_font(name: &str){
 
     *fontsPayload.fonts.fontMap.get_mut(name).unwrap() = !fontsPayload.fonts.fontMap[name];
 
-
     std::fs::write(
         format!("{font_folder}/fonts.json"),
         serde_json::to_string_pretty(&fontsPayload).unwrap(),
     );
-
 }
 
 #[tauri::command]
-fn list_fonts() -> fontStatus{
+fn list_fonts() -> fontStatus {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
-
 
     let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
 
@@ -569,8 +563,7 @@ fn list_fonts() -> fontStatus{
 
     let mut fontsPayload: fontsJSON = serde_json::from_value(json).unwrap();
 
-    return fontsPayload.fonts
-
+    return fontsPayload.fonts;
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -578,8 +571,7 @@ struct ReaderThemeBody {
     #[serde(default)]
     background: String,
     #[serde(default)]
-    color: String
-
+    color: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -587,21 +579,20 @@ struct ReaderTheme {
     #[serde(default)]
     body: ReaderThemeBody,
     #[serde(default)]
-    color: String
+    color: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ReaderThemes {
     #[serde(default)]
-    themes: HashMap<String, ReaderTheme>
+    themes: HashMap<String, ReaderTheme>,
 }
 
 #[tauri::command]
-fn get_reader_themes() -> ReaderThemes{
+fn get_reader_themes() -> ReaderThemes {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
-
 
     let file = File::open(format!("{font_folder}/ReaderThemes.json")).unwrap();
 
@@ -612,20 +603,17 @@ fn get_reader_themes() -> ReaderThemes{
 
     let mut themesPayload: ReaderThemes = serde_json::from_value(json).unwrap();
 
-    return themesPayload
-
+    return themesPayload;
 }
 
 #[tauri::command]
-fn set_reader_themes(payload: HashMap<String, ReaderTheme>){
+fn set_reader_themes(payload: HashMap<String, ReaderTheme>) {
     println!("{:?}", payload);
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
 
-    let t = ReaderThemes{
-        themes: payload
-    };
+    let t = ReaderThemes { themes: payload };
 
     std::fs::write(
         format!("{font_folder}/ReaderThemes.json"),
@@ -634,9 +622,7 @@ fn set_reader_themes(payload: HashMap<String, ReaderTheme>){
     .unwrap();
 
     // return themesPayload
-
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 struct GlobalTheme {
@@ -645,30 +631,26 @@ struct GlobalTheme {
     #[serde(default)]
     secondaryBackground: String,
     #[serde(default)]
-    primaryText : String,
+    primaryText: String,
     #[serde(default)]
-    secondaryText: String 
+    secondaryText: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct GlobalThemes {
     #[serde(default)]
-    themes: HashMap<String, GlobalTheme>
+    themes: HashMap<String, GlobalTheme>,
 }
 
-
 #[tauri::command]
-fn set_global_themes(payload: HashMap<String, GlobalTheme>){
+fn set_global_themes(payload: HashMap<String, GlobalTheme>) {
     println!("{:?}", payload);
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
 
-    let t = GlobalThemes{
-        themes: payload
-    };
+    let t = GlobalThemes { themes: payload };
 
-    
     std::fs::write(
         format!("{font_folder}/GlobalThemes.json"),
         serde_json::to_string_pretty(&t).unwrap(),
@@ -676,16 +658,13 @@ fn set_global_themes(payload: HashMap<String, GlobalTheme>){
     .unwrap();
 
     // return themesPayload
-
 }
 
-
 #[tauri::command]
-fn get_global_themes() -> GlobalThemes{
+fn get_global_themes() -> GlobalThemes {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
-
 
     let file = File::open(format!("{font_folder}/GlobalThemes.json")).unwrap();
 
@@ -696,24 +675,22 @@ fn get_global_themes() -> GlobalThemes{
 
     let mut themesPayload: GlobalThemes = serde_json::from_value(json).unwrap();
 
-    return themesPayload
-
+    return themesPayload;
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct SettingsConfig {
     #[serde(default)]
-    selectedGlobalTheme: String
+    selectedGlobalTheme: String,
 }
 
 #[tauri::command]
-fn set_settings(payload: HashMap<String, String>){
+fn set_settings(payload: HashMap<String, String>) {
     println!("{:?}", payload);
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
 
-    
     std::fs::write(
         format!("{font_folder}/settings.json"),
         serde_json::to_string_pretty(&payload).unwrap(),
@@ -721,15 +698,13 @@ fn set_settings(payload: HashMap<String, String>){
     .unwrap();
 
     // return themesPayload
-
 }
 
 #[tauri::command]
-fn get_settings() -> SettingsConfig{
+fn get_settings() -> SettingsConfig {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/");
-
 
     let file = File::open(format!("{font_folder}/settings.json")).unwrap();
 
@@ -740,6 +715,5 @@ fn get_settings() -> SettingsConfig{
 
     let mut payload: SettingsConfig = serde_json::from_value(json).unwrap();
 
-    return payload
-
+    return payload;
 }
