@@ -113,7 +113,6 @@ const Shelf = () =>{
   return (
     <>
       <div data-tauri-drag-region className={styles.titleBar}>
-        {/* <div className={styles.titleBar}> */}
         <div className={styles.titleBarTitle}>Alexandria</div>
         <div className={styles.searchbarContainer}>
           <Search
@@ -151,7 +150,6 @@ const Shelf = () =>{
         setDragActive(false)
       }}
       className={`${styles.bookCase} ${isDragActive && styles.bookCaseDragging}`}>
-        {/* <input {...getInputProps()} /> */}
         {
           isDragActive && <div style={{height:"100%", width:"100%", pointerEvents:"none"}}> Add book to library...</div> 
         }
@@ -207,7 +205,7 @@ const Shelf = () =>{
           </div>
           <div className={styles.optionContainer}>
             {["Title", "Progress", "Recently Updated"].map((item)=>{
-              return (<div onClick={()=>setFilterValue(item)} className={styles.sortOption} key={item}>{item} {(item == filterValue)?<input checked type="radio"/>:<div/>}</div>)
+              return (<div onClick={()=>setFilterValue(item)} className={styles.sortOption} key={item}>{item} {(item == filterValue)?<input checked readOnly type="radio"/>:<div/>}</div>)
             })}
           </div>
 
