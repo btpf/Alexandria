@@ -11,6 +11,7 @@ $widgetBorderRadius: 5px;
   // https://css-tricks.com/absolute-positioning-inside-relative-positioning/
   position:relative;
   user-select: none; /* standard syntax */
+  display: table;
 }
 
 .widgetTopBar{

@@ -74,7 +74,7 @@ const FontsContainer = ()=>{
               dispatch(setFontThunk({view: 0, fontSize: fontSize-5}))
             }}>-</div>
             <div className={styles.resizeSize}>{fontSize}%</div>
-            <div className={`${styles.resizeContainer} ${styles.largeText}`} onClick={()=>{
+            <div className={`${styles.resizeContainer}`} onClick={()=>{
               dispatch(setFontThunk({view: 0, fontSize: fontSize+5}))
           
             }}>+</div>
@@ -84,12 +84,12 @@ const FontsContainer = ()=>{
         <div>
           <div>Font Weight</div>
           <div className={styles.fontSizeContainer}>
-            <div className={styles.resizeContainer} style={{fontWeight:100}} onClick={()=>{
+            <div className={styles.resizeContainer} onClick={()=>{
               // dispatch(SetFont({view: 0, fontSize: fontSize-5}))
               dispatch(setFontThunk({view: 0, fontWeight: fontWeight-100}))
             }}>-</div>
             <div className={styles.resizeSize}>{fontWeight}</div>
-            <div className={styles.resizeContainer} style={{fontWeight:900, fontSize:"150%"}} onClick={()=>{
+            <div className={styles.resizeContainer} onClick={()=>{
               dispatch(setFontThunk({view: 0, fontWeight: Math.min(fontWeight+100, 900)}))
           
             }}>+</div>
