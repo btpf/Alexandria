@@ -17,7 +17,7 @@
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Kindle (.azw, .azw3) and Mobipocket (.mobi)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  FictionBook (.fb2, .fb2.zip)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Comic book archive (.cbr, .cbz, .cbt, .cb7)
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Platform Support: Windows, MacOS, Linux
+- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Desktop Support: Windows, MacOS, Linux
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Mobile Support (Android + IOS)
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Custom Theme Support + Editor
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Custom Font + Font Downloader
