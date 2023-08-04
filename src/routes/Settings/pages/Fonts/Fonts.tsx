@@ -12,6 +12,9 @@ import { convertFileSrc } from "@tauri-apps/api/tauri";
 import Installed from "./Installed/Installed";
 import Downloader from "./Downloader/Downloader";
 
+import toast, { Toaster } from 'react-hot-toast';
+
+
 // import styles from './Settings.module.scss'
 
 // import BackArrow from '@resources/feathericons/arrow-left.svg'
@@ -63,7 +66,7 @@ const Fonts = ()=>{
   }, [])
   return (
     <div className={styles.themeContainer}>
-      <div className={styles.navigatorContainer}>
+      {/* <div className={styles.navigatorContainer}>
         <div className={styles.navigatorButton} 
           style={{color:(selectedPage=="Installed")?"var(--text-primary)":""}}
           onClick={()=>setSelectedPage("Installed")}>
@@ -72,11 +75,15 @@ const Fonts = ()=>{
         <div className={styles.navigatorButton} 
           style={{color:(selectedPage=="Downloaded")?"var(--text-primary)":""}}
           onClick={()=>setSelectedPage("Downloaded")}>
-        Downloaded
+        Downloader
         </div>
-      </div>
-      {(selectedPage=="Downloaded")? <Downloader/>:<Installed/>}
-      
+      </div> */}
+      {(selectedPage=="Downloaded")? <Downloader  changePage={()=>setSelectedPage("installed")}/>:<Installed changePage={()=>setSelectedPage("Downloaded")}/>}
+      <Toaster
+        containerStyle={{top:60}}
+        position="top-right"
+        reverseOrder={false}
+      />
     </div>
 
     

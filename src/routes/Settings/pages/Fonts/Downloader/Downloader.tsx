@@ -10,6 +10,7 @@ import SaveIcon from '@resources/iconmonstr/iconmonstr-save-14.svg'
 import TashIcon from '@resources/feathericons/trash-2.svg'
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
+import toast, { Toaster } from 'react-hot-toast';
 
 import webfonts from '../../../../../../public/resources/webfonts.json'
 const myStyle = webfonts.items.map((item) => { return {name:item.family, link:item.files.regular,menu:item.menu, files: item.files}})
@@ -26,7 +27,7 @@ const defaultMarks = [100,200,300,400,500,600,700,800].reduce((a, v)=>{
   
 },{})
 
-const Downloader = ()=>{
+const Downloader = (props:any)=>{
   const [textFiltered, setTextFilter] = useState("")
   const [currentDataList, setCurrentDataList] = useState(myStyle)
   const [selectedFont, setSelectedFont] = useState("Roboto")
@@ -34,6 +35,8 @@ const Downloader = ()=>{
   const [availableMarks, setAvailableMarks] = useState(defaultMarks)
   return (
     <>
+      <div className={styles.pageTitle}>Font Downloader</div>
+      <div className={styles.fontPreviewText}>Font Preview: </div>
       <div className={styles.fontRow}>
         <div></div>
         <div style={{fontFamily:selectedFont, fontWeight: selectedWeight}}>{selectedFont}</div> <SaveIcon onClick={async ()=>{
@@ -47,16 +50,36 @@ const Downloader = ()=>{
           }
 
           console.log(myFiles)
+          let promiseResolve:any, promiseReject:any;
 
-          Object.keys(myFiles).forEach((weight)=>{
+          const toastPromise = new Promise(function(resolve, reject){
+            promiseResolve = resolve;
+            promiseReject = reject;
+          });
+          toast.promise(toastPromise, {
+            loading: 'Downloading Font',
+            success: 'Font Downloaded Successfully',
+            error: 'Error occurred when fetching',
+          });
+          const myFileKeys = Object.keys(myFiles)
+          let myFileCount = myFileKeys.filter((item)=> !item.includes("italic")).length;
+
+          myFileKeys.forEach((weight)=>{
             if(weight.includes("italic")) {return}
 
             invoke("download_font", {url:myFiles[weight], name: selectedFont, weight: "" + weight}).then(()=>{
-              console.log("Font Download Success")
+              console.log("Font Download Success", myFileCount)
+              
+              myFileCount -= 1
+              if(myFileCount == 0){
+                promiseResolve()
+              }
             }).catch((e)=>{
               console.log("Font Download Failed:", e)
+              promiseReject()
             })
           })
+
 
 
           // invoke("download_font", {url:fontUrl, name: selectedFont, weight: "" + selectedWeight})
@@ -138,6 +161,7 @@ const Downloader = ()=>{
 
         
       </div>
+      <div onClick={()=>props.changePage()} className={styles.fontDownloaderButton}>Installed Fonts</div>
     </>
   )
 }

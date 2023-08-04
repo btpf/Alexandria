@@ -24,7 +24,7 @@ const defaultMarks = [100,200,300,400,500,600,700,800].reduce((a, v)=>{
   
 },{})
 type ListFontsType = { fontMap: {[key: string]: boolean} };
-const Installed = ()=>{
+const Installed = (props:any)=>{
   // const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarMenuSelected)
   // const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   // const dispatch = useAppDispatch()
@@ -74,6 +74,8 @@ const Installed = ()=>{
       <div onClick={()=>{
         console.log("Placeholder install from device")
       }}>Install From Device</div> */}
+
+      <div className={styles.pageTitle}>Installed/Enabled Fonts</div>
       <div className={styles.comboContainer}>
         <div className={styles.comboContainerText}>Theme Name</div>
         <input onChange={(e)=>{
@@ -83,8 +85,8 @@ const Installed = ()=>{
         }} value={textFiltered} style={{display:"block"}} className={styles.comboTextBox}/>
       </div>
 
+      {/* <div style={{backgroundColor:"white"}}>Installed & Enabled Fonts</div> */}
       <div className={styles.listContainer}>
-
         <Virtuoso style={{ height: '100%' }} totalCount={Object.keys(fontList).length} itemContent={index => {
 
           const mappedFontName = Object.keys(fontList)[index]
@@ -107,8 +109,9 @@ const Installed = ()=>{
             <label style={{fontFamily:mappedFontName.split(".")[0].replaceAll(" ", "_")}} className={styles.label} htmlFor="test3">{Object.keys(fontList)[index]}</label>
             
           </div>)}} />
+        
       </div>
-
+      <div onClick={()=>props.changePage()} className={styles.fontDownloaderButton}>Download Fonts</div>
     </>
 
     

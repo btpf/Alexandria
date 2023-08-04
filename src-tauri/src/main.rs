@@ -505,7 +505,7 @@ fn delete_font(name: &str) {
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
 
-    std::fs::remove_file(format!("{font_folder}/{name}"));
+    std::fs::remove_dir_all(format!("{font_folder}/{name}"));
 
     let file = File::open(format!("{font_folder}/fonts.json")).unwrap();
 
