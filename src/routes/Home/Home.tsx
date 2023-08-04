@@ -7,6 +7,7 @@ import Search from '@resources/feathericons/search.svg'
 import Filter from '@resources/feathericons/filter.svg'
 import Settings from '@resources/feathericons/settings.svg'
 
+import Logo from '@resources/logo.svg'
 
 import Font from '@resources/iconmonstr/text-3.svg'
 import Article from '@resources/material/article_black_24dp.svg'
@@ -113,7 +114,11 @@ const Shelf = () =>{
   return (
     <>
       <div data-tauri-drag-region className={styles.titleBar}>
-        <div className={styles.titleBarTitle}>Alexandria</div>
+        
+        <div className={styles.titleBarLogo}>
+          <Logo viewBox="0 0 24 24" height={25} />
+          <div className={styles.titleBarTitle}>Alexandria</div>
+        </div>
         <div className={styles.searchbarContainer}>
           <Search
             viewBox="0 0 24 24 "

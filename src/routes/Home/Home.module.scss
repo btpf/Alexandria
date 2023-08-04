@@ -23,18 +23,39 @@ $bookmarkHeight: 23px;
   justify-content: space-between;
 }
 
-.titleBarTitle {
+.titleBarLogo {
   margin-left: 20px;
-  font-weight: bold;
-  font-size: 24px;
+  // font-weight: bold;
+  // font-size: 24px;
   user-select: none;
   pointer-events: none;
+  flex-basis: 20%;
+  display:flex;
+  align-items: center;
+}
+
+.titleBarTitle{
+  display:inline;
+  margin-left:10px;
+  font-size:18px;
+
+  @include lt-md{
+    display:none !important;
+  }
 }
 
 .rightContainer{
   display:flex;
   align-items: center;
   height:100%;
+  flex-basis: 20%;
+  pointer-events: none;
+  user-select: none;
+  justify-content: flex-end;
+
+  > *{
+    pointer-events: all;
+  }
 }
 
 .unstyleLink{
