@@ -74,9 +74,16 @@ const SliderNavigator = ()=>{
       spineByHref: [value:number],
       items: [key:any]
     }
+
+    let temp = item.href
+    if(temp.includes(".xhtml#") || temp.includes(".html#")){
+      temp = temp.split("#")
+      temp.pop()
+      item.href = temp.join()
+    }
+
     // This fixes a bug where the spineByHref returns undefined
     const id:number = (renditionInstance.book.spine as fixedSpine).spineByHref[item.href] || 0 
-
     return {...item, cfi: `epubcfi(${(renditionInstance.book.spine as fixedSpine).items[id].cfiBase}!/0)` }
     })
     return allChapters
@@ -117,7 +124,13 @@ const SliderNavigator = ()=>{
     const markerObject: MarkType = {}
 
     chapterCFIMap.forEach((item)=>{
-      markerObject[renditionInstance.book.locations.percentageFromCfi(item.cfi) * 1000] = <strong>|</strong>
+      const myPercentage = renditionInstance.book.locations.percentageFromCfi(item.cfi)
+      // Alternative method of finding the percentage from CFI, Commented out as it seems unnecessary
+      // if(myPercentage == 0){
+      //   const sectionLocation = renditionInstance.book.locations.locationFromCfi(item.cfi)
+      //   myPercentage = renditionInstance.book.locations.percentageFromLocation(sectionLocation)
+      // }
+      markerObject[myPercentage * 1000] = <strong>|</strong>
     })
 
     setMarkers(markerObject)
