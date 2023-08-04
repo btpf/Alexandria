@@ -301,20 +301,36 @@ class Reader extends React.Component<ReaderProps>{
         //   currentLocation = this.rendition.currentLocation().end.cfi
         // }
 
-        // Logic if using epub-js
+
+
+        
+        /* Begin Logic if using epub-js */
+        
+        if(Object.keys(this.rendition.currentLocation()).length == 0){
+          return
+        }
         // @ts-expect-error Missing Definition
         currentLocation = this.rendition.currentLocation().end.cfi
 
 
-        // This will update the injected iframe styles to reflect the new properties of the stage helper
-        // This will adjust the formatting of all text, but will not update
-        // the side scrolling css trick that is used by epubjs
-        // @ts-expect-error updateLayout has no typescript definition
-        this.rendition.manager.updateLayout();
-        
+
         // Not needed if using [epubjs-myh](MrMYHuang/epub.js)
         // Removing this clear eliminates the flicker. So using this fork may be better.
         this.rendition.clear()
+
+        /* End base epub-js logic */
+
+
+
+
+        // If using [epubjs-myh](MrMYHuang/epub.js), use this instead of clear
+        // This will update the injected iframe styles to reflect the new properties of the stage helper
+        // This will adjust the formatting of all text, but will not update
+        // the side scrolling css trick that is used by epubjs
+        // // @ts-expect-error updateLayout has no typescript definition
+        // this.rendition.manager.updateLayout();
+        
+        
         // This will 'scroll' to the correct location
         this.rendition.display(currentLocation)
         //   newState.bookState["0"].instance.clear()
