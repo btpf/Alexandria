@@ -93,9 +93,9 @@
 
 .optionsToggled{
   opacity: 0;
-  pointer-events: none !important;
+  // pointer-events: none !important;
 
-  & > svg{
+  & > *{
     pointer-events: none !important;
   }
 }
@@ -138,6 +138,7 @@
   grid-area: 3/1;
   transition: .3s;
   background-color: var(--background-primary);
+  z-index: 1;
 }
 
 

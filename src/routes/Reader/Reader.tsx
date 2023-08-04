@@ -31,6 +31,7 @@ const Home = () =>{
   const bookmarks = useAppSelector((state) => state.bookState[0]?.data.bookmarks)
 
   const [isPageBookmarked, setPageBookmarked] = useState(false)
+  const [mouseOverMenu, setMouseOverMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
   const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarMenuSelected)
 
@@ -79,22 +80,25 @@ const Home = () =>{
 
 
   const dispatch = useAppDispatch()
+
+  const showMenuUi = mouseOverMenu || menuOpen
+
   return (
     // The id is set here so that the click handler will easily know if a click originated from the readerFlex
     <div className={styles.readerFlex} id="reader-flex" style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} onClick={(e)=>{
       console.log(e.target)
     }}>
 
-      <div data-tauri-drag-region style={{backgroundColor:menuOpen? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
-        <div className={`${styles.menuButtonContainerLeft} ${!menuOpen && styles.optionsToggled}`}>
+      <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} data-tauri-drag-region style={{backgroundColor:showMenuUi? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
+        <div className={`${styles.menuButtonContainerLeft} ${!showMenuUi && styles.optionsToggled}`}>
           <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
           <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
 
-        <div style={!menuOpen?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
+        <div style={!showMenuUi?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
         </div>
-        <div className={`${styles.menuButtonContainerRight} ${!menuOpen && styles.optionsToggled}`}>
+        <div className={`${styles.menuButtonContainerRight} ${!showMenuUi && styles.optionsToggled}`}>
           <Search viewBox="0 0 24 24" onClick={()=>{
             if(sidebarOpen){
               if(sidebarOpen == "Search"){
@@ -113,7 +117,7 @@ const Home = () =>{
           }}/>
           <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
 
-          <TitleBarButtons disabled={!menuOpen}/>
+          <TitleBarButtons disabled={!showMenuUi}/>
         </div>
       </div>
 
@@ -121,7 +125,7 @@ const Home = () =>{
       
       <ReaderView/>
 
-      <div className={`${styles.readerFooterBar}  ${!menuOpen && styles.optionsToggled}`}>
+      <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.arrowButtonContainer}`}>
           <ArrowLeft viewBox={"0 0 24 24"} />
         </div>

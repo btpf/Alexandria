@@ -28,10 +28,9 @@ const SettingsBar = ()=>{
   })
 
   return (
+    // This serves the dual purpose of preventing a flashbang
     <div style={!MenuToggled?{backgroundColor:ReaderBackgroundColor}:{}} className={styles.overflowContainer}>
       <div style={{transform:!ThemeMenuActive?`translateY(100%)`:''}} className={styles.settingsBarContainer}>
-        {/* <div className={styles.opaqueScreenActive}/> */}
-        {/* <div className={styles.touchBar}/> */}
 
         <div className={styles.settingsContainer}>
         
