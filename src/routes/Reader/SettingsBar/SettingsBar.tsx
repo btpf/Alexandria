@@ -9,6 +9,9 @@ import ThemesContainer from './ThemesContainer/ThemesContainer'
 import SpacingContainer from './SpacingContainer/SpacingContainer'
 import DisplayContainer from './DisplayContainer/DisplayContainer'
 
+import SettingsIcon from '@resources/feathericons/settings.svg'
+import { useNavigate } from 'react-router-dom'
+
 const menuExpanded = {
   transform: `translateY(100%)`,
   // width: "0%"
@@ -21,29 +24,42 @@ const SettingsBar = ()=>{
   const [menu, setMenu] = useState("Fonts")
   const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
   const MenuToggled = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
+
+  const navigate = useNavigate();
+  
   // const UIBackgroundColor = useAppSelector((state) => state.bookState[0]?.data?.theme?.backgroundColor)
   const ReaderBackgroundColor = useAppSelector((state) => {
     return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.background
 
   })
 
+  const showQuickSettingsIcon = menu == "Fonts" || menu == "Themes" 
   return (
     // This serves the dual purpose of preventing a flashbang
     <div style={!MenuToggled?{backgroundColor:ReaderBackgroundColor}:{}} className={styles.overflowContainer}>
       <div style={{transform:!ThemeMenuActive?`translateY(100%)`:''}} className={styles.settingsBarContainer}>
+        {/* <div className={styles.settingsIcon}><SettingsIcon/></div> */}
 
         <div className={styles.settingsContainer}>
-        
           {DisplaySubpage(menu)}
         </div>
 
         <div className={styles.currentMenuContainer}>
+          <SettingsIcon 
+            className={styles.settingsIconBottomBar} 
+            style={{marginRight:"auto", marginLeft:15, opacity: showQuickSettingsIcon? 1:0}}
+            onClick={()=>{
+              console.log(window.location.pathname)
+              navigate("/settings/" + menu, {state:{backPath:window.location.pathname}})
+            }}
+          />
           {['Fonts', 'Themes', "Spacing", "Display"].map((item,i)=>{
             return (
               // <div key={i} style={{color:item==menu?"#008DDD":"black"}} onClick={()=>setMenu(item)}> {item}</div>
               <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
             )
           })}
+          <SettingsIcon style={{marginLeft:"auto", marginRight:15, opacity:0}}/>
         </div>
       </div>
     </div>

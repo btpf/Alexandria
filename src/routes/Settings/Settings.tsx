@@ -9,7 +9,7 @@ import Fonts from "./pages/Fonts/Fonts"
 import { useAppSelector } from "@store/hooks"
 import TitleBarButtons from "@shared/components/TitleBarButtons"
 
-const Settings = ()=>{
+const Settings = (props:any)=>{
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,20 +21,20 @@ const Settings = ()=>{
   }else{
     mobileTitle = subpaths[2]
   }
-
+  const {backPath} =location.state
   return (
     <div className={styles.settingsPageContainer}>
       <div data-tauri-drag-region className={styles.titleBar}>
 
         {/* This is the titlebar for desktop screens */}
-        <div onClick={()=> navigate("/")} className={styles.backButtonContainer + " " + styles.hidesm}>
+        <div onClick={()=> backPath?navigate(backPath):navigate("/")} className={styles.backButtonContainer + " " + styles.hidesm}>
           <BackArrow/>
         </div>
         <div className={styles.titleText  + " " + styles.hidesm}>Settings</div>
 
 
         {/* This is the titlebar for mobile screens */}
-        <div onClick={()=> mobileTitle=="Settings"? navigate("/"): navigate("/settings")} className={styles.backButtonContainer + " " + styles.hidegtsm}>
+        <div onClick={()=> mobileTitle=="Settings"? backPath?navigate(backPath):navigate("/"): navigate("/settings",{state:{backPath}})} className={styles.backButtonContainer + " " + styles.hidegtsm}>
           <BackArrow/>
         </div>
         <div className={styles.titleText  + " " + styles.hidegtsm}>{mobileTitle.replace("%20", " ")}</div>
@@ -46,9 +46,9 @@ const Settings = ()=>{
 
       <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
         <div className={styles.navbar}>
-          <div onClick={()=>navigate("Themes")}>Themes</div>
+          <div onClick={()=>navigate("Themes", {state:{backPath}})}>Themes</div>
           {/* <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div> */}
-          <div onClick={()=>navigate("Fonts")}>Fonts</div>
+          <div onClick={()=>navigate("Fonts", {state:{backPath}})}>Fonts</div>
         </div>
 
         <div className={styles.contentContainer}>

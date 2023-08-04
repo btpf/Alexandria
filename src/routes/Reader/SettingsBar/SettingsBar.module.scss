@@ -1,5 +1,21 @@
 @use 'breakpoints.scss' as *;
 
+
+.settingsIcon{
+  position: absolute;
+  left:5px;
+  top:5px;
+  z-index: 101;
+  background-color: var(--background-primary);
+  border-radius: 100%;
+  // border: 1px solid black;
+  padding: 5px;
+}
+
+.settingsIconBottomBar{
+  color:var(--text-secondary);
+}
+
 .settingsBarContainer{
   pointer-events: all;
   background-color: var(--background-primary);
@@ -18,6 +34,7 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   max-width: 650px;
+  position: relative;
   @include lt-md{
     width: 75%;
   }
