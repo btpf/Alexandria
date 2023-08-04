@@ -69,11 +69,11 @@ const Installed = ()=>{
   return (
     <>
       
-
+      {/* 
+      Disabled for now, we will look into this in the future
       <div onClick={()=>{
         console.log("Placeholder install from device")
-      }}>Install From Device</div>
-
+      }}>Install From Device</div> */}
       <div className={styles.comboContainer}>
         <div className={styles.comboContainerText}>Theme Name</div>
         <input onChange={(e)=>{
