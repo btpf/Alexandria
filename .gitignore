@@ -2,7 +2,6 @@ node_modules
 dist
 *.webp
 *.jpg
-*.png
 *.gif
 *.epub
 changelog.txt
