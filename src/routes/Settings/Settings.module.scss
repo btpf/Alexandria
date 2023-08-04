@@ -38,8 +38,9 @@
   display:grid;
 
   grid-template-columns: 1fr 4fr;
-  height: 100%;
   width: 100%;
+  /* This is important because otherwise the grid and subitems will not know how to overflow properly */
+  height: calc(100vh - 50px);
 }
 
 
