@@ -5,6 +5,8 @@ $widgetBorderRadius: 5px;
 .widgetContainer{
   width: 250px;
   height: 175px;
+  // Fixes bug on windows which causes widget to be crushed when there is not enough vertical space
+  min-height: 175px;
   border: 1px solid black;
   margin-top:25px;
   border-radius: $widgetBorderRadius;
