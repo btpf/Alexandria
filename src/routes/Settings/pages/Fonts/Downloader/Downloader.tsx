@@ -51,7 +51,11 @@ const Downloader = ()=>{
           Object.keys(myFiles).forEach((weight)=>{
             if(weight.includes("italic")) {return}
 
-            invoke("download_font", {url:myFiles[weight], name: selectedFont, weight: "" + weight})
+            invoke("download_font", {url:myFiles[weight], name: selectedFont, weight: "" + weight}).then(()=>{
+              console.log("Font Download Success")
+            }).catch((e)=>{
+              console.log("Font Download Failed:", e)
+            })
           })
 
 

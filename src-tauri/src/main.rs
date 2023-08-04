@@ -468,13 +468,13 @@ struct fontsJSON {
 }
 
 #[tauri::command]
-fn download_font(url: &str, name: &str, weight: &str) {
+async fn download_font(url: &str, name: &str, weight: &str) -> Result<String, String> {
     let current_dir = current_dir().unwrap();
     let current_dir = current_dir.as_path().to_str().unwrap();
     let font_folder = format!("{current_dir}/data/fonts");
 
-    let resp = reqwest::blocking::get(url).expect("request failed");
-    let body = resp.bytes().expect("body invalid");
+    let resp = reqwest::get(url).await.map_err(|e| format!("Malformed Data: {}", e))?;
+    let body = resp.bytes().await.map_err(|e| format!("Malformed Data: {}", e))?;
     fs::create_dir_all(format!("{font_folder}/{name}"));
 
     std::fs::write(format!("{font_folder}/{name}/{name} - {weight}.ttf"), &body);
@@ -496,6 +496,7 @@ fn download_font(url: &str, name: &str, weight: &str) {
         format!("{font_folder}/fonts.json"),
         serde_json::to_string_pretty(&fontsPayload).unwrap(),
     );
+    return Ok("Ok".to_string());
 }
 
 #[tauri::command]
