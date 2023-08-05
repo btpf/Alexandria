@@ -29,8 +29,6 @@ use tauri::api::path::app_data_dir;
 
 use std::sync::OnceLock;
 
-
-// lazy_static! {
     static app_data_platform_dir: OnceLock<PathBuf> = OnceLock::new();
     static config_path: OnceLock<PathBuf> = OnceLock::new();
     static font_folder: OnceLock<PathBuf> = OnceLock::new();
@@ -42,13 +40,6 @@ use std::sync::OnceLock;
         return font_folder.get().unwrap().clone();
     }
 
-    // static ref app_data_platform_dir:PathBuf = get_app_data_dir_custom();
-
-    
-    
-    // static ref config_path: PathBuf = app_data_platform_dir.join("data");
-    // static ref font_folder: PathBuf = config_path.join("fonts");
-    // }
 
     
 #[tokio::main]
@@ -58,7 +49,7 @@ async fn main() {
             println!("Loading Config Directory");
             
 
-            if cfg!(target_os = "windows") {
+            if cfg!(target_os = "windows") || cfg!(dev) {
                 app_data_platform_dir.set(env::current_dir().unwrap());
             } else {
                 // env::current_dir().unwrap().join("TESTING")
@@ -69,7 +60,7 @@ async fn main() {
             }
 
             config_path.set(app_data_platform_dir.get().unwrap().join("data"));
-            font_folder.set(get_config_path().join("data"));
+            font_folder.set(get_config_path().join("fonts"));
             
 
 
