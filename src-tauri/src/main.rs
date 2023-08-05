@@ -28,8 +28,6 @@ use std::io;
 use tauri::api::path::app_data_dir;
 
 use std::sync::OnceLock;
-use lazy_static::lazy_static;
-// use tauri::Config
 
 
 // lazy_static! {
