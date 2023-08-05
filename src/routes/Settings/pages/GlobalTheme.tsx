@@ -58,7 +58,7 @@ const GlobalTheme = ()=>{
   const [pickerPosition, setPosition] = useState({x:-500, y:-500})
 
   const appThemes = useAppSelector((state) => state.appState.themes)
-  const defaultSelectedGlobalTheme = useAppSelector((state) => state.appState.selectedTheme)
+  const defaultSelectedTheme = useAppSelector((state) => state.appState.selectedTheme)
 
   // This will keep track of the current state of the theme
   const prevAppThemes = useRef({appThemes}).current;
@@ -75,8 +75,8 @@ const GlobalTheme = ()=>{
   const dispatch = useDispatch()
 
   useEffect(()=>{
-    changeTheme(defaultSelectedGlobalTheme)
-    setLastValidTheme(defaultSelectedGlobalTheme)
+    changeTheme(defaultSelectedTheme)
+    setLastValidTheme(defaultSelectedTheme)
   },[])
 
   // This is all to switch to the new theme

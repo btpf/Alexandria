@@ -16,13 +16,9 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   "bookState/SetProgress",
   "bookState/setThemeV2/fulfilled",
   "bookState/setFontV2/fulfilled",
-  "appState/AddReaderTheme",
-  "appState/RenameReaderTheme",
-  "appState/UpdateReaderTheme",
-  "appState/DeleteReaderTheme",
-  "appState/AddGlobalTheme",
-  "appState/DeleteGlobalTheme",
-  "appState/UpdateGlobalTheme",
-  "appState/RenameGlobalTheme",
-  "appState/setSelectedGlobalTheme"
+  "appState/AddTheme",
+  "appState/DeleteTheme",
+  "appState/UpdateTheme",
+  "appState/RenameTheme",
+  "appState/setSelectedTheme"
 ])

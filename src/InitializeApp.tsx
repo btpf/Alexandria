@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux"
 import styles from './InitializeStyles.module.scss'
 const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   const themes = useAppSelector((state)=> state.appState.themes)
-  const selectedGlobalTheme = useAppSelector((state)=> state.appState.selectedTheme)
+  const selectedTheme = useAppSelector((state)=> state.appState.selectedTheme)
   const dispatch = useDispatch()
   useEffect(()=>{
     console.log("App Loading")
@@ -25,14 +25,14 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
     })
 
   }, [])
-  console.log(themes, selectedGlobalTheme)
+  console.log(themes, selectedTheme)
   return (
     <div className={styles.appContainer} style={{
-      "--background-secondary":themes[selectedGlobalTheme].ui.secondaryBackground,
-      "--background-primary":themes[selectedGlobalTheme].ui.primaryBackground,
-      "--text-primary":themes[selectedGlobalTheme].ui.primaryText,
-      "--text-secondary":themes[selectedGlobalTheme].ui.secondaryText,
-      "height":"100%", "backgroundColor":themes[selectedGlobalTheme].ui.secondaryBackground, color: themes[selectedGlobalTheme].ui.primaryText}}>
+      "--background-secondary":themes[selectedTheme].ui.secondaryBackground,
+      "--background-primary":themes[selectedTheme].ui.primaryBackground,
+      "--text-primary":themes[selectedTheme].ui.primaryText,
+      "--text-secondary":themes[selectedTheme].ui.secondaryText,
+      "height":"100%", "backgroundColor":themes[selectedTheme].ui.secondaryBackground, color: themes[selectedTheme].ui.primaryText}}>
       {/* <div style={{"height":"100%"}}> */}
       {children}
     </div>

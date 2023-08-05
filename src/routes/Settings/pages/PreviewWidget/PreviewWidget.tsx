@@ -31,10 +31,10 @@ const PreviewWidget = (props:{readerOptions:any})=>{
   
 
   const appThemes = useAppSelector((state) => state.appState.themes)
-  const selectedGlobalTheme = useAppSelector((state) => state.appState.selectedTheme)
+  const selectedTheme = useAppSelector((state) => state.appState.selectedTheme)
 
-  const readerBackgroundColor = (props.readerOptions[1].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[selectedGlobalTheme])
-  const readerColor = (props.readerOptions[0].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[selectedGlobalTheme])
+  const readerBackgroundColor = (props.readerOptions[1].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[selectedTheme])
+  const readerColor = (props.readerOptions[0].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[selectedTheme])
 
   return (
 
