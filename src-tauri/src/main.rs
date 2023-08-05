@@ -12,6 +12,7 @@ use std::{
 };
 
 use epub::doc::EpubDoc;
+use libmobi_rs::convertToEpubWrapper;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -140,10 +141,6 @@ fn create_or_load_data() -> Option<DataExists> {
 
 #[tauri::command]
 fn import_book(payload: String) -> Result<BookHydrate, String> {
-    // let t = String::from_utf8(data).unwrap();
-
-    println!("Book imported");
-
     let path = Path::new(&payload);
     let mut f = File::open(&path).unwrap();
     let mut buffer = Vec::new();
@@ -165,15 +162,30 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
             return Err("Error: Book is duplicate".to_string());
         }
     };
+    let bookFileName = path.file_name().unwrap().to_str().unwrap();
+    let bookLocation = hashed_book_folder.join(&bookFileName);
+
+    std::fs::write(&bookLocation, &buffer).unwrap();
+
+    // let docLocation = ;
+    let docLocation = if (bookFileName.contains(".azw") || bookFileName.contains(".azw3") || bookFileName.contains(".mobi")){
+        convertToEpubWrapper(bookLocation.to_str().unwrap(),
+         hashed_book_folder.to_str().unwrap());
+          format!("{}/{}.epub", hashed_book_folder.to_str().unwrap(), path.file_stem().unwrap().to_str().unwrap())
+        //  docLocation = &epub_filename;
+    }else{
+        payload
+    };
+
+    println!("Printing location {}", docLocation);
+
     use epub::doc::EpubDoc;
-    let doc = EpubDoc::new(&payload);
+    let doc = EpubDoc::new(&docLocation);
     let mut doc = doc.unwrap();
     let title = doc.mdata("title").unwrap();
     let author = doc.mdata("creator").unwrap_or("unknown".to_string());
 
-    let bookLocation = hashed_book_folder.join(path.file_name().unwrap().to_str().unwrap());
 
-    std::fs::write(&bookLocation, &buffer).unwrap();
 
     let mut coverExists = true;
     // if(EPUBHASCOVER){
@@ -289,6 +301,7 @@ fn get_books() -> Vec<BookHydrate> {
             let book_file = book_file.unwrap().path().display().to_string();
             let is_epub = book_file.contains(".epub");
             let is_data = book_file.contains(".json");
+            let is_cover = book_file.contains(".jpg");
 
             if is_epub {
                 epub_path.push_str(&book_file);
@@ -314,7 +327,7 @@ fn get_books() -> Vec<BookHydrate> {
                         progress
                     )
                 )
-            } else {
+            } else if is_cover {
                 cover_path.push_str(&book_file);
             }
         }
