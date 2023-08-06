@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "alexandria",
-    "version": "0.1.0"
+    "version": "../package.json"
   },
   "tauri": {
 
