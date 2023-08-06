@@ -18,25 +18,16 @@ const menuExpanded = {
 }
 
 const SettingsBar = ()=>{
-  const fontSize = useAppSelector((state) => state.bookState[0]?.data.theme.fontSize)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const dispatch = useAppDispatch()
   const [menu, setMenu] = useState("Fonts")
   const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
-  const MenuToggled = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
-
   const navigate = useNavigate();
-  
-  // const UIBackgroundColor = useAppSelector((state) => state.bookState[0]?.data?.theme?.backgroundColor)
-  const ReaderBackgroundColor = useAppSelector((state) => {
-    return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.background
-
-  })
 
   const showQuickSettingsIcon = menu == "Fonts" || menu == "Themes" 
   return (
     // This serves the dual purpose of preventing a flashbang
-    <div style={!MenuToggled?{backgroundColor:ReaderBackgroundColor}:{}} className={styles.overflowContainer}>
+    <div className={styles.overflowContainer}>
       <div style={{transform:!ThemeMenuActive?`translateY(100%)`:''}} className={styles.settingsBarContainer}>
         {/* <div className={styles.settingsIcon}><SettingsIcon/></div> */}
 

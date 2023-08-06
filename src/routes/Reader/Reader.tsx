@@ -121,8 +121,8 @@ const Home = () =>{
         </div>
       </div>
 
-
-      
+      {/* This handles the case where the reader is now displayed, preventing a flash */}
+      <div style={{backgroundColor:ReaderBackgroundColor}} className={styles.readerBackgroundFallback}/>
       <ReaderView/>
 
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>
