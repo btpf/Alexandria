@@ -162,7 +162,7 @@ export const setWordSpacingThunk = createAsyncThunk(
 )
 
 export const setLineHeightThunk = createAsyncThunk(
-  'bookState/setWordSpacing',
+  'bookState/setLineHeight',
   // if you type your function argument here
   async (payload: genericNumericDispatchType, thunkAPI) => {
     const state = (thunkAPI.getState() as RootState)

@@ -92,12 +92,12 @@ class Reader extends React.Component<ReaderProps>{
       bookValue = bookImport
     }
 
-    const book = epubjs((bookValue as any))
+    this.book = epubjs((bookValue as any))
 
 
 
 
-    this.rendition = book.renderTo(this.renderWindow.current?.id || "", 
+    this.rendition = this.book.renderTo(this.renderWindow.current?.id || "", 
       {
         width: "100%", 
         height: "100%",
@@ -110,24 +110,12 @@ class Reader extends React.Component<ReaderProps>{
       body: { "padding-top": "10px !important" },
     })
 
-    console.log(book)
+    console.log(this.book)
+
+    this.book.ready.then(async ()=>{
 
 
-    
-    this.rendition.book.loaded.spine.then(async (x)=>{
       this.props.SyncedAddRendition({instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
-    
-
-
-
-      // AddHighlight
-
-
-      // this.props.populateRendition({UID:0, data})
-    
-    })
-
-    book.ready.then(async ()=>{
 
       // This code will handle the edge case where a book is still loading but the user leaves the page, unmounting the component.
       // We use the standard subscribe here since react-redux will not pass the state updates once unmounted.
@@ -144,7 +132,7 @@ class Reader extends React.Component<ReaderProps>{
           this.props.RemoveRendition(0)
         }
       })
-      await book.locations.generate(1000)
+      await this.book.locations.generate(1000)
       unsubscribe()
 
       // This will destroy the rendition only once the generations have been generated.
@@ -157,7 +145,7 @@ class Reader extends React.Component<ReaderProps>{
       // This is needed because it can cause the first page of the book to be skipped when opening
       // Since cfiFromPercentage is not always accurate.
       if(store.getState().bookState["0"].data.progress != 0){
-        this.rendition.display(this.rendition.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
+        this.rendition.display(this.book.locations.cfiFromPercentage(store.getState().bookState["0"].data.progress))
       }
 
       // This is also found in the epubjsManager
@@ -239,7 +227,7 @@ class Reader extends React.Component<ReaderProps>{
     }
     if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode){
       // if(this.props.renderMode == "continuous"){
-      const bookInstance = this.rendition.book
+      const bookInstance = this.book
       this.rendition.destroy();
       this.unsubscribeHandlers()
       this.props.RemoveRendition(0)

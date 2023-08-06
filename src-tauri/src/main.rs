@@ -380,6 +380,16 @@ struct themePayload {
     fontSize: u64,
     #[serde(default)]
     fontWeight: u64,
+    #[serde(default)]
+    wordSpacing: i64,
+    #[serde(default)]
+    lineHeight: i64,
+    #[serde(default)]
+    readerMargins: i64,
+    #[serde(default)]
+    renderMode: String
+
+
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]

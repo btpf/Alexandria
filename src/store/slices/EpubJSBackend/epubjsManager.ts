@@ -57,6 +57,13 @@ export const SyncedAddRendition = createAsyncThunk(
       }
          
       
+      // if(result.data.theme.renderMode && result.data.theme.renderMode != renditionData.renderMode){
+      //   thunkAPI.dispatch(setRenderMode({view:0, renderMode: result.data.theme.renderMode}))
+      //   return
+      // }
+
+
+
       const bookmarks = result.data.bookmarks
       const highlights = result.data.highlights
       
@@ -106,8 +113,8 @@ export const SyncedAddRendition = createAsyncThunk(
         fontSize: result.data.theme.fontSize,
         fontWeight: result.data.theme.fontWeight
       }))
-      // if(renditionData.renderMode)
-      //   thunkAPI.dispatch(setRenderMode({view:0, renderMode: renditionData.renderMode}))
+
+
     }
           
     return true
