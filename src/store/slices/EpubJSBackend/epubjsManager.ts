@@ -15,57 +15,23 @@ import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 import { setFontThunk, setThemeThunk } from "./data/theme/themeManager"
 import { RootState } from "@store/store"
 
+export type dataInterfacePayload = {title: string, data: dataInterface}
 
+export type SyncedAddRenditionPayload = {saveData:dataInterfacePayload} & BackendInstance
 
 export const SyncedAddRendition = createAsyncThunk(
   'bookState/SyncedAddRendition',
   // if you type your function argument here
-  async (renditionData: BackendInstance, thunkAPI) => {
+  async (renditionData: SyncedAddRenditionPayload, thunkAPI) => {
 
 
     // console.log("ASYNC CALLED 1")
     if(window.__TAURI__){
-      // invoke("get_books").then((data)=>{
-      //   setBooks((data as BookData[]))
-      // })
-      
-      // console.log(thunkAPI.getState())
-      // thunkAPI.dispatch(AddHighlight(highlightData))
-      // console.log(thunkAPI.getState())
-      
-      // Eventually, this should match bookStateStructure.data
-
-      type dataInterfacePayload = {data: dataInterface}
-      let result:dataInterfacePayload;
-
-      try {
-        result = await invoke("load_book_data", {checksum: renditionData.hash})
-      } catch (error) {
-        if(error == "First Read"){
-          console.log("First Read, Populating with default data")
-
-          // In the case where nothing else is set, at least set the theme to the globally selected one.
-          thunkAPI.dispatch(setThemeThunk({
-            view: 0,
-            themeName: (thunkAPI.getState() as RootState).appState.selectedTheme
-          }))
-
-          return
-        }
-        console.log("Error Caught in invoke Load_book_data:", error)
-        return 
-      }
-         
-      
-      // if(result.data.theme.renderMode && result.data.theme.renderMode != renditionData.renderMode){
-      //   thunkAPI.dispatch(setRenderMode({view:0, renderMode: result.data.theme.renderMode}))
-      //   return
-      // }
 
 
 
-      const bookmarks = result.data.bookmarks
-      const highlights = result.data.highlights
+      const bookmarks = renditionData.saveData.data.bookmarks
+      const highlights = renditionData.saveData.data.highlights
       
       const renditionInstance = renditionData.instance
       
@@ -104,14 +70,14 @@ export const SyncedAddRendition = createAsyncThunk(
         }))
       })
       
-      thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:result.data.progress, cfi: result.data.cfi}))
+      thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:renditionData.saveData.data.progress, cfi: renditionData.saveData.data.cfi}))
 
       
       thunkAPI.dispatch(setFontThunk({
         view: 0,
-        font: result.data.theme.font,
-        fontSize: result.data.theme.fontSize,
-        fontWeight: result.data.theme.fontWeight
+        font: renditionData.saveData.data.theme.font,
+        fontSize: renditionData.saveData.data.theme.fontSize,
+        fontWeight: renditionData.saveData.data.theme.fontWeight
       }))
 
 
@@ -127,7 +93,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
   builder.addCase(SyncedAddRendition.pending, (state, action) => {
     console.log("PENDING CASE")
     const t:bookStateStructure = {
-      title: action.meta.arg.title,
+      title: action.meta.arg.saveData.title,
       instance: action.meta.arg.instance,
       UID: action.meta.arg.UID, 
       hash: action.meta.arg.hash,
@@ -144,8 +110,8 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontWeight: 400,
           wordSpacing: 0,
           lineHeight: 100,
-          readerMargins: action.meta.arg.readerMargins? action.meta.arg.readerMargins: 100,
-          renderMode: action.meta.arg.renderMode?action.meta.arg.renderMode: "default"
+          readerMargins: action.meta.arg.saveData.data.theme.readerMargins? action.meta.arg.saveData.data.theme.readerMargins: 100,
+          renderMode: action.meta.arg.saveData.data.theme.renderMode?action.meta.arg.saveData.data.theme.renderMode: "default"
         }
       }, 
       state:{

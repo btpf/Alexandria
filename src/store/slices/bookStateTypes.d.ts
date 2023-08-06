@@ -6,9 +6,6 @@ interface BackendInstance{
   instance: Rendition
   UID: number,
   hash: string,
-  title: string,
-  renderMode?: string,
-  readerMargins?: number,
   initialLoadState?: LOADSTATE
 }
 

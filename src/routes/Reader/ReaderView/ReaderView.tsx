@@ -25,6 +25,8 @@ import { Unsubscribe } from '@reduxjs/toolkit';
 import QuickbarModal from './functions/QuickbarModal';
 import NoteModal from './functions/NoteModal';
 import { LOADSTATE } from '@store/slices/constants';
+import { dataInterfacePayload, SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
+import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
@@ -33,7 +35,8 @@ const mapState = (state: RootState) => {
       ThemeMenuActive: state.bookState[0].state.themeMenuActive,
       renderMode:state.bookState[0]?.data.theme.renderMode,
       readerMargins: state.bookState[0]?.data.theme.readerMargins,
-      progress: state.bookState[0]?.data?.progress
+      progress: state.bookState[0]?.data?.progress,
+      selectedTheme: state.appState.selectedTheme
     }
     
   }else{
@@ -95,27 +98,16 @@ class Reader extends React.Component<ReaderProps>{
     this.book = epubjs((bookValue as any))
 
 
-
-
-    this.rendition = this.book.renderTo(this.renderWindow.current?.id || "", 
-      {
-        width: "100%", 
-        height: "100%",
-        spread: "always",
-        allowScriptedContent: true
-        // manager: "continuous",
-        // flow: "scrolled",
-      });
-    this.rendition.themes.default({
-      body: { "padding-top": "10px !important" },
-    })
-
-    console.log(this.book)
-
     this.book.ready.then(async ()=>{
 
 
-      this.props.SyncedAddRendition({instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
+
+
+
+      console.log("Book is ready!")
+
+      await this.initializeRendition();
+
 
       // This code will handle the edge case where a book is still loading but the user leaves the page, unmounting the component.
       // We use the standard subscribe here since react-redux will not pass the state updates once unmounted.
@@ -163,34 +155,12 @@ class Reader extends React.Component<ReaderProps>{
       
 
       
+
+
+
+
     })
- 
 
-
-      
-    // .then(
-    //   (value) => {
-    //     console.log(value); // Success!
-    //   },
-    //   (reason) => {
-    //     console.error(reason); // Error!
-    //   },
-
-
-      
-
-    
-    
-    
-    // let readerInstanceVariables = require('./ReaderViewTypes.ts').readerInstanceVariables
-
-
-
-    this.unsubscribeHandlers = registerHandlers(this.rendition)
-
-
-      
-    const displayed = this.rendition.display();
   }
 
 
@@ -225,52 +195,13 @@ class Reader extends React.Component<ReaderProps>{
     if(this.props.LoadState != prevProps.LoadState && this.props.LoadState == LOADSTATE.COMPLETE){
       this.rendition.display(this.props.progress)
     }
-    if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode){
-      // if(this.props.renderMode == "continuous"){
+    if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode && this.props.LoadState == LOADSTATE.COMPLETE){
       const bookInstance = this.book
       this.rendition.destroy();
       this.unsubscribeHandlers()
       this.props.RemoveRendition(0)
       
-
-      let mySettings:any = {
-        width: "100%", 
-        height: "100%",
-        spread: "always",
-        allowScriptedContent: true}
-
-
-      const layouts = {
-        'auto': { width: '100%', flow: 'paginated', maxSpreadColumns: 2 },
-        
-        'single': { width: '100%', flow: 'paginated', spread: 'none' },
-        
-        'scrolled': { width: '100%', flow: 'scrolled-doc' },
-        
-        'continuous': { width: '100%', flow: 'scrolled', manager: 'continuous' },  
-      }
-
-      type layoutTypes = keyof typeof layouts
-      const renderMode:layoutTypes = this.props.renderMode
-
-      mySettings = {...mySettings, 
-        ...layouts[renderMode]
-      }
-      
-      console.log("LOGGING BOOK INSTANCE", this.props.renderMode, prevProps.renderMode)
-      console.log(bookInstance)
-      // Time to re-create the rendition
-      this.rendition = bookInstance.renderTo(this.renderWindow.current?.id || "", 
-        mySettings);
-      this.rendition.themes.default({
-        body: { "padding-top": "10px !important" },
-      })
-      const {params} = this.props.router
-      this.props.SyncedAddRendition({initialLoadState: LOADSTATE.BOOK_PARSING_COMPLETE, readerMargins: this.props.readerMargins, renderMode, instance:this.rendition, UID:0, hash: params.bookHash || "hashPlaceholder", title: this.rendition?.book?.packaging?.metadata?.title })
-        
-      this.unsubscribeHandlers = registerHandlers(this.rendition)
-      this.rendition.display();
-      // }
+      this.initializeRendition(this.props.renderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
     }
     if(this.props.readerMargins != prevProps.readerMargins){
       console.log("DID I CRASH HERE?", this.rendition)
@@ -322,6 +253,103 @@ class Reader extends React.Component<ReaderProps>{
       }
       console.log("3")
     }
+  }
+
+
+  async initializeRendition(forceRenderMode = undefined, forceLoadState:(LOADSTATE|undefined) = undefined){
+
+
+    type layoutTypes = keyof typeof layouts
+    
+    const {params} = this.props.router
+
+    const layouts = {
+      'auto': { width: '100%', flow: 'paginated', maxSpreadColumns: 2 },
+        
+      'single': { width: '100%', flow: 'paginated', spread: 'none' },
+        
+      'scrolled': { width: '100%', flow: 'scrolled-doc' },
+        
+      'continuous': { width: '100%', flow: 'scrolled', manager: 'continuous' },  
+    }
+
+
+
+
+    let mySettings:any = {
+      width: "100%", 
+      height: "100%",
+      spread: "always",
+      allowScriptedContent: true}
+
+
+    /* Begin Book Load Pattern - Can be extracted into function in future */
+    // Param: useRenderMode props (from settings) -> settings (If defined) -> default
+    let payload!:SyncedAddRenditionPayload;
+    let result!: dataInterfacePayload;
+
+
+    if(window.__TAURI__){
+      try {
+        result = await invoke("load_book_data", {checksum: params.bookHash})
+      } catch (error) {
+        if(error == "First Read"){
+          console.log("First Read, Populating with default data")
+  
+          // In the case where nothing else is set, at least set the theme to the globally selected one.
+          setThemeThunk({
+            view: 0,
+            themeName: this.props.selectedTheme || ""
+          })
+  
+          // return
+        }
+        console.log("Error Caught in invoke Load_book_data:", error)
+        // return 
+      }
+    }
+
+
+
+
+
+
+
+      
+
+    const renderMode:layoutTypes = forceRenderMode || (result?.data?.theme?.renderMode as layoutTypes) || "auto";
+
+    mySettings = {...mySettings, 
+      ...layouts[renderMode]
+    }
+
+
+
+    this.rendition = this.book.renderTo(this.renderWindow.current?.id || "", mySettings);
+
+    this.rendition.themes.default({
+      body: { "padding-top": "10px !important" },
+    })
+
+    // eslint-disable-next-line prefer-const
+    payload = {
+      instance: this.rendition,
+      UID:0,
+      hash: params.bookHash || "hashPlaceholder",
+      saveData: result || {},
+      initialLoadState: forceLoadState
+    }
+
+
+    this.unsubscribeHandlers = registerHandlers(this.rendition)
+
+
+      
+    const displayed = this.rendition.display();
+
+
+    this.props.SyncedAddRendition(payload)
+
   }
 
 }

@@ -33,6 +33,8 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
   builder.addMatcher(isAnyOf(setThemeThunk.fulfilled, setFontThunk.fulfilled, setWordSpacingThunk.fulfilled, setLineHeightThunk.fulfilled), (state, action)=>{
     const theme = action.payload.themeBase
     console.log(action.payload.theme.fontSize)
+    // line-height is facing an issue. When navigating backwards to a from a chapter to the previous
+    // Sometimes, you will jump to a page which is not the last.
     let css = 
     `body{
       background-color: ${theme.reader.body.background} !important;
@@ -41,6 +43,7 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-size: ${action.payload.theme.fontSize}% !important;
       font-weight: ${action.payload.theme.fontWeight} !important;
       word-spacing: ${action.payload.theme.wordSpacing}% !important;
+      line-height: ${action.payload.theme.lineHeight}% !important;
     }
     p{
       font-family: "${action.payload.theme.font}" !important;

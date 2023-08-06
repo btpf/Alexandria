@@ -26,5 +26,6 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   "appState/RenameTheme",
   "appState/setSelectedTheme",
   'bookState/setWordSpacing/fulfilled',
-  'bookState/setLineHeight/fulfilled'
+  'bookState/setLineHeight/fulfilled',
+  "bookState/setRenderMode",
 ])
