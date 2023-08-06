@@ -103,11 +103,9 @@ class Reader extends React.Component<ReaderProps>{
 
 
 
-
       console.log("Book is ready!")
 
       await this.initializeRendition();
-
 
       // This code will handle the edge case where a book is still loading but the user leaves the page, unmounting the component.
       // We use the standard subscribe here since react-redux will not pass the state updates once unmounted.
@@ -288,7 +286,7 @@ class Reader extends React.Component<ReaderProps>{
     let payload!:SyncedAddRenditionPayload;
     let result!: dataInterfacePayload;
 
-
+    let firstLoad = false;
     if(window.__TAURI__){
       try {
         result = await invoke("load_book_data", {checksum: params.bookHash})
@@ -304,6 +302,7 @@ class Reader extends React.Component<ReaderProps>{
   
           // return
         }
+        firstLoad = true
         console.log("Error Caught in invoke Load_book_data:", error)
         // return 
       }
@@ -337,7 +336,8 @@ class Reader extends React.Component<ReaderProps>{
       UID:0,
       hash: params.bookHash || "hashPlaceholder",
       saveData: result || {},
-      initialLoadState: forceLoadState
+      initialLoadState: forceLoadState,
+      firstLoad: firstLoad
     }
 
 

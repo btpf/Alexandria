@@ -407,6 +407,7 @@ struct updateDataPayload {
 #[derive(Serialize, Deserialize, Debug)]
 struct updateBookPayload {
     title: String,
+    #[serde(default)]
     data: updateDataPayload,
 }
 

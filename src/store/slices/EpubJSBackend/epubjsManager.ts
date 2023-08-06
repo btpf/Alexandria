@@ -17,17 +17,20 @@ import { RootState } from "@store/store"
 
 export type dataInterfacePayload = {title: string, data: dataInterface}
 
-export type SyncedAddRenditionPayload = {saveData:dataInterfacePayload} & BackendInstance
+export type SyncedAddRenditionPayload = {firstLoad?:boolean, saveData:dataInterfacePayload} & BackendInstance
 
 export const SyncedAddRendition = createAsyncThunk(
   'bookState/SyncedAddRendition',
   // if you type your function argument here
   async (renditionData: SyncedAddRenditionPayload, thunkAPI) => {
 
-
+    // This prevents any data from loading if this is the first time
+    // the book was opened.
+    if(renditionData.firstLoad){
+      return
+    }
     // console.log("ASYNC CALLED 1")
     if(window.__TAURI__){
-
 
 
       const bookmarks = renditionData.saveData.data.bookmarks
@@ -43,7 +46,7 @@ export const SyncedAddRendition = createAsyncThunk(
           // This will prevent page turning when clicking on highlight
           thunkAPI.dispatch(bookState.actions.SkipMouseEvent(0))
       
-      
+
           const boundingBox = renditionInstance.getRange(cfiRange).getBoundingClientRect()
           const {x, y} = CalculateBoxPosition(
             renditionInstance,
@@ -62,7 +65,7 @@ export const SyncedAddRendition = createAsyncThunk(
                 
         }, '', {fill:value.color});
       }
-      
+
       bookmarks.forEach((bookmark)=>{
         thunkAPI.dispatch(bookState.actions.ToggleBookmark({
           view: 0,
@@ -91,9 +94,10 @@ export const SyncedAddRendition = createAsyncThunk(
 
 export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>) =>{
   builder.addCase(SyncedAddRendition.pending, (state, action) => {
-    console.log("PENDING CASE")
+    const readerMarginsToUse = action?.meta?.arg?.saveData?.data?.theme?.readerMargins ? action.meta.arg.saveData.data.theme.readerMargins: 100
+    const renderModeToUse = action?.meta?.arg?.saveData?.data?.theme?.renderMode ? action.meta.arg.saveData.data.theme.renderMode: "default"
     const t:bookStateStructure = {
-      title: action.meta.arg.saveData.title,
+      title: action.meta.arg.saveData.title || action.meta.arg.instance.book.packaging.metadata.title,
       instance: action.meta.arg.instance,
       UID: action.meta.arg.UID, 
       hash: action.meta.arg.hash,
@@ -110,8 +114,8 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontWeight: 400,
           wordSpacing: 0,
           lineHeight: 100,
-          readerMargins: action.meta.arg.saveData.data.theme.readerMargins? action.meta.arg.saveData.data.theme.readerMargins: 100,
-          renderMode: action.meta.arg.saveData.data.theme.renderMode?action.meta.arg.saveData.data.theme.renderMode: "default"
+          readerMargins: readerMarginsToUse,
+          renderMode: renderModeToUse
         }
       }, 
       state:{
@@ -128,7 +132,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
         }
       }}
     // https://github.com/immerjs/immer/issues/389
-  
+    
     state[action.meta.arg.UID] = castDraft(t)
   })
   
