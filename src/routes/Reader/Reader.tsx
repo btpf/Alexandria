@@ -91,6 +91,7 @@ const Home = () =>{
 
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} data-tauri-drag-region style={{backgroundColor:showMenuUi? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainerLeft} ${!showMenuUi && styles.optionsToggled}`}>
+          <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
           <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
           <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
@@ -115,7 +116,7 @@ const Home = () =>{
             dispatch(ToggleThemeMenu(0))
             dispatch(ToggleMenu(0))
           }}/>
-          <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
+          
 
           <TitleBarButtons disabled={!showMenuUi}/>
         </div>

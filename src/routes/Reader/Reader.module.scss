@@ -61,7 +61,19 @@
   @include buttonContainer;
 
   padding-left:20px;
-  flex-basis: 75px;
+  flex-basis: 50px;
+  
+
+  & > svg:first-of-type{
+    transition: 0.25s;
+    margin-right:15px;
+    // stroke-width: 1px;
+  }
+  @include lt-sm{
+    & > svg:first-of-type{
+      margin-right:0px;
+    }
+  }
 
 }
 
@@ -74,10 +86,14 @@
   flex-basis: 75px;
   min-width: 280px;
   padding-left:20px;
-
+  gap:0px;
+  
+  & > svg:first-of-type{
+    margin-right:10px;
+  }
   @include lt-sm{
     padding-right:20px;
-    min-width: 75px;
+    min-width: 50px;
     & > div:last-of-type{
       display: none;
     }
