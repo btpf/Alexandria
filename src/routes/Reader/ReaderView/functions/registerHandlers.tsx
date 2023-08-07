@@ -61,6 +61,22 @@ export default (renditionInstance:Rendition)=>{
     }
   })
 
+  const scrollEventsHandler = (event) =>{
+    if(checkScrollDirectionIsUp(event)){
+      renditionInstance.prev()
+    }else{
+      renditionInstance.next()
+    }
+  }
+  function checkScrollDirectionIsUp(event) {
+    if (event.wheelDelta) {
+      return event.wheelDelta > 0;
+    }
+    return event.deltaY < 0;
+  }
+  
+  
+
   const keyboardEventsHandler = (event) =>{
     if (event.keyCode == 40 || event.keyCode == 39) {
       renditionInstance.next()
@@ -86,6 +102,7 @@ export default (renditionInstance:Rendition)=>{
     unsubscribeRedux()
     flexContainer?.removeEventListener("click", flexClickHandler)
     window.removeEventListener("keydown", keyboardEventsHandler)
+    window.removeEventListener("wheel", scrollEventsHandler);
   }
 
 
@@ -374,6 +391,7 @@ export default (renditionInstance:Rendition)=>{
 
   renditionInstance.on("keydown", keyboardEventsHandler)
   window.addEventListener('keydown', keyboardEventsHandler)
+  window.addEventListener("wheel", scrollEventsHandler);
   // renditionInstance.on("displayed", ()=>{
 
   // })
