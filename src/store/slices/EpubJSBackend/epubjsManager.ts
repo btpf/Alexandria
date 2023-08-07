@@ -121,7 +121,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
       state:{
         isProgrammaticProgressUpdate: false,
         sidebarMenuSelected: false,
-        menuToggled: false, 
+        menuToggled: true, 
         themeMenuActive: false,
         skipMouseEvent: false,
         dictionaryWord: "",
