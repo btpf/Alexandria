@@ -151,7 +151,7 @@ const Downloader = (props:any)=>{
               <style>
                 {`@font-face {
     font-family: ${currentDataList[index].name};
-    src: url(${currentDataList[index].menu});
+    src: url(${currentDataList[index].menu.replace("http","https")});
 }`}
               </style>
               {/* <link href={`https://fonts.googleapis.com/css2?family=${currentDataList[index].name.replace(" ","+")}&display=swap`} rel="stylesheet"></link> */}
