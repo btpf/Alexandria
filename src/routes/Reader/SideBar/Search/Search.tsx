@@ -17,17 +17,36 @@ const Search = ()=>{
   const [searchText, setSearchText] = useState("")
 
   const [results, setResults] = useState<FindResults[]>([])
-  const search = (query: string)=>{
-    return Promise.all(renditionInstance.book.spine.spineItems.map(item => {
-      return item.load(renditionInstance.book.load.bind(renditionInstance.book)).then(doc => {
-        const results = item.find(query);
-        item.unload();
-        return Promise.resolve(results);
-      });
-    })).then(results => results.reduce((resultsArray, currentItem)=>{
-      return [...resultsArray, ...currentItem]
-    }));
+  const search = async (query: string)=>{
+    // return Promise.all(renditionInstance.book.spine.spineItems.map(item => {
+    //   return item.load(renditionInstance.book.load.bind(renditionInstance.book)).then(doc => {
+    //     const results = item.find(query);
+    //     item.unload();
+    //     return Promise.resolve(results);
+    //   });
+    // })).then(results => results.reduce((resultsArray, currentItem)=>{
+    //   return [...resultsArray, ...currentItem]
+    // }));
+
+
+    const results = []
+    for (const spineSection of renditionInstance.book.spine.spineItems){
+      await spineSection.load(renditionInstance.book.load.bind(renditionInstance.book))
+      results.push(...spineSection.find(query))
+      spineSection.unload()
+      // Attempt to limit to 50 results
+      if(results.length >= 50){
+        break
+      }
+      
+    }
+    return results
+
+    
+
   }
+
+
   return (
     <div className={styles.searchContainer}>
 
@@ -51,6 +70,34 @@ const Search = ()=>{
         {results.map((result)=>{ return (
           <div key={result.cfi} className={styles.resultContainer} onClick={()=>{
             renditionInstance.display(result.cfi)
+
+            const highlighter =()=>{
+
+              const increments = (Math.PI/2)/10
+              let currentVal = 0
+              const totalFrames = 40
+              let currentFrame = 0
+
+              const spotlight = setInterval(()=>{
+                currentFrame += 1
+                console.log(`${currentFrame} rgba(255,0,0,${Math.abs(Math.sin(currentVal + increments))})`)
+                renditionInstance.annotations.remove(result.cfi, "highlight")
+                if(currentFrame == totalFrames){
+                  clearInterval(spotlight)
+                }
+                currentVal += increments
+                renditionInstance.annotations.highlight(result.cfi, {}, (e:MouseEvent) => {
+                  console.log("Skip event id: 3")
+                  
+                  // store.dispatch(SkipMouseEvent(0))
+                  
+                }, '', {fill:`rgba(0,255,0,${Math.abs(Math.sin(currentVal))})`});
+              }, 50)
+              
+            }
+            
+            highlighter()
+
             dispatch(CloseSidebarMenu(0))
           }}>
             <div className={styles.resultChapter}>{result.cfi}</div>
