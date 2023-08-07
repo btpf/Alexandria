@@ -1,4 +1,4 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import { LOADSTATE } from "@store/slices/constants";
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
@@ -32,13 +32,14 @@ export default (renditionInstance:Rendition)=>{
 
   let flexContainer:(Element | null | undefined) = null;
 
+  let sidebarOpen!: boolean|string;
+
   // https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
   const shallowCompareEqual = (obj1:any, obj2:any) =>
     Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every(key => obj1[key] === obj2[key]);
 
   // type themeStateType = bookStateStructure["data"]["theme"]
-  
   let oldThemeState = {};
   const unsubscribeRedux = store.subscribe(()=>{
     const newState = store.getState()
@@ -51,6 +52,7 @@ export default (renditionInstance:Rendition)=>{
     fontName = newState.bookState["0"]?.data?.theme?.font
     isProgrammaticProgressUpdate = newState.bookState['0']?.state?.isProgrammaticProgressUpdate
     loadState = newState.bookState['0']?.loadState
+    sidebarOpen = newState.bookState[0]?.state?.sidebarMenuSelected
 
     const theme = newState.bookState["0"]?.data?.theme
     if(theme && !shallowCompareEqual(theme, oldThemeState)){
@@ -59,9 +61,31 @@ export default (renditionInstance:Rendition)=>{
     }
   })
 
+  const keyboardEventsHandler = (event) =>{
+    if (40 == event.keyCode || event.keyCode == 39) {
+      renditionInstance.next()
+    }
+    if (event.keyCode == 37 || event.keyCode == 38) {
+      renditionInstance.prev()
+    }
+
+    if(event.ctrlKey && event.keyCode == 70){
+      if(sidebarOpen){
+        if(sidebarOpen == "Search"){
+          store.dispatch(SelectSidebarMenu({view:0, state:false}))
+        }else{
+          store.dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+        }
+      }else{
+        store.dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+      }
+    }
+  }
+
   const unsubscribe = ()=>{
     unsubscribeRedux()
     flexContainer?.removeEventListener("click", flexClickHandler)
+    window.removeEventListener("keydown", keyboardEventsHandler)
   }
 
 
@@ -344,6 +368,12 @@ export default (renditionInstance:Rendition)=>{
     console.log("Book started")
   })
 
+  
+  
+
+
+  renditionInstance.on("keydown", keyboardEventsHandler)
+  window.addEventListener('keydown', keyboardEventsHandler)
   // renditionInstance.on("displayed", ()=>{
 
   // })
