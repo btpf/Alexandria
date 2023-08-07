@@ -62,7 +62,7 @@ export default (renditionInstance:Rendition)=>{
   })
 
   const keyboardEventsHandler = (event) =>{
-    if (40 == event.keyCode || event.keyCode == 39) {
+    if (event.keyCode == 40 || event.keyCode == 39) {
       renditionInstance.next()
     }
     if (event.keyCode == 37 || event.keyCode == 38) {
