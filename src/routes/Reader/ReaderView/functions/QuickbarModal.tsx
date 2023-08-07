@@ -46,7 +46,7 @@ const QuickbarModal = () =>{
 
     let result:any = renditionInstance.getRange(selectedCFI)
     type EpubJSContainer = Node & {data: string}
-    result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset)
+    result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset).trim()
     const showDict = !result.includes(" ")
     return(
       <>
