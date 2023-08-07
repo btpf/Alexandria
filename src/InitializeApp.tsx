@@ -2,14 +2,16 @@
 // @ts-nocheck - This is to disable errors related to the variable styling of the application
 
 import { useAppSelector } from "@store/hooks"
-import { LoadThemes, setSelectedTheme } from "@store/slices/appState"
+import { LoadThemes, SetFullScreen, setSelectedTheme } from "@store/slices/appState"
 import { invoke } from "@tauri-apps/api"
-import React, { useEffect } from "react"
+import { appWindow } from "@tauri-apps/api/window"
+import React, { useEffect, useLayoutEffect } from "react"
 import { useDispatch } from "react-redux"
 import styles from './InitializeStyles.module.scss'
 const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   const themes = useAppSelector((state)=> state.appState.themes)
   const selectedTheme = useAppSelector((state)=> state.appState.selectedTheme)
+  const isFullscreen = useAppSelector((state)=> state.appState.state.fullscreen)
   const dispatch = useDispatch()
   useEffect(()=>{
     console.log("App Loading")
@@ -25,6 +27,21 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
     })
 
   }, [])
+
+
+  useLayoutEffect(() => {
+    async function updateSize() {
+      const result = await appWindow.isMaximized()
+      if(result != isFullscreen){
+        dispatch(SetFullScreen(result))
+      }
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+
   console.log(themes, selectedTheme)
   return (
     <div className={styles.appContainer} style={{
@@ -32,6 +49,7 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
       "--background-primary":themes[selectedTheme].ui.primaryBackground,
       "--text-primary":themes[selectedTheme].ui.primaryText,
       "--text-secondary":themes[selectedTheme].ui.secondaryText,
+      "--rounded-corners":isFullscreen?"0px":"10px",
       "height":"100%", "backgroundColor":themes[selectedTheme].ui.secondaryBackground, color: themes[selectedTheme].ui.primaryText}}>
       {/* <div style={{"height":"100%"}}> */}
       {children}

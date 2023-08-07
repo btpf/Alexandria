@@ -7,6 +7,7 @@ import UnMaximizeIcon from '@resources/figma/Unmaximize.svg'
 import MinimizeIcon from '@resources/figma/Minimize.svg'
 import { exit } from '@tauri-apps/api/process';
 import { appWindow } from '@tauri-apps/api/window';
+import { useAppSelector } from '@store/hooks'
 
 interface TitleBarButtonsProps {
   disabled: boolean,
@@ -17,15 +18,8 @@ const defaultProps: TitleBarButtonsProps = {
 }
 
 const TitleBarButtons = (props:TitleBarButtonsProps)=>{
-  const [maximized, setMaximized] = useState(false);
-  useLayoutEffect(() => {
-    async function updateSize() {
-      setMaximized(await appWindow.isMaximized());
-    }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
+  
+  const maximized = useAppSelector((state)=> state.appState.state.fullscreen)
 
   return (
     <div className={`${styles.titleBarButtonsContainer} ${props.disabled?styles.disabled:""}`}>

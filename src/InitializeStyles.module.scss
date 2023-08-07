@@ -2,18 +2,15 @@ html,
 body {
   height: 100vh;
   overflow:hidden;
-  border-radius: 10px;
 }
-
-body{
-  border: 1px solid black;
-}
-
 
 .appContainer{
   color:red;
   overflow:auto;
   font-family: 'noto sans', 'open sans', sans-serif;
+  border-radius: var(--rounded-corners);
+  border: 1px solid black;
+  
 }
 
 /* https://gist.github.com/spemer/a0e218bbb45433bd611e68446523a00b

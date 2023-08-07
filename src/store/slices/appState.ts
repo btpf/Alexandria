@@ -2,6 +2,7 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { WritableDraft } from 'immer/dist/internal';
 import {Theme} from './EpubJSBackend/data/theme/themeManager.d'
 import {actions as globalThemeActions} from './AppState/globalThemes'
+import {actions as stateActions} from './AppState/state'
 import { defaultAppState } from './appStateTypes';
 import { BaseThemeDark, BaseThemeLight } from './AppState/globalThemes';
 import { setThemeThunk } from './EpubJSBackend/data/theme/themeManager';
@@ -17,7 +18,10 @@ const initialState: defaultAppState = {
     "Default Dark":BaseThemeDark,
     "Default Light":BaseThemeLight
   },
-  selectedTheme: "Default Light"
+  selectedTheme: "Default Light",
+  state:{
+    fullscreen: false
+  }
 }
 
 
@@ -26,7 +30,8 @@ export const appState = createSlice({
   initialState,
   reducers: {
     // ...readerThemeActions,
-    ...globalThemeActions
+    ...globalThemeActions,
+    ...stateActions
   },
   extraReducers(builder) {
     builder.addCase(setThemeThunk.pending, (state, action)=>{
@@ -48,7 +53,9 @@ export const {
   DeleteTheme,
   UpdateTheme,
   setSelectedTheme,
-  LoadThemes
+  LoadThemes,
+
+  SetFullScreen
 } = appState.actions
 
 export default appState.reducer
