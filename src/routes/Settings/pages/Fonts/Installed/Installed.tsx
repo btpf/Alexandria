@@ -77,7 +77,7 @@ const Installed = (props:any)=>{
 
       <div className={styles.pageTitle}>Installed/Enabled Fonts</div>
       <div className={styles.comboContainer}>
-        <div className={styles.comboContainerText}>Theme Name</div>
+        <div className={styles.comboContainerText}>Font Name</div>
         <input onChange={(e)=>{
           console.log(e.target.value,e.target.value.length)
           setTextFilter(e.target.value)
