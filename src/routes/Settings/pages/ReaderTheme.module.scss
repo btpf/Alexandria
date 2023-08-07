@@ -14,6 +14,8 @@
   border-radius: 5px;
   border-color:rgba(0, 0, 0, 0.2);
   display:inline;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
 }
 
 .comboTextBox{
@@ -21,6 +23,8 @@
   border-radius: 5px;
   border-color:rgba(0, 0, 0, 0.2);
   margin-right: calc(50px + (8px * 2));
+  background-color: var(--background-primary) !important;
+  color: var(--text-primary) !important;
 }
 
 .comboContainer{

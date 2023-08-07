@@ -32,7 +32,9 @@
   width: 200px;
   height: 30px;
   border-radius: 5px;
-  border-color:var(--text-secondary);
+  border-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--background-primary);
+  color: var(--text-primary);
   // margin-right: calc(50px + (8px * 2));
 }
 
