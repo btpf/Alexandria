@@ -32,14 +32,13 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   useLayoutEffect(() => {
     async function updateSize() {
       const result = await appWindow.isMaximized()
-      if(result != isFullscreen){
+      if(result !== isFullscreen){
         dispatch(SetFullScreen(result))
       }
     }
     window.addEventListener('resize', updateSize);
-    updateSize();
     return () => window.removeEventListener('resize', updateSize);
-  }, []);
+  }, [isFullscreen]);
 
 
   console.log(themes, selectedTheme)
