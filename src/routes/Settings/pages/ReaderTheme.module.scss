@@ -2,11 +2,9 @@
 
 .themeContainer{
   width: 100%;
-  height: 100%;
-  //   background-color: blue;
+  min-height: 99%;
   display: flex;
   flex-direction: column;
-
   align-items: center;
 }
 
@@ -55,6 +53,7 @@
   width: clamp(0px, 100%, 1000px);
   justify-content: space-around;
   flex-wrap: wrap-reverse;
+  padding-bottom:25px;
 }
 
 .themeTargetContainer{
@@ -104,7 +103,7 @@
   border-radius: 10px;
   border:1px solid red;
   margin-top: auto;
-  margin-bottom: 50px;
+  margin-bottom: 25px;
   cursor:pointer;
   user-select: none;
 }
