@@ -84,8 +84,7 @@ const Home = () =>{
   const showMenuUi = mouseOverMenu || menuOpen
 
   return (
-    // The id is set here so that the click handler will easily know if a click originated from the readerFlex
-    <div className={styles.readerFlex} id="reader-flex" style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} onClick={(e)=>{
+    <div className={styles.readerFlex} style={{"backgroundColor":ReaderBackgroundColor, color: ReaderColor}} onClick={(e)=>{
       console.log(e.target)
     }}>
 
@@ -122,8 +121,11 @@ const Home = () =>{
         </div>
       </div>
 
-      {/* This handles the case where the reader is now displayed, preventing a flash */}
-      <div style={{backgroundColor:ReaderBackgroundColor}} className={styles.readerBackgroundFallback}/>
+      {/* This handles the case where the reader is now displayed, preventing a flash 
+          These two elements id='reader-background' and <ReaderView> must be next to eachother in this order
+          for page flipping logic found in registerHandlers.tsx
+      */}
+      <div style={{backgroundColor:ReaderBackgroundColor}} id="reader-background" className={styles.readerBackgroundFallback}/>
       <ReaderView/>
 
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>

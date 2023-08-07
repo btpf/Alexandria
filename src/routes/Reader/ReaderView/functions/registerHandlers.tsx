@@ -30,7 +30,7 @@ export default (renditionInstance:Rendition)=>{
 
   let timer:any = null;
 
-  let flexContainer:(HTMLElement | null | undefined) = null;
+  let flexContainer:(Element | null | undefined) = null;
 
   // https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
   const shallowCompareEqual = (obj1:any, obj2:any) =>
@@ -81,10 +81,10 @@ export default (renditionInstance:Rendition)=>{
 
   const clickHandler = (event:any) =>{
     
-    // If the element clicked was the 'reader-flex' container,
+    // If the element clicked was the 'reader-background' container,
     // then the epub iframe was not clicked (Margins were set and click landed outside of epubjs width)
 
-    const whitespaceClicked = event.target.id == "reader-flex"
+    const whitespaceClicked = event.target.id == "reader-background"
 
     // If a triple click, prevent it from going through (As this is a useless feature)
     if (event.detail > 2){
@@ -295,7 +295,7 @@ export default (renditionInstance:Rendition)=>{
     }
   }
   renditionInstance.on("attached",()=>{
-    flexContainer = renditionInstance.manager?.container.parentElement?.parentElement
+    flexContainer = renditionInstance.manager?.container.parentElement?.previousElementSibling
     if(flexContainer != null){
       flexContainer.addEventListener("click", flexClickHandler)
     }
