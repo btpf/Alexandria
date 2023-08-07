@@ -11,10 +11,13 @@
     "version": "../package.json"
   },
   "tauri": {
-
+    "security": {
+      "csp": "default-src 'self' asset: https://asset.localhost"
+    },
     "allowlist": {
       "protocol":{
-        "assetScope": ["/*"]
+        "asset": true,
+        "assetScope": ["**"]
       },
       "http": {
         "all": true,
