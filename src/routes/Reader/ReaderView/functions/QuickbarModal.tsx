@@ -43,17 +43,18 @@ const QuickbarModal = () =>{
 
   const dispatch = useAppDispatch()
   if(quickbarModalVisible){
+
+    let result:any = renditionInstance.getRange(selectedCFI)
+    type EpubJSContainer = Node & {data: string}
+    result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset)
+    const showDict = !result.includes(" ")
     return(
       <>
         <div className={styles.container} style={{top:modalY, left: modalX, width: QUICKBAR_MODAL_WIDTH, height: QUICKBAR_MODAL_HEIGHT}}>
           <div className={styles.actionContainer}>
             <div><Copy/></div>
-            <div><Book onClick={()=>{
+            <div style={!showDict?{display:"none"}:{}}><Book onClick={()=>{
               
-              let result:any = renditionInstance.getRange(selectedCFI)
-              type EpubJSContainer = Node & {data: string}
-              result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset)
-
               dispatch(SetDictionaryWord({view:0, word:result}))
               renditionInstance.annotations.remove(selectedCFI, "highlight")
               dispatch(MoveQuickbarModal({
