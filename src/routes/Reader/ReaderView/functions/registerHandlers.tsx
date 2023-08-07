@@ -1,4 +1,4 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
 import { LOADSTATE } from "@store/slices/constants";
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
@@ -78,9 +78,14 @@ export default (renditionInstance:Rendition)=>{
   console.log("REGISTERING HANDLER FOR HANDLER")
 
   
-
+  // Helper functions courtesy of https://github.com/johnfactotum/epubjs-tips
+  const getSelections = () => renditionInstance.getContents().map(contents => contents.window.getSelection())
+  const clearSelection = () => getSelections().forEach(s => s.removeAllRanges())
+        
+  const getSelectedText = () => getSelections().reduce((acc, cur) => acc+cur, "")
+      
   const clickHandler = (event:any) =>{
-    
+
     // If the element clicked was the 'reader-background' container,
     // then the epub iframe was not clicked (Margins were set and click landed outside of epubjs width)
 
@@ -96,10 +101,9 @@ export default (renditionInstance:Rendition)=>{
     // Handle case where an <a> tag is clicked
       const target = event.target as HTMLAnchorElement;
       const parentNode = target?.parentNode as HTMLAnchorElement
-      console.log(parentNode)
       if (target?.tagName?.toLowerCase() == "a" && target?.href) return;
       if (parentNode?.tagName.toLowerCase() == "a" && parentNode.href || null) return;
-    // eslint-disable-next-line no-empty
+      // eslint-disable-next-line no-empty
     } catch {}
 
     // If the dictionary is open and the book is clicked, close the dictionary
@@ -118,11 +122,7 @@ export default (renditionInstance:Rendition)=>{
 
 
     if(event.detail == 1 && timer == null){
-      // Helper functions courtesy of https://github.com/johnfactotum/epubjs-tips
-      const getSelections = () => renditionInstance.getContents().map(contents => contents.window.getSelection())
-      const clearSelection = () => getSelections().forEach(s => s.removeAllRanges())
-        
-      const getSelectedText = () => getSelections().reduce((acc, cur) => acc+cur, "")
+
 
 
       if(NoteModalVisible || QuickbarModalVisible){
@@ -237,12 +237,27 @@ export default (renditionInstance:Rendition)=>{
 
 
   renditionInstance.on("selected", (cfiRange:any, contents:Contents)=>{
-    console.log("SELECTED ACTIVATED")
-    // store.dispatch(SkipMouseEvent(0))
-    renditionInstance.annotations.highlight(cfiRange, {}, (e:MouseEvent) => {
-      console.log("Skip event id: 3")
-      // store.dispatch(SkipMouseEvent(0))
-    }, '', {fill:"#36454F"});
+
+    // This code will check whether or not there are any img inside of the cfi range.
+    // We prevent this because the underlying library will crash in the event that an image is selected
+    const clonedContents = renditionInstance?.getRange(cfiRange)?.cloneContents()
+    if(!clonedContents || clonedContents.querySelectorAll("img").length > 0){
+      clearSelection()
+      store.dispatch(SkipMouseEvent(0))
+      return
+    }
+   
+    try {
+      renditionInstance.annotations.highlight(cfiRange, {}, (e:MouseEvent) => {
+        console.log("Skip event id: 3")
+        
+        // store.dispatch(SkipMouseEvent(0))
+      }, '', {fill:"#36454F"});
+    } catch (error) {
+      console.log("Error Caught: Image Selected")
+      return
+    }
+
     
 
 
