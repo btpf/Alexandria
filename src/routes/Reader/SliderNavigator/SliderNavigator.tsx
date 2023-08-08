@@ -33,7 +33,7 @@ const defaultMarks = {
 
 
 const SliderNavigator = ()=>{
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
+  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[0]?.instance)
   const renditionState = useAppSelector((state) => state.bookState[0]?.loadState)
   const currentPercent = useAppSelector((state) => state.bookState[0]?.data.progress)
   const currentCfi = useAppSelector((state) => state.bookState[0]?.data.cfi)
@@ -169,9 +169,12 @@ const SliderNavigator = ()=>{
         if(typeof e !== "number"){
           return
         }
-
+        
+        // Refocus onto a different element so that when using the arrow keys,
+        // You will not be controlling the slider, but rather using window button events.
+        // Controlling the slider with arrow keys leads to poor navigation experience
+        window?.document?.getElementById("reader-background")?.focus()
         setMouseOnSlider(false)
-
         dispatch(SetProgress({view: 0, progress: e/1000, cfi: renditionInstance.book.locations.cfiFromPercentage(e/1000)}))
       }}
       value={mouseOnSlider? placeholderProgress: currentPercent * 1000}

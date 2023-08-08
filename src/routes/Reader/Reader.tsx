@@ -125,7 +125,7 @@ const Home = () =>{
           These two elements id='reader-background' and <ReaderView> must be next to eachother in this order
           for page flipping logic found in registerHandlers.tsx
       */}
-      <div style={{backgroundColor:ReaderBackgroundColor}} id="reader-background" className={styles.readerBackgroundFallback}/>
+      <div style={{backgroundColor:ReaderBackgroundColor}} tabIndex={0} id="reader-background" className={styles.readerBackgroundFallback}/>
       <ReaderView/>
 
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>
