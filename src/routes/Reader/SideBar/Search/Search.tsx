@@ -69,7 +69,15 @@ const Search = ()=>{
       <div className={styles.resultsContainer}>
         {results.map((result)=>{ return (
           <div key={result.cfi} className={styles.resultContainer} onClick={()=>{
-            renditionInstance.display(result.cfi)
+            renditionInstance.display(result.cfi).then(()=>{
+              // This is a hacky workaround to an issue that is as follows
+              // If the user in is chapter 1, they make a search, and the result is in chapter 3
+              // Additionally, this user also has font-size or line-spacing set, 
+              // they will initially simply open chapter 3, and be navigated to the incorrect place.
+              // Calling display on a chapter which is opened will navigate to the text accurately.
+              // Therefore, calling it twice ensures the chapter is open first, then we are "scrolled" to the text
+              renditionInstance.display(result.cfi)
+            })
 
             const highlighter =()=>{
 
@@ -80,7 +88,6 @@ const Search = ()=>{
 
               const spotlight = setInterval(()=>{
                 currentFrame += 1
-                console.log(`${currentFrame} rgba(255,0,0,${Math.abs(Math.sin(currentVal + increments))})`)
                 renditionInstance.annotations.remove(result.cfi, "highlight")
                 if(currentFrame == totalFrames){
                   clearInterval(spotlight)

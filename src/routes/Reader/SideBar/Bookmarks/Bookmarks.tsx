@@ -109,7 +109,9 @@ const Annotations = ()=>{
               <Trash/>
             </div>
             <div className={styles.AnnotationRightSubContainer} onClick={()=>{
-              renditionInstance.display(item.cfi)
+              renditionInstance.display(item.cfi).then(()=>{
+                renditionInstance.display(item.cfi)
+              })
               dispatch(CloseSidebarMenu(0))
             }}> 
               <div className={styles.AnnotationChapter}>{item.cfi}</div>

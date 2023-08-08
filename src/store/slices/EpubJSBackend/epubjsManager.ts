@@ -132,7 +132,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
         }
       }, 
       state:{
-        isProgrammaticProgressUpdate: false,
+        isProgrammaticProgressUpdate: true, // For first load
         sidebarMenuSelected: false,
         menuToggled: true, 
         themeMenuActive: false,
