@@ -30,9 +30,16 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
   builder.addCase(setThemeThunk.pending, (state, action)=>{
     state[action.meta.arg.view].data.theme.themeName = action.meta.arg.themeName
   })
+
+  builder.addCase(setWordSpacingThunk.pending, (state, action)=>{
+    state[action.meta.arg.view].data.theme.wordSpacing = action.meta.arg.value
+  })
+  builder.addCase(setLineHeightThunk.pending, (state, action)=>{
+    state[action.meta.arg.view].data.theme.lineHeight = action.meta.arg.value
+  })
+
   builder.addMatcher(isAnyOf(setThemeThunk.fulfilled, setFontThunk.fulfilled, setWordSpacingThunk.fulfilled, setLineHeightThunk.fulfilled), (state, action)=>{
     const theme = action.payload.themeBase
-    console.log(action.payload.theme.fontSize)
     // line-height is facing an issue. When navigating backwards to a from a chapter to the previous
     // Sometimes, you will jump to a page which is not the last.
     let css = 

@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api"
 import { castDraft } from "immer"
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from "src/routes/Reader/ReaderView/functions/ModalUtility"
 // import { bookState } from "../bookStateSlice"
-import { bookState, setRenderMode } from "../bookState"
+import { bookState, setReaderMargins, setRenderMode } from "../bookState"
 
 
 // import { bookState } from "../bookStateSlice"
@@ -12,7 +12,7 @@ import { LOADSTATE } from "../constants"
 import { bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
-import { setFontThunk, setThemeThunk } from "./data/theme/themeManager"
+import { setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"
 import { RootState } from "@store/store"
 
 export type dataInterfacePayload = {title: string, data: dataInterface}
@@ -31,7 +31,6 @@ export const SyncedAddRendition = createAsyncThunk(
     }
     // console.log("ASYNC CALLED 1")
     if(window.__TAURI__){
-
 
       const bookmarks = renditionData.saveData.data.bookmarks
       const highlights = renditionData.saveData.data.highlights
@@ -76,13 +75,27 @@ export const SyncedAddRendition = createAsyncThunk(
       thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:renditionData.saveData.data.progress, cfi: renditionData.saveData.data.cfi}))
 
       
-      thunkAPI.dispatch(setFontThunk({
+      await thunkAPI.dispatch(setFontThunk({
         view: 0,
         font: renditionData.saveData.data.theme.font,
         fontSize: renditionData.saveData.data.theme.fontSize,
         fontWeight: renditionData.saveData.data.theme.fontWeight
       }))
 
+      await thunkAPI.dispatch(setLineHeightThunk({
+        view:0,
+        value: renditionData.saveData.data.theme.lineHeight
+      }))
+
+      await thunkAPI.dispatch(setWordSpacingThunk({
+        view:0,
+        value: renditionData.saveData.data.theme.wordSpacing
+      }))
+
+      await thunkAPI.dispatch(setReaderMargins({
+        view:0,
+        value: renditionData.saveData.data.theme.readerMargins
+      }))
 
     }
           

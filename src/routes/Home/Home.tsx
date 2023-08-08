@@ -159,7 +159,7 @@ const Shelf = () =>{
           isDragActive && <div style={{height:"100%", width:"100%", pointerEvents:"none"}}> Add book to library...</div> 
         }
         
-        {!myBooks&&<h3 style={{height:"100%", border:"1px solid grey"}}>Drag & Drop your books to get started</h3>}
+        {(myBooks.length==0)&&<h3 style={{height:"100%", border:"1px solid grey"}}>Drag & Drop your books to get started</h3>}
         {myBooks
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
           .sort((a, b) =>{ 
