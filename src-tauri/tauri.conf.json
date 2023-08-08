@@ -11,9 +11,6 @@
     "version": "../package.json"
   },
   "tauri": {
-    "security": {
-      "csp": "default-src 'self' asset: https://asset.localhost"
-    },
     "allowlist": {
       "protocol":{
         "asset": true,
