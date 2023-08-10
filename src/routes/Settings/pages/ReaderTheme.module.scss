@@ -115,3 +115,25 @@
 .themeTarget{
   font-weight: bold;
 }
+
+.colorPickerContainer{
+  z-index: 100;
+  background-color:var(--background-primary);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  position:absolute;
+  border-radius: 10px;
+  & > input{
+    display: block;
+    box-sizing: border-box;
+    width: 90px;
+    margin: 5px 55px 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #eee;
+    outline: none;
+    font: inherit;
+    text-transform: uppercase;
+    text-align: center;
+  }
+}

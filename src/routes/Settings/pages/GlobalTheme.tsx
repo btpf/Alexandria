@@ -105,7 +105,7 @@ const GlobalTheme = ()=>{
       }
     }}>
 
-      <div style={{zIndex: 100, position:"absolute", left:pickerPosition.x, top:pickerPosition.y}}>
+      <div className={styles.colorPickerContainer} style={{left:pickerPosition.x, top:pickerPosition.y}}>
         <HexColorPicker onClick={(e)=>{
         // If the color picker is clicked, prevent the event from being propagated up to the themeContainer and the position being set offscreen
           e.stopPropagation()
@@ -113,8 +113,8 @@ const GlobalTheme = ()=>{
 
           // @ts-expect-error: This is some typescript + React wierdness. I don't think I can fix this.
           colorUpdater(color)
+          setIntialColor(color)
         }} />
-        {/* {color}
         <HexColorInput color={color} style={{backgroundColor: "white", borderRadius: 5, zIndex:10}} onClick={(e)=>{
         // If the color picker is clicked, prevent the event from being propagated up to the themeContainer and the position being set offscreen
           e.stopPropagation()
@@ -122,7 +122,8 @@ const GlobalTheme = ()=>{
 
           // @ts-expect-error: This is some typescript + React wierdness. I don't think I can fix this.
           colorUpdater(color)
-        }} /> */}
+          setIntialColor(color)
+        }} />
       </div>
 
       <PreviewWidget readerOptions={readerOptions}/>
@@ -197,7 +198,7 @@ const GlobalTheme = ()=>{
                   type GuaranteeKeySafety = keyof uiTheme
 
                   const bounds = e.currentTarget.getBoundingClientRect()
-                  setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
+                  setPosition({x:bounds.x - 90, y:bounds.y - (250 + 5)})
                   setColorUpdater(()=>(color:string) => {
                     console.log(lastValidTheme, color, item.path)
                     dispatch(UpdateTheme({
@@ -253,7 +254,7 @@ const GlobalTheme = ()=>{
                   type GuaranteeKeySafety = keyof uiTheme
 
                   const bounds = e.currentTarget.getBoundingClientRect()
-                  setPosition({x:bounds.x - 100, y:bounds.y - (200 + 20)})
+                  setPosition({x:bounds.x - 90, y:bounds.y - (250 + 5)})
                   setColorUpdater(()=>(color:string) => {
                     console.log(lastValidTheme, color, item.path)
                     dispatch(UpdateTheme({
