@@ -15,9 +15,13 @@ interface dataInterface{
   }
 }
 
+export interface bookStateHydrationStructure{
+  title: string,
+  author: string,
+  data:dataInterface
+}
 
-export interface bookStateStructure{
-    title: string,
+export interface bookStateStructure extends bookStateHydrationStructure{
     instance: Rendition,
     UID: number,
     hash: string
@@ -35,7 +39,6 @@ export interface bookStateStructure{
         noteModal: {visible: boolean, x:number, y:number}
       },
     },
-    data:dataInterface
   }
   
 

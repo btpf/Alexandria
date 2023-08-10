@@ -25,8 +25,9 @@ import { Unsubscribe } from '@reduxjs/toolkit';
 import QuickbarModal from './functions/QuickbarModal';
 import NoteModal from './functions/NoteModal';
 import { LOADSTATE } from '@store/slices/constants';
-import { dataInterfacePayload, SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
+import { SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
 import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
+import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsManager.d';
 const mapState = (state: RootState) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
@@ -291,7 +292,7 @@ class Reader extends React.Component<ReaderProps>{
     /* Begin Book Load Pattern - Can be extracted into function in future */
     // Param: useRenderMode props (from settings) -> settings (If defined) -> default
     let payload!:SyncedAddRenditionPayload;
-    let result!: dataInterfacePayload;
+    let result!: bookStateHydrationStructure;
 
     let firstLoad = false;
     if(window.__TAURI__){

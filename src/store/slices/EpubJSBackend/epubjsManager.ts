@@ -9,15 +9,13 @@ import { bookState, setReaderMargins, setRenderMode } from "../bookState"
 // import { bookState } from "../bookStateSlice"
 import { BackendInstance, BookInstances } from "../bookStateTypes"
 import { LOADSTATE } from "../constants"
-import { bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
+import { bookStateHydrationStructure, bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 import { setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"
 import { RootState } from "@store/store"
 
-export type dataInterfacePayload = {title: string, data: dataInterface}
-
-export type SyncedAddRenditionPayload = {firstLoad?:boolean, saveData:dataInterfacePayload} & BackendInstance
+export type SyncedAddRenditionPayload = {firstLoad?:boolean, saveData:bookStateHydrationStructure} & BackendInstance
 
 export const SyncedAddRendition = createAsyncThunk(
   'bookState/SyncedAddRendition',
@@ -111,6 +109,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
     const renderModeToUse = action?.meta?.arg?.saveData?.data?.theme?.renderMode ? action.meta.arg.saveData.data.theme.renderMode: "default"
     const t:bookStateStructure = {
       title: action.meta.arg.saveData.title || action.meta.arg.instance.book.packaging.metadata.title,
+      author: action.meta.arg.saveData.author || action.meta.arg.instance.book.packaging.metadata.creator,
       instance: action.meta.arg.instance,
       UID: action.meta.arg.UID, 
       hash: action.meta.arg.hash,

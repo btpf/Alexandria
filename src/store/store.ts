@@ -50,6 +50,7 @@ const store =  configureStore({
           if(window.__TAURI__ && currentBook.loadState == LOADSTATE.COMPLETE){
             const saveData = {
               title: currentBook.title,
+              author: currentBook.author,
               data:{
                 progress: currentBook.data.progress,
                 cfi: currentBook.data.cfi,

@@ -15,7 +15,7 @@ const FakeCover = (props:props)=>{
           {props.title}
         </div>
         <div className={styles.author}>
-Author
+          {props.author}
         </div>
 
       </div>

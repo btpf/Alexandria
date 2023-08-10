@@ -242,6 +242,7 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
         hash: checksum,
         progress: 0.0,
         title: title,
+        author:author
     };
 
     return Ok(response);
@@ -261,20 +262,10 @@ struct BookHydrate {
     hash: String,
     progress: f64,
     title: String,
+    author: String
 }
 
-#[derive(Deserialize)]
-struct BookDataStuct {
-    // Use the result of a function as the default if "resource" is
-    // not included in the input.
-    #[serde(default)]
-    progress: u64,
 
-    // Use the type's implementation of std::default::Default if
-    // "timeout" is not included in the input.
-    #[serde(default)]
-    title: String,
-}
 
 #[tauri::command]
 fn get_books() -> Vec<BookHydrate> {
@@ -295,6 +286,7 @@ fn get_books() -> Vec<BookHydrate> {
 
         let mut epub_path = String::new();
         let mut title = String::new();
+        let mut author = String::new();
         let mut progress: f64 = 0.0;
         let mut cover_path = String::new();
 
@@ -315,6 +307,11 @@ fn get_books() -> Vec<BookHydrate> {
                     serde_json::from_reader(reader).expect("JSON was not well-formatted");
                 title.push_str(json.get("title").unwrap().as_str().unwrap());
 
+                match json.get("author") {
+                    Some(value) => author.push_str(value.as_str().unwrap_or("unknown")),
+                    None => author.push_str("unknown"),
+                };
+                // .unwrap_or("default_author")
                 let t = &json["data"]["progress"];
 
                 let t = t.as_f64();
@@ -323,8 +320,11 @@ fn get_books() -> Vec<BookHydrate> {
                 println!(
                     "{}",
                     format!(
-                        "title: {}, progress: {}",
+                        "title: {}, author: {}, progress: {}",
                         json.get("title").unwrap(),
+                        json.get("author")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("default_author"),
                         progress
                     )
                 )
@@ -341,6 +341,7 @@ fn get_books() -> Vec<BookHydrate> {
             hash: String::from(file_hash),
             progress,
             title,
+            author
         };
         hydration_data.push(folderData)
     }
@@ -407,7 +408,10 @@ struct updateDataPayload {
 }
 #[derive(Serialize, Deserialize, Debug)]
 struct updateBookPayload {
+    #[serde(default)]
     title: String,
+    #[serde(default)]
+    author: String,
     #[serde(default)]
     data: updateDataPayload,
 }
