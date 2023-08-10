@@ -302,12 +302,6 @@ class Reader extends React.Component<ReaderProps>{
         if(error == "First Read"){
           console.log("First Read, Populating with default data")
   
-          // In the case where nothing else is set, at least set the theme to the globally selected one.
-          setThemeThunk({
-            view: 0,
-            themeName: this.props.selectedTheme || ""
-          })
-  
           // return
         }
         firstLoad = true

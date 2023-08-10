@@ -25,6 +25,12 @@ export const SyncedAddRendition = createAsyncThunk(
     // This prevents any data from loading if this is the first time
     // the book was opened.
     if(renditionData.firstLoad){
+      // In the case where nothing else is set, at least set the theme to the globally selected one.
+      thunkAPI.dispatch(setThemeThunk({
+        view: 0,
+        themeName: (thunkAPI.getState() as RootState).appState.selectedTheme
+      }))
+      
       return
     }
     // console.log("ASYNC CALLED 1")
