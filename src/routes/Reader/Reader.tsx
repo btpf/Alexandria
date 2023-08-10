@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import Dictionary from './ReaderView/Dictionary/Dictionary'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
+import { Toaster } from 'react-hot-toast'
 
 
 
@@ -128,6 +129,10 @@ const Home = () =>{
       <div style={{backgroundColor:ReaderBackgroundColor}} tabIndex={0} id="reader-background" className={styles.readerBackgroundFallback}/>
       <ReaderView/>
 
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.arrowButtonContainer}`}>
           <ArrowLeft viewBox={"0 0 24 24"} />

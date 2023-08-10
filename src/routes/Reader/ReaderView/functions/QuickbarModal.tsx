@@ -9,6 +9,7 @@ import {
   ShowNoteModal,
   MoveNoteModal,
   SetDictionaryWord,
+  SelectSidebarMenu,
   
 } from '@store/slices/bookState'
 
@@ -21,6 +22,8 @@ import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 import { useAppSelector, useAppDispatch } from '@store/hooks';
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from './ModalUtility';
 import { Rendition } from 'epubjs';
+import toast from 'react-hot-toast';
+import { writeText } from '@tauri-apps/api/clipboard';
 
 
 const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']
@@ -52,7 +55,21 @@ const QuickbarModal = () =>{
       <>
         <div className={styles.container} style={{top:modalY, left: modalX, width: QUICKBAR_MODAL_WIDTH, height: QUICKBAR_MODAL_HEIGHT}}>
           <div className={styles.actionContainer}>
-            <div><Copy/></div>
+            <div onClick={async ()=>{
+              renditionInstance.annotations.remove(selectedCFI, "highlight")
+              dispatch(MoveQuickbarModal({
+                view: 0,
+                x:0,
+                y:0,
+                visible: false
+              }))
+              await writeText(result);
+              toast.success('Text Copied',
+                {
+                  icon: '📋',
+                })
+                          
+            }}><Copy/></div>
             <div style={!showDict?{display:"none"}:{}}><Book onClick={()=>{
               
               dispatch(SetDictionaryWord({view:0, word:result}))
@@ -65,7 +82,16 @@ const QuickbarModal = () =>{
               }))
 
             }}/></div>
-            <div><Search/></div>
+            <div onClick={()=>{
+              dispatch(SelectSidebarMenu({view:0, state:"Search#" + result}))
+              renditionInstance.annotations.remove(selectedCFI, "highlight")
+              dispatch(MoveQuickbarModal({
+                view: 0,
+                x:0,
+                y:0,
+                visible: false
+              }))
+            }}><Search/></div>
           </div>
           <hr className={styles.divider}/>
           <div className={styles.highlightContainer}>

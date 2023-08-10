@@ -1,5 +1,5 @@
 import styles from './Search.module.scss'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavItem, Rendition } from 'epubjs';
 import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
@@ -10,11 +10,11 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { FindResults } from 'epubjs/types/section';
 
 
-const Search = ()=>{
+const Search = (props:{query:string})=>{
   const dispatch = useAppDispatch()
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
 
-  const [searchText, setSearchText] = useState("")
+  const [searchText, setSearchText] = useState(props.query)
 
   const [results, setResults] = useState<FindResults[]>([])
   const search = async (query: string)=>{
@@ -45,6 +45,18 @@ const Search = ()=>{
     
 
   }
+
+  useEffect(()=>{
+    if(props.query){
+      setSearchText(props.query)
+      search(props.query).then((results)=>{
+        if(results.length == 0){
+          return setResults([{cfi:"", excerpt:"No results found"}])
+        }
+        setResults(results)
+      })
+    }
+  },[props.query])
 
 
   return (

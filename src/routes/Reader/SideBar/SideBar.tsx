@@ -65,8 +65,14 @@ const SidebarContent = React.memo((props: SidebarContentTypes)=>{
   if(props.selection == "Bookmarks"){
     return <Bookmarks/>
   }
-
-  return <Search/>
+  let query = ""
+  if(typeof props.selection == typeof query){
+    if((props.selection as string).includes("#")){
+      query = (props.selection as string).split("#")[1]
+    }
+  }
+    
+  return <Search query={query}/>
   
   
   
