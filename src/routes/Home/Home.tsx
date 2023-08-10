@@ -117,13 +117,22 @@ const Shelf = () =>{
   // https://stackoverflow.com/a/21002544
   const [isDragActive, setDragActive] = useState(false)
   let mouseDownTime = new Date();
-  const mouseUpEvented = false
   const [mouseWasHeld, setMouseWasHeld] = useState(false)
   const holdClickTimeout = useRef(null);
 
+  // This is used to handle a bug where double clicking on the titlebar to maximize it will cause
+  // a book to be selected/opened
+  const [isTitlebarHot, setHotTitlebar] = useState(false)
+
   return (
     <>
-      <div data-tauri-drag-region className={styles.titleBar}>
+      <div onMouseDown={()=>{
+        setHotTitlebar(true)
+        setTimeout(()=>{
+          setHotTitlebar(false)
+        }, 1000)
+
+      }} data-tauri-drag-region className={styles.titleBar}>
         
         <div className={styles.titleBarLogo}>
           <Logo viewBox="0 0 24 24" height={25} />
@@ -208,6 +217,7 @@ const Shelf = () =>{
             return (
               <div key={book.hash} className={styles.boxPlaceholder}
                 onMouseDown={()=>{
+                  if(isTitlebarHot) return
                   clearTimeout(holdClickTimeout.current)
                   mouseDownTime = new Date();
                   const timeMs = mouseDownTime.getTime();
@@ -219,17 +229,15 @@ const Shelf = () =>{
                   }, 500)
                 }}
                 onMouseUp={()=>{
+                  if(isTitlebarHot) return
+
+
                   clearTimeout(holdClickTimeout.current)
+                  
+                  
 
                   if(mouseWasHeld){
                     setMouseWasHeld(false)
-                    return
-                  }
-
-                  const newTime = new Date()
-                  const secondsPassed =  (newTime.getTime() - mouseDownTime.getTime());
-                  if(secondsPassed >= 500){
-                    setSelectedBooks(new Set([...selectedBooks, book.hash]))
                     return
                   }
 
