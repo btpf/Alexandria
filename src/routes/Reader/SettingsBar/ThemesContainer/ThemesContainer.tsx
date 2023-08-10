@@ -15,10 +15,16 @@ const ThemesContainer = ()=>{
   const dispatch = useAppDispatch()
   const appThemes = useAppSelector((state) => state.appState.themes)
   const fontSize = useAppSelector((state) => state.bookState[0]?.data.theme.fontSize)
+
+  const OrderedAppThemeKeys = Object.keys(appThemes);
+  const idxoflight = OrderedAppThemeKeys.indexOf("Default Light");
+  [ OrderedAppThemeKeys[0], OrderedAppThemeKeys[idxoflight] ] = [ OrderedAppThemeKeys[idxoflight],OrderedAppThemeKeys[0] ];
+  const idxofdark = OrderedAppThemeKeys.indexOf("Default Dark");
+  [ OrderedAppThemeKeys[1], OrderedAppThemeKeys[idxofdark] ] = [ OrderedAppThemeKeys[idxofdark], OrderedAppThemeKeys[1] ];
   return ( 
     
     <div className={styles.themeSelectorContainer}>
-      {Object.keys(appThemes).map((item)=>{
+      {OrderedAppThemeKeys.map((item)=>{
         const {background, color} = (appThemes[item].reader).body
         return (
           <div key={item} onClick={()=>{

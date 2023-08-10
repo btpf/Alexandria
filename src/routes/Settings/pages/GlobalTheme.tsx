@@ -100,6 +100,14 @@ const GlobalTheme = ()=>{
 
 
   const isDefaultTheme = lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"
+
+
+  const OrderedAppThemeKeys = Object.keys(appThemes);
+  const idxoflight = OrderedAppThemeKeys.indexOf("Default Light");
+  [ OrderedAppThemeKeys[0], OrderedAppThemeKeys[idxoflight] ] = [ OrderedAppThemeKeys[idxoflight],OrderedAppThemeKeys[0] ];
+  const idxofdark = OrderedAppThemeKeys.indexOf("Default Dark");
+  [ OrderedAppThemeKeys[1], OrderedAppThemeKeys[idxofdark] ] = [ OrderedAppThemeKeys[idxofdark], OrderedAppThemeKeys[1] ];
+
   return (
     <div className={styles.themeContainer} onClick={()=>{
       if(pickerPosition.x != -500){
@@ -167,7 +175,7 @@ const GlobalTheme = ()=>{
           setLastValidTheme(e.target.value)
           dispatch(setSelectedTheme(e.target.value))
         }} className={styles.comboBox}>
-          {Object.keys(appThemes).map((themeName, index)=>{
+          {OrderedAppThemeKeys.map((themeName, index)=>{
             return <option key={index} value={themeName}>{themeName}</option>
           })}
           
