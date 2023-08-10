@@ -8,7 +8,6 @@
   justify-content: flex-start;
   align-items: center;
   gap:25px;
-  border-bottom: 1px solid #E6E6E6;
   background-color: var(--background-primary);
   color: var(--text-primary)
   //   margin-bottom:25px;
@@ -41,6 +40,7 @@
   width: 100%;
   /* This is important because otherwise the grid and subitems will not know how to overflow properly */
   height: calc(100vh - 50px);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 

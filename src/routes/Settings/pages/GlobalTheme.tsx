@@ -125,7 +125,7 @@ const GlobalTheme = ()=>{
           colorUpdater(color)
           setIntialColor(color)
         }} />
-        <HexColorInput color={color} style={{backgroundColor: "white", borderRadius: 5, zIndex:10}} onClick={(e)=>{
+        <HexColorInput color={color} onClick={(e)=>{
         // If the color picker is clicked, prevent the event from being propagated up to the themeContainer and the position being set offscreen
           e.stopPropagation()
         }}  onChange={(color)=>{

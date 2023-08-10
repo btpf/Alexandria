@@ -137,12 +137,15 @@
     width: 90px;
     margin: 5px 55px 5px;
     padding: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
-    background: #eee;
     outline: none;
     font: inherit;
     text-transform: uppercase;
     text-align: center;
+    background-color:var(--background-secondary) !important;
+
+    
+
   }
 }
