@@ -29,6 +29,7 @@ use std::io;
 use tauri::api::path::app_data_dir;
 
 use std::sync::OnceLock;
+use std::time::{SystemTime, UNIX_EPOCH};
 
     static app_data_platform_dir: OnceLock<PathBuf> = OnceLock::new();
     static config_path: OnceLock<PathBuf> = OnceLock::new();
@@ -215,9 +216,19 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
     //   progress: 0
     // };
 
+    let now = SystemTime::now();
+    let since_epoch = now.duration_since(UNIX_EPOCH).expect("Time went backwards");
+
+    let milliseconds_u128 = since_epoch.as_millis();
+    let milliseconds_u64 = milliseconds_u128.min(u64::MAX as u128) as u64;
+
+    println!("Milliseconds since the epoch (u128): {}", milliseconds_u128);
+    println!("Milliseconds since the epoch (u64): {}", milliseconds_u64);
+
     let initial_data = json!({
         "title": title,
         "author": author,
+        "modified": milliseconds_u64,
         "data":{
             "progress": 0,
             "cfi": "",
@@ -242,7 +253,8 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
         hash: checksum,
         progress: 0.0,
         title: title,
-        author:author
+        author:author,
+        modified: milliseconds_u64,
     };
 
     return Ok(response);
@@ -262,7 +274,8 @@ struct BookHydrate {
     hash: String,
     progress: f64,
     title: String,
-    author: String
+    author: String,
+    modified: u64
 }
 
 
@@ -289,6 +302,7 @@ fn get_books() -> Vec<BookHydrate> {
         let mut author = String::new();
         let mut progress: f64 = 0.0;
         let mut cover_path = String::new();
+        let mut modified:u64 = 0;
 
         for book_file in book_folder {
             let book_file = book_file.unwrap().path().display().to_string();
@@ -317,6 +331,14 @@ fn get_books() -> Vec<BookHydrate> {
                 let t = t.as_f64();
                 progress = t.unwrap();
 
+                let now = SystemTime::now();
+                let since_epoch = now.duration_since(UNIX_EPOCH).expect("Time went backwards");
+            
+                let milliseconds_u128 = since_epoch.as_millis();
+                let milliseconds_u64 = milliseconds_u128.min(u64::MAX as u128) as u64;
+
+                modified = json.get("modified").and_then(serde_json::Value::as_u64).unwrap_or(milliseconds_u64);
+
                 println!(
                     "{}",
                     format!(
@@ -341,7 +363,8 @@ fn get_books() -> Vec<BookHydrate> {
             hash: String::from(file_hash),
             progress,
             title,
-            author
+            author,
+            modified
         };
         hydration_data.push(folderData)
     }
@@ -412,6 +435,8 @@ struct updateBookPayload {
     title: String,
     #[serde(default)]
     author: String,
+    #[serde(default)]
+    modified: u64,
     #[serde(default)]
     data: updateDataPayload,
 }

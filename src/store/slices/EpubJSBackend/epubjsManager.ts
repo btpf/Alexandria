@@ -30,7 +30,7 @@ export const SyncedAddRendition = createAsyncThunk(
         view: 0,
         themeName: (thunkAPI.getState() as RootState).appState.selectedTheme
       }))
-      
+
       return
     }
     // console.log("ASYNC CALLED 1")
@@ -116,6 +116,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
     const t:bookStateStructure = {
       title: action.meta.arg.saveData.title || action.meta.arg.instance.book.packaging.metadata.title,
       author: action.meta.arg.saveData.author || action.meta.arg.instance.book.packaging.metadata.creator,
+      modified: action.meta.arg.saveData.modified || Date.now(),
       instance: action.meta.arg.instance,
       UID: action.meta.arg.UID, 
       hash: action.meta.arg.hash,

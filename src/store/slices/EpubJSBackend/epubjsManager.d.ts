@@ -18,6 +18,7 @@ interface dataInterface{
 export interface bookStateHydrationStructure{
   title: string,
   author: string,
+  modified: number,
   data:dataInterface
 }
 

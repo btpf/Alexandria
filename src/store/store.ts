@@ -51,6 +51,7 @@ const store =  configureStore({
             const saveData = {
               title: currentBook.title,
               author: currentBook.author,
+              modified: Date.now(),
               data:{
                 progress: currentBook.data.progress,
                 cfi: currentBook.data.cfi,

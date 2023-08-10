@@ -38,7 +38,8 @@ interface BookData {
   title:string,
   progress: number,
   hash: string,
-  cover_url: string
+  cover_url: string,
+  modified: number
 }
 
 const Home = () =>{
@@ -54,7 +55,7 @@ const Shelf = () =>{
 
 
   const [searchValue, setSearchValue] = useState("")
-  const [filterValue, setFilterValue] = useState("Title")
+  const [filterValue, setFilterValue] = useState("title")
   const [sortDirection, setSortDirection] = useState("ASC")
 
   const [bottomBarActive, setBottomBarActive] = useState(false)
@@ -79,7 +80,7 @@ const Shelf = () =>{
           invoke('import_book', {payload:file}).then((response:any)=>{
             console.log("IMPORT BOOK RESPONSE", response)
             if(response){
-              myBooksState = [...myBooksState, {title: response.title, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
+              myBooksState = [...myBooksState, {title: response.title, modified: response.modified, author: response.author, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
               setBooks(myBooksState)
         
             }
@@ -195,9 +196,9 @@ const Shelf = () =>{
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
           .sort((a, b) =>{ 
             if(sortDirection =="ASC"){
-              return (a.title > b.title) ? 1 : -1
+              return (a[filterValue] > b[filterValue]) ? 1 : -1
             }else{
-              return (a.title < b.title) ? 1 : -1
+              return (a[filterValue] < b[filterValue]) ? 1 : -1
             }
             
           })
@@ -314,8 +315,19 @@ const Shelf = () =>{
               onClick={()=>setSortDirection((sortDirection=="ASC"?"DESC":"ASC"))}/>
           </div>
           <div className={styles.optionContainer}>
-            {["Title", "Progress", "Recently Updated"].map((item)=>{
-              return (<div onClick={()=>setFilterValue(item)} className={styles.sortOption} key={item}>{item} {(item == filterValue)?<input checked readOnly type="radio"/>:<div/>}</div>)
+            {["Title", "Progress", "Recently Opened"].map((item)=>{
+              const updateMapping = {
+                "Title": "title",
+                "Progress": "progress",
+                "Recently Opened": "modified"
+              }
+
+              return (<div onClick={()=>
+              {
+
+                setFilterValue(updateMapping[item])
+              }
+              } className={styles.sortOption} key={item}>{item} {(updateMapping[item] == filterValue)?<input checked readOnly type="radio"/>:<div/>}</div>)
             })}
           </div>
 
