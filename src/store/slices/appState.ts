@@ -19,11 +19,17 @@ const initialState: defaultAppState = {
     "Default Light":BaseThemeLight
   },
   selectedTheme: "Default Light",
+  sortBy:"title",
+  sortDirection:"ASC",
   state:{
     fullscreen: false
   }
 }
 
+type SortPayload = {
+  sortDirection:string,
+  sortBy:string
+}
 
 export const appState = createSlice({
   name: 'appState',
@@ -31,7 +37,13 @@ export const appState = createSlice({
   reducers: {
     // ...readerThemeActions,
     ...globalThemeActions,
-    ...stateActions
+    ...stateActions,
+    SetSortSettings:(state, action: PayloadAction<SortPayload>) =>{
+      state.sortDirection = action.payload.sortDirection
+      state.sortBy = action.payload.sortBy
+    }
+    
+
   },
   extraReducers(builder) {
     builder.addCase(setThemeThunk.pending, (state, action)=>{
@@ -55,7 +67,8 @@ export const {
   setSelectedTheme,
   LoadThemes,
 
-  SetFullScreen
+  SetFullScreen,
+  SetSortSettings
 } = appState.actions
 
 export default appState.reducer

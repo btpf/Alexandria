@@ -36,7 +36,7 @@ const store =  configureStore({
       
       next(action)
       if(SyncedDataActions.has(action.type)){
-        const currentState = storeAPI.getState()
+        const currentState:RootState = storeAPI.getState()
         if(action.type.includes("bookState")){
 
           console.log("Synced bookState Action:", action)
@@ -69,7 +69,14 @@ const store =  configureStore({
           console.log("Synced App State")
           console.log(currentState.appState.themes)
           invoke("set_global_themes", {payload:currentState.appState.themes})
-          invoke("set_settings", {payload:{selectedTheme: currentState.appState.selectedTheme}})
+          
+          invoke("set_settings", {payload:{
+            
+            selectedTheme: currentState.appState.selectedTheme,
+            sortBy: currentState.appState.sortBy,
+            sortDirection: currentState.appState.sortDirection
+          
+          }})
         }
         
 

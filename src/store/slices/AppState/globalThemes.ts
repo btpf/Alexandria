@@ -161,7 +161,6 @@ const setSelectedTheme:appStateReducer = (state, action: PayloadAction<string>) 
   if(!Object.keys(state.themes).includes(action.payload)){
     return
   }
-  console.log("SELECTED GLOBAL THEME CHANGE")
   state.selectedTheme = action.payload
   console.log(state)
 }

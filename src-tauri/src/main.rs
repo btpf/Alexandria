@@ -696,6 +696,10 @@ fn get_global_themes() -> AppThemes {
 struct SettingsConfig {
     #[serde(default)]
     selectedTheme: String,
+    #[serde(default)]
+    sortDirection: String,
+    #[serde(default)]
+    sortBy: String
 }
 
 #[tauri::command]

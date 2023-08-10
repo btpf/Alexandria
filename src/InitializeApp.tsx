@@ -2,7 +2,7 @@
 // @ts-nocheck - This is to disable errors related to the variable styling of the application
 
 import { useAppSelector } from "@store/hooks"
-import { LoadThemes, SetFullScreen, setSelectedTheme } from "@store/slices/appState"
+import { LoadThemes, SetFullScreen, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
 import { invoke } from "@tauri-apps/api"
 import { appWindow } from "@tauri-apps/api/window"
 import React, { useEffect, useLayoutEffect } from "react"
@@ -23,6 +23,7 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
     })
     invoke("get_settings").then((response:any)=>{
       dispatch(setSelectedTheme(response.selectedTheme))
+      dispatch(SetSortSettings({sortBy: response.sortBy, sortDirection:response.sortDirection}))
       // dispatch(LoadGlobalThemes(response))
     })
 

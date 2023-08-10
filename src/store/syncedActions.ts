@@ -28,4 +28,5 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   'bookState/setWordSpacing/fulfilled',
   'bookState/setLineHeight/fulfilled',
   "bookState/setRenderMode",
+  "appState/SetSortSettings"
 ])

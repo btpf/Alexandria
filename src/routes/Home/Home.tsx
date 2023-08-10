@@ -32,6 +32,7 @@ import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import FakeCover from './FakeCover/FakeCover';
+import { SetSortSettings } from '@store/slices/appState';
 
 interface BookData {
   author: string;
@@ -53,12 +54,14 @@ const Home = () =>{
 
 const Shelf = () =>{
 
-
+  const dispatch = useAppDispatch();
   const [searchValue, setSearchValue] = useState("")
-  const [filterValue, setFilterValue] = useState("title")
-  const [sortDirection, setSortDirection] = useState("ASC")
+  // const [filterValue, setFilterValue] = useState("title")
+  // const [sortDirection, setSortDirection] = useState("ASC")
 
   const [bottomBarActive, setBottomBarActive] = useState(false)
+  const sortDirection = useAppSelector((state) => state.appState.sortDirection)
+  const sortBy = useAppSelector((state) => state.appState.sortBy)
 
   const [myBooks, setBooks] = useState<BookData[]>([])
 
@@ -205,9 +208,9 @@ const Shelf = () =>{
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
           .sort((a, b) =>{ 
             if(sortDirection =="ASC"){
-              return (a[filterValue] > b[filterValue]) ? 1 : -1
+              return (a[sortBy] > b[sortBy]) ? 1 : -1
             }else{
-              return (a[filterValue] < b[filterValue]) ? 1 : -1
+              return (a[sortBy] < b[sortBy]) ? 1 : -1
             }
             
           })
@@ -314,14 +317,18 @@ const Shelf = () =>{
             )
           })}
       </div>
+      <div style={bottomBarActive?{}:{display:"none"}} className={styles.sortOffOverlay} onClick={()=>{
+        setBottomBarActive(false)
+      }}/>
       <div style={!bottomBarActive?{transform:"translateY(110%)"}:{}} className={styles.bottomBar}>
         <div className={styles.bottomBarContainer}>
           <div style={{display:"flex", justifyContent: "space-between",fontSize: "14px", marginBottom:0, color:"var(--text-secondary)", fontWeight:'500'}}>
             SORT BY
             <SortIcon className={styles.optionSortButton}
               style={sortDirection=="ASC"?{transform:"scale(1,-1)"}:{}}
-              onClick={()=>setSortDirection((sortDirection=="ASC"?"DESC":"ASC"))}/>
+              onClick={()=> dispatch(SetSortSettings({sortDirection:(sortDirection=="ASC"?"DESC":"ASC"), sortBy: sortBy}))}/>
           </div>
+          
           <div className={styles.optionContainer}>
             {["Title", "Progress", "Recently Opened"].map((item)=>{
               const updateMapping = {
@@ -332,10 +339,9 @@ const Shelf = () =>{
 
               return (<div onClick={()=>
               {
-
-                setFilterValue(updateMapping[item])
+                dispatch(SetSortSettings({sortDirection, sortBy: updateMapping[item]}))
               }
-              } className={styles.sortOption} key={item}>{item} {(updateMapping[item] == filterValue)?<input checked readOnly type="radio"/>:<div/>}</div>)
+              } className={styles.sortOption} key={item}>{item} {(updateMapping[item] == sortBy)?<input checked readOnly type="radio"/>:<div/>}</div>)
             })}
           </div>
 

@@ -503,3 +503,12 @@ $bottom-bar-width-standard: 650px;
     height: 50px;
   }
 }
+
+
+.sortOffOverlay{
+  position: absolute;
+  top:0;
+  left:0;
+  width:100vw;
+  height: 100vh;
+}
