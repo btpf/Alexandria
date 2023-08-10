@@ -203,7 +203,7 @@ class Reader extends React.Component<ReaderProps>{
       
       this.initializeRendition(this.props.renderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
     }
-    if(this.props.readerMargins != prevProps.readerMargins){
+    if(this.props.readerMargins != prevProps.readerMargins && this.props.LoadState == LOADSTATE.COMPLETE){
       console.log("DID I CRASH HERE?", this.rendition)
       // This will be undefined on the first load.
       // Undefined -> Initial default value -> Value from data
@@ -230,8 +230,13 @@ class Reader extends React.Component<ReaderProps>{
 
 
         /* Begin Logic if using epub-js */
-        
-        if(Object.keys(this.rendition.currentLocation()).length == 0){
+
+        const result = this.rendition.currentLocation()
+        if(!result){
+          console.log("Caught set margins crash on initial load")
+          return
+        }
+        if(Object.keys(result).length == 0){
           return
         }
         // @ts-expect-error Missing Definition
