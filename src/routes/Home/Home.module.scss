@@ -53,6 +53,16 @@ $bookmarkHeight: 23px;
   user-select: none;
   justify-content: flex-end;
 
+  @include lt-sm{
+    padding-right: 20px;
+
+    > div:last-of-type{
+      display:none;
+    }
+
+  
+  }
+  
   > *{
     pointer-events: all;
   }
