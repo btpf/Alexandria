@@ -26,7 +26,7 @@ import ArrowLeft from '@resources/feathericons/arrow-left.svg'
 import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import HomeIcon from '@resources/feathericons/home.svg'
 import PreviewWidget from "./PreviewWidget/PreviewWidget";
-
+import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
 
 // import styles from './Settings.module.scss'
 
@@ -89,15 +89,17 @@ const GlobalTheme = ()=>{
       changeTheme(filteredArr[0])
       setLastValidTheme(filteredArr[0])
       dispatch(setSelectedTheme(filteredArr[0]))
-      return () =>{
-        prevAppThemes.appThemes = appThemes
-      }
+    }
+    return () =>{
+      prevAppThemes.appThemes = appThemes
     }
   }, [appThemes])
 
   const readerColor = (readerOptions[0].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
   const readerBackgroundColor = (readerOptions[1].path as GetAllKeys<ThemeType>[]).reduce((themeObjLevel:any, pathNavigate) => themeObjLevel[pathNavigate], appThemes[lastValidTheme])
 
+
+  const isDefaultTheme = lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"
   return (
     <div className={styles.themeContainer} onClick={()=>{
       if(pickerPosition.x != -500){
@@ -134,7 +136,32 @@ const GlobalTheme = ()=>{
 
 
       <div className={styles.comboContainer}>
-        <div className={styles.comboContainerText}>Selected Theme</div>
+
+
+
+        <div style={!isDefaultTheme?{marginLeft: "calc(55px + 16px - 1px)"}:{}} className={styles.comboContainerText}>Selected Theme</div>
+
+
+        <div onClick={()=>{
+          console.log("Delete button pressed")
+          const AppThemesList = Object.keys(appThemes)
+          const themeBefore = AppThemesList.at( AppThemesList.indexOf(selectedTheme) - 1)
+          if(themeBefore == undefined){
+            console.log("Undefined Error In Delete Theme Button")
+            return
+          }
+          changeTheme(themeBefore)
+          setLastValidTheme(themeBefore)
+        
+          dispatch(DeleteTheme(selectedTheme))
+          dispatch(setSelectedTheme(themeBefore))
+          // changeTheme(Object.keys(appThemes).filter((key) => key == selectedTheme)[0])
+
+        }} style={{display: isDefaultTheme?"none":""}} 
+        className={styles.deleteButton}>
+          <TrashIcon/>
+        </div>
+
         <select value={selectedTheme} onChange={(e)=>{
           changeTheme(e.target.value)
           setLastValidTheme(e.target.value)
@@ -147,13 +174,12 @@ const GlobalTheme = ()=>{
         </select>
         <div onClick={()=>{
           dispatch(AddTheme())
-          
-        }} className={styles.newCombo}>New</div>
+        }} className={styles.newCombo} style={!isDefaultTheme?{marginRight:"calc(55px + 16px - 1px)"}:{}}><Copy/></div>
       </div>
 
       <div className={styles.comboContainer}>
         <div className={styles.comboContainerText}>Theme Name</div>
-        <input disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onChange={(e)=>{
+        <input disabled={isDefaultTheme} onChange={(e)=>{
           console.log(e.target.value,e.target.value.length, selectedTheme)
           console.log(appThemes)
           // TODO: FIX 0 length erorr
@@ -194,7 +220,7 @@ const GlobalTheme = ()=>{
                 <div className={styles.themePropertyName}>
                   {item.label}
                 </div>
-                <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
+                <button disabled={isDefaultTheme} onClick={(e)=>{
                   type GuaranteeKeySafety = keyof uiTheme
 
                   const bounds = e.currentTarget.getBoundingClientRect()
@@ -213,7 +239,7 @@ const GlobalTheme = ()=>{
                   }
                 }} style={{backgroundColor:currentThemeColor}} className={styles.themeColor}/>
                 <UndoButton onClick={()=>{
-                  if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
+                  if(isDefaultTheme){
                     return 
                   }
 
@@ -250,7 +276,7 @@ const GlobalTheme = ()=>{
                 <div className={styles.themePropertyName}>
                   {item.label}
                 </div>
-                <button disabled={lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"} onClick={(e)=>{
+                <button disabled={isDefaultTheme} onClick={(e)=>{
                   type GuaranteeKeySafety = keyof uiTheme
 
                   const bounds = e.currentTarget.getBoundingClientRect()
@@ -269,7 +295,7 @@ const GlobalTheme = ()=>{
                   }
                 }} style={{backgroundColor:currentThemeColor}} className={styles.themeColor}/>
                 <UndoButton onClick={()=>{
-                  if(lastValidTheme =="Default Light" || lastValidTheme == "Default Dark"){
+                  if(isDefaultTheme){
                     return 
                   }
 
@@ -292,17 +318,7 @@ const GlobalTheme = ()=>{
       </div>
 
 
-      <div onClick={()=>{
-        console.log("Delete button pressed")
-        // console.log(Object.keys(appThemes).filter((key) => key != selectedTheme)[0])
-        changeTheme("Default Light")
-        setLastValidTheme("Default Light")
-        
-        dispatch(DeleteTheme(selectedTheme))
-        dispatch(setSelectedTheme("Default Light"))
-        // changeTheme(Object.keys(appThemes).filter((key) => key == selectedTheme)[0])
 
-      }} style={{display: lastValidTheme == "Default Light" || lastValidTheme == "Default Dark"?"none":""}} className={styles.deleteButton}><TrashIcon style={{transform:"scale(1.2)", marginRight:10}}/> Delete Theme</div>
       
     </div>
 

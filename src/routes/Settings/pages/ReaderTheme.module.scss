@@ -38,11 +38,12 @@
 .newCombo{
   display: inline-block;
   margin-left: 15px;
-  background-color: #04cb00;
+  background-color: var(--background-primary);
+  border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 8px;
   border-radius: 10px;
   font-weight: 600;
-  color: white;
+  color: var(--text-primary);
   cursor:pointer;
   width:55px;
   text-align: center;
@@ -96,20 +97,28 @@
 }
 
 .deleteButton{
-  display:flex;
-  align-items: center;
+
   color:red;
-  background-color: #FFEBEB;
-  width:250px;
-  height:50px;
-  justify-content: center;
-  font-size: 28px;
+  // background-color: #FFEBEB;
+  // border:1px solid red;
+
+  background-color: var(--background-primary);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+
+  display: inline-block;
+  // margin-left: 15px;
+
+  padding: 8px;
   border-radius: 10px;
-  border:1px solid red;
-  margin-top: auto;
-  margin-bottom: 25px;
+  font-weight: 600;
+  // color: var(--text-primary);
   cursor:pointer;
-  user-select: none;
+  width:55px;
+  text-align: center;
+  margin-right:15px;
+
+  // This is 55px wide + 8 padding + 2px border on each side
+  // calc(55px + 8px + 2px)
 }
 
 .themeTarget{

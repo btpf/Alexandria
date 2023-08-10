@@ -80,30 +80,28 @@ export const BaseThemeLight = {
 
 const AddTheme:appStateReducerSingle = (state) =>{
 
-  console.log("ADDING THEME")
   let i = 0
 
   while(true){
     if(i == 0){
-      
-      if(state.themes[`New Theme`] == undefined){
+      if(state.themes[`${state.selectedTheme}`] == undefined){
               
         break
       }
 
     }else{
-      if(state.themes[`New Theme (${i})`] == undefined){
+      if(state.themes[`${state.selectedTheme} (${i})`] == undefined){
         break
       }
 
     }
     i++
   }
-
+  const themeCopy = JSON.parse(JSON.stringify(state.themes[state.selectedTheme]))
   if(i==0){
-    state.themes[`New Theme`] = BaseThemeLight
+    state.themes[`${state.selectedTheme}`] = themeCopy
   }else{
-    state.themes[`New Theme (${i})`] = BaseThemeLight
+    state.themes[`${state.selectedTheme} (${i})`] = themeCopy
   }
 
 }
