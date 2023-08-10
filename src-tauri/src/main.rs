@@ -102,7 +102,8 @@ async fn main() {
             set_global_themes,
             get_global_themes,
             set_settings,
-            get_settings
+            get_settings,
+            delete_book
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -453,6 +454,12 @@ fn load_book_data(checksum: &str) -> Result<updateBookPayload, String> {
     // // read the whole file
     // f.read_to_end(&mut buffer).unwrap();
     // return buffer;
+}
+
+#[tauri::command]
+fn delete_book(checksum: &str) {
+    let file_path = get_config_path().join("books").join(checksum);
+    fs::remove_dir_all(file_path).unwrap();
 }
 
 #[tauri::command]

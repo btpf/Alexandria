@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'; // we need this to make JSX compile
-import { Link } from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
+import { Link, useNavigate } from "react-router-dom";
 
 import styles from './Home.module.scss'
 import Test from '@resources/feathericons/more-vertical.svg'
@@ -11,8 +11,10 @@ import Logo from '@resources/logo.svg'
 
 import Font from '@resources/iconmonstr/text-3.svg'
 import Article from '@resources/material/article_black_24dp.svg'
-
+import RightArrow from "@resources/feathericons/arrow-right.svg"
 import Boomark from '@resources/figma/Bookmark.svg'
+import Trash from '@resources/feathericons/trash-2.svg'
+import CheckCircle from '@resources/feathericons/check-circle.svg'
 
 import { listen } from '@tauri-apps/api/event'
 
@@ -58,6 +60,9 @@ const Shelf = () =>{
 
   const [myBooks, setBooks] = useState<BookData[]>([])
 
+  const [selectedBooks, setSelectedBooks] = useState<Set<string>>(new Set());
+
+  const navigate = useNavigate();
 
   useEffect(()=>{
     const unmountPointer = {pointer:()=>{return}}
@@ -109,7 +114,10 @@ const Shelf = () =>{
 
   // https://stackoverflow.com/a/21002544
   const [isDragActive, setDragActive] = useState(false)
-
+  let mouseDownTime = new Date();
+  const mouseUpEvented = false
+  const [mouseWasHeld, setMouseWasHeld] = useState(false)
+  const holdClickTimeout = useRef(null);
 
   return (
     <>
@@ -149,12 +157,34 @@ const Shelf = () =>{
         
 
       </div>
+
+      <div style={(selectedBooks.size > 1)?{}:{display:"none"}} className={styles.multiSelectMenuContainer}>
+        <div onClick={()=>setSelectedBooks(new Set([]))} style={{height:18, width:18, border:"1px solid var(--text-secondary)", borderRadius:2, marginRight:5, cursor:"pointer"}}></div>
+        <Trash
+          className={styles.multiSelectDelete} style={{color:"red", cursor:"pointer"}}
+          onClick={()=>{
+            for(const checksum of selectedBooks){
+              console.log(checksum)
+              invoke("delete_book",{checksum})
+            }
+            invoke("get_books").then((data)=>{
+              setBooks((data as BookData[]))
+            })
+            
+            // setSelectedBooks(new Set([]))
+          }}
+        />
+      </div>
+
+
       <div onDragEnter={()=>{
         setDragActive(true)
       }} onDragLeave={()=>{
         setDragActive(false)
       }}
-      className={`${styles.bookCase} ${isDragActive && styles.bookCaseDragging}`}>
+      className={`${styles.bookCase} ${isDragActive && styles.bookCaseDragging}`}
+      style={(selectedBooks.size > 1)?{marginTop:35}:{}}
+      >
         {
           isDragActive && <div style={{height:"100%", width:"100%", pointerEvents:"none"}}> Add book to library...</div> 
         }
@@ -171,32 +201,106 @@ const Shelf = () =>{
             
           })
           .map((book)=>{
+
+            const isBookSelected = selectedBooks.has(book.hash)
             return (
-              <Link className={styles.unstyleLink}  key={book.hash} to={"/reader/" + book.hash}>
-                <div className={styles.boxPlaceholder}>
-
-                  {/* This container is used to handle top bar in CSS in case where book is a short height */}
-                  <div className={styles.bookImageContainer}>
-                    <div className={styles.boxTopBar}>
-                      <Boomark/>
-                      <div>{Math.round(book.progress*100)}%</div>
-                      <Test onClick={(e: React.MouseEvent<HTMLElement>)=>{
-                        e.preventDefault()
-                      }}/>
-                    </div>
-                    {book.cover_url?
-                      <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.cover_url.startsWith("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
-                      :
-                      <FakeCover title={book.title} author="author"/>
+              <div key={book.hash} className={styles.boxPlaceholder}
+                onMouseDown={()=>{
+                  clearTimeout(holdClickTimeout.current)
+                  mouseDownTime = new Date();
+                  const timeMs = mouseDownTime.getTime();
+                  holdClickTimeout.current = setTimeout(()=>{
+                    if(mouseDownTime.getTime() == timeMs){
+                      setMouseWasHeld(true)
+                      setSelectedBooks(new Set([...selectedBooks, book.hash]))
                     }
-                  </div>
-              
-                  <div className={styles.boxBottomBar} >
-                    <div>{book.title}</div>
+                  }, 500)
+                }}
+                onMouseUp={()=>{
+                  clearTimeout(holdClickTimeout.current)
 
+                  if(mouseWasHeld){
+                    setMouseWasHeld(false)
+                    return
+                  }
+
+                  const newTime = new Date()
+                  const secondsPassed =  (newTime.getTime() - mouseDownTime.getTime());
+                  if(secondsPassed >= 500){
+                    setSelectedBooks(new Set([...selectedBooks, book.hash]))
+                    return
+                  }
+
+                  if(selectedBooks.size >= 1){
+                    if(isBookSelected){
+                      setSelectedBooks(new Set([...selectedBooks].filter((item)=> item != book.hash)))
+                    }else{
+                      setSelectedBooks(new Set([...selectedBooks, book.hash]))
+                    }
+                    return
+                  }
+                  const navPath = "/reader/" + book.hash
+                  navigate(navPath)
+                  
+                }}
+              >
+
+                {/* This container is used to handle top bar in CSS in case where book is a short height */}
+                <div className={styles.bookImageContainer}>
+                  <div className={styles.boxTopBar}>
+                    <Boomark/>
+                    <div>{Math.round(book.progress*100)}%</div>
+                    <Test onMouseDown={(e)=>{
+                      e.preventDefault()
+                      e.stopPropagation()
+                    }} onMouseUp={(e: React.MouseEvent<HTMLElement>)=>{
+                      clearTimeout(holdClickTimeout.current)
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setSelectedBooks(new Set([...selectedBooks, book.hash]))
+
+                        
+                    }}/>
                   </div>
+                  <div style={(isBookSelected && selectedBooks.size < 2)?{}:{display:"none"}} onClick={(e)=>e.preventDefault()} className={styles.bookOptionsMenu}>
+
+                    <div
+                      onMouseDown={(e)=>e.stopPropagation()}
+                      onMouseUp={(e)=>{
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setSelectedBooks(new Set([...selectedBooks].filter((item)=> item != book.hash)))}
+                      } className={styles.bookOptionsReturn}><div>Back</div> <div><RightArrow/></div></div>
+                    <div className={styles.bookOptionsInfo}>Info</div>
+                    <div onClick={()=>{
+                      invoke("delete_book",{checksum:book.hash})
+                                  
+                      setSelectedBooks(new Set([...selectedBooks].filter((item)=> item != book.hash)))
+                      invoke("get_books").then((data)=>{
+                        setBooks((data as BookData[]))
+                      })
+                    }} className={styles.bookOptionsRemove}>Remove Book</div>
+                  </div>
+                  <div style={(isBookSelected && selectedBooks.size > 1)?{}:{display:"none"}} onClick={(e)=>e.preventDefault()} className={styles.bookOptionsMenu}>
+
+                    <div className={styles.multiSelectCircleContainer}>
+                      <CheckCircle viewBox="0 0 24 24"/>
+                    </div>
+                  </div>
+
+                  {book.cover_url?
+                    <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.cover_url.startsWith("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
+                    :
+                    <FakeCover title={book.title} author="author"/>
+                  }
+                    
                 </div>
-              </Link>
+              
+                <div className={styles.boxBottomBar} >
+                  <div>{book.title}</div>
+
+                </div>
+              </div>
             )
           })}
       </div>
