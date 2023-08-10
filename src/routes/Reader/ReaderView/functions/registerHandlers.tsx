@@ -62,7 +62,8 @@ export default (renditionInstance:Rendition)=>{
   })
 
   const scrollEventsHandler = (event) =>{
-    if(sidebarOpen) return // Prevent flipping pages when scrolling on sidebar
+    // Prevent flipping pages when scrolling on valid elements
+    if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord) return
     if(checkScrollDirectionIsUp(event)){
       renditionInstance.prev()
     }else{
