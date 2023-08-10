@@ -272,6 +272,7 @@ export default (renditionInstance:Rendition)=>{
 
       }
     }
+    clearSelection()
 
   }
   renditionInstance.on("click", clickHandler);
