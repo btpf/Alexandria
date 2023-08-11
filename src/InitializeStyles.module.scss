@@ -2,6 +2,21 @@ html,
 body {
   height: 100vh;
   overflow:hidden;
+
+  /* CrashFix:
+    All of this code is to prevent a windows specific crash around minimize.
+
+    If the user has a book open in scroll mode, and minimizes, epubjs will make some call
+    which doesn't behave well with no window decorations on chromium. To fix this, we will
+    set a min-height and min-width since it seems that windows minimize sets width & height to 0,
+    which in turn breaks rendering, and causes a chromium crash.
+
+    Tauri Console: [0811/150638.464:ERROR:check.cc(307)] Check failed: false. NOTREACHED log messages are omitted in official builds. Sorry!
+    Tauri Window: Error Code: STATUS_BREAKPOINT
+    */
+  min-height: 300px;
+  min-width: 300px;
+  /* Crashfix End */
 }
 
 .appContainer{
