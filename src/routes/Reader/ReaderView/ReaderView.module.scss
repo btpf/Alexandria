@@ -16,3 +16,7 @@
   margin-left:auto;
   margin-right: auto;
 }
+
+.epubContainer ::-webkit-scrollbar{
+  display:none !important;
+}
