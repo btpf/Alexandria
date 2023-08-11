@@ -339,7 +339,7 @@ $bookmarkHeight: 23px;
 
 /* All Code For Bottom Bar */
 
-$bottom-bar-height-standard: 300px;
+$bottom-bar-height-standard: 250px;
 $bottom-bar-width-standard: 650px;
 
 
@@ -378,20 +378,13 @@ $bottom-bar-width-standard: 650px;
   display:flex;
   flex-direction: row;
   width:calc(100% - 20px);
-  justify-content: space-between;
-  font-weight: 500;
+  justify-content: center;
+  font-weight: 300;
   font-size:24px;
   flex-grow:1;
   cursor:pointer;
   max-height:50px;
   align-items: center;
-}
-
-.sortOption > input{
-  height:24px;
-  width:24px;
-  user-select: none;
-  pointer-events: none;
 }
 
 .optionContainer{

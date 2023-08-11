@@ -341,7 +341,7 @@ const Shelf = () =>{
               {
                 dispatch(SetSortSettings({sortDirection, sortBy: updateMapping[item]}))
               }
-              } className={styles.sortOption} key={item}>{item} {(updateMapping[item] == sortBy)?<input checked readOnly type="radio"/>:<div/>}</div>)
+              } className={styles.sortOption} style={(updateMapping[item] == sortBy)?{fontWeight:"bold"}:{}} key={item}>{item}</div>)
             })}
           </div>
 

@@ -183,7 +183,7 @@ const GlobalTheme = ()=>{
         </select>
         <div onClick={()=>{
           dispatch(AddTheme())
-        }} className={styles.newCombo} style={!isDefaultTheme?{marginRight:"calc(55px + 16px - 1px)"}:{}}><Copy/></div>
+        }} className={styles.newCombo}><Copy/></div>
       </div>
 
       <div className={styles.comboContainer}>
