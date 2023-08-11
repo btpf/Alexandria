@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
-    "@tauri-apps/api": "^1.2.0",
+    "@tauri-apps/api": "^1.4.0",
     "@types/css-font-loading-module": "^0.0.8",
     "@types/node": "^18.0.5",
     "epubjs": "github:btpf/epub.js#master",
