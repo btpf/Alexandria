@@ -34,6 +34,8 @@ export default (renditionInstance:Rendition)=>{
 
   let sidebarOpen!: boolean|string;
 
+  let viewMode!: string;
+
 
   let oldThemeState = {};
   const unsubscribeRedux = store.subscribe(()=>{
@@ -48,6 +50,7 @@ export default (renditionInstance:Rendition)=>{
     isProgrammaticProgressUpdate = newState.bookState['0']?.state?.isProgrammaticProgressUpdate
     loadState = newState.bookState['0']?.loadState
     sidebarOpen = newState.bookState[0]?.state?.sidebarMenuSelected
+    viewMode = newState.bookState[0]?.data?.theme?.renderMode
 
     const theme = newState.bookState["0"]?.data?.theme
     if(theme && JSON.stringify(theme) !== JSON.stringify(oldThemeState)){
@@ -63,7 +66,7 @@ export default (renditionInstance:Rendition)=>{
 
   const scrollEventsHandler = (event) =>{
     // Prevent flipping pages when scrolling on valid elements
-    if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord) return
+    if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord || (viewMode == "continuous")) return
     if(checkScrollDirectionIsUp(event)){
       renditionInstance.prev()
     }else{

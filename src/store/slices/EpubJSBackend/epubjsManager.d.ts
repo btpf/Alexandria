@@ -27,6 +27,7 @@ export interface bookStateStructure extends bookStateHydrationStructure{
     UID: number,
     hash: string
     loadState?: LOADSTATE,
+    data?: dataInterface,
     state:{
       isProgrammaticProgressUpdate: boolean,
       sidebarMenuSelected: boolean|string,
