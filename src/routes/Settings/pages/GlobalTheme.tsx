@@ -218,7 +218,7 @@ const GlobalTheme = ()=>{
         
         <div className={styles.themeTargetContainer}>
           <div className={styles.themeTarget}>
-            Global Theme Settings
+            UI Theme Settings
           </div>
 
 
@@ -274,7 +274,7 @@ const GlobalTheme = ()=>{
 
         <div className={styles.themeTargetContainer}>
           <div className={styles.themeTarget}>
-            Reader Theme Settings
+            Book Theme Settings
           </div>
 
 
