@@ -34,12 +34,7 @@ export default (renditionInstance:Rendition)=>{
 
   let sidebarOpen!: boolean|string;
 
-  // https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
-  const shallowCompareEqual = (obj1:any, obj2:any) =>
-    Object.keys(obj1).length === Object.keys(obj2).length &&
-  Object.keys(obj1).every(key => obj1[key] === obj2[key]);
 
-  // type themeStateType = bookStateStructure["data"]["theme"]
   let oldThemeState = {};
   const unsubscribeRedux = store.subscribe(()=>{
     const newState = store.getState()
@@ -56,7 +51,6 @@ export default (renditionInstance:Rendition)=>{
 
     const theme = newState.bookState["0"]?.data?.theme
     if(theme && JSON.stringify(theme) !== JSON.stringify(oldThemeState)){
-      console.log("GOING TO RERENDER")
       oldThemeState = newState.bookState["0"].data.theme
 
       // Timeout to allow epubjs rerender first
