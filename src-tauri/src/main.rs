@@ -642,6 +642,8 @@ struct uiTheme {
     #[serde(default)]
     secondaryBackground: String,
     #[serde(default)]
+    tertiaryBackground: String,
+    #[serde(default)]
     primaryText: String,
     #[serde(default)]
     secondaryText: String,

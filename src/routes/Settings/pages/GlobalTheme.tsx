@@ -35,6 +35,7 @@ import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
 const uiOptions = [
   {path:["ui","primaryBackground"], label: "Primary Background"},
   {path:["ui","secondaryBackground"], label: "Secondary Background"},
+  {path:["ui","tertiaryBackground"], label: "Tertiary Background"},
   {path:["ui","primaryText"], label: "Primary Text"},
   {path:["ui","secondaryText"], label: "Secondary Text"}
 ]

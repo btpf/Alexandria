@@ -91,7 +91,6 @@ $bookmarkHeight: 23px;
   gap: 5px 5px;
   grid-template-columns: repeat(auto-fill, var(--book-width));
   grid-template-rows: repeat(auto-fill, var(--book-height));
-  background-color: var(--background-secondary);
   color: var(--text-primary);
   overflow: auto;
 }

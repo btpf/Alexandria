@@ -10,6 +10,7 @@ interface RenameThemePayload{
 export type uiTheme = {
   primaryBackground: string,
   secondaryBackground: string,
+  tertiaryBackground: string,
   primaryText : string,
   secondaryText: string 
 }
@@ -37,6 +38,7 @@ export const BaseThemeDark = {
   ui:{
     primaryBackground: "#111111",
     secondaryBackground: "#252525",
+    tertiaryBackground: "#252525",
     primaryText: "white",
     secondaryText: "grey"
   },
@@ -59,6 +61,7 @@ export const BaseThemeLight = {
   ui:{
     primaryBackground: "#fef3e7",
     secondaryBackground: "#ffffff",
+    tertiaryBackground: "#ffffff",
     primaryText: "rgba(0, 0, 0, 0.8)",
     secondaryText: "rgba(0, 0, 0, 0.6)"
   },

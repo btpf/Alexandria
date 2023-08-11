@@ -101,8 +101,9 @@
   @include lt-sm{
     grid-column: 1/3;
   }
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
-  background-color: var(--background-primary);
+  // box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(0,0,0,0.2);
+  background-color: var(--background-secondary);
   color: var(--text-primary);
 }
 

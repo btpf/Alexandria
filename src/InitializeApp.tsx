@@ -50,7 +50,7 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
       "--text-primary":themes[selectedTheme].ui.primaryText,
       "--text-secondary":themes[selectedTheme].ui.secondaryText,
       "--rounded-corners":isFullscreen?"0px":"10px",
-      "height":"100%", "backgroundColor":themes[selectedTheme].ui.secondaryBackground, color: themes[selectedTheme].ui.primaryText}}>
+      "height":"100%", "backgroundColor":themes[selectedTheme].ui.tertiaryBackground, color: themes[selectedTheme].ui.primaryText}}>
       {/* <div style={{"height":"100%"}}> */}
       {children}
     </div>
