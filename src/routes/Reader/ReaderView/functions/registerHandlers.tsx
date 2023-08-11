@@ -55,9 +55,15 @@ export default (renditionInstance:Rendition)=>{
     sidebarOpen = newState.bookState[0]?.state?.sidebarMenuSelected
 
     const theme = newState.bookState["0"]?.data?.theme
-    if(theme && !shallowCompareEqual(theme, oldThemeState)){
+    if(theme && JSON.stringify(theme) !== JSON.stringify(oldThemeState)){
+      console.log("GOING TO RERENDER")
       oldThemeState = newState.bookState["0"].data.theme
-      redrawAnnotations()
+
+      // Timeout to allow epubjs rerender first
+      setTimeout(()=>[
+        redrawAnnotations()
+
+      ],1)
     }
   })
 
