@@ -506,3 +506,39 @@ $bottom-bar-width-standard: 650px;
   width:100vw;
   height: 100vh;
 }
+
+
+.getStarted{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10%;
+  width: 80%;
+  height: calc(100% - 70px);
+  position: absolute;
+  text-align: center;
+  // border: 4px dotted var(--text-secondary);
+  color: var(--text-secondary);
+  > div {
+    font-size:18px;
+  }
+  > div > svg{
+    height: 40px;
+    width: 40px;
+    
+  }
+}
+
+.placeholderBook{
+  cursor: pointer;
+  opacity: 0.8;
+  border: 1px solid var(--text-secondary);
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  > svg{
+    width: 30px;
+    height: 30px;
+  }
+}

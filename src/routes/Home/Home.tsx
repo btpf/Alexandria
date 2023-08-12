@@ -17,6 +17,7 @@ import Trash from '@resources/feathericons/trash-2.svg'
 import CheckCircle from '@resources/feathericons/check-circle.svg'
 
 import { listen } from '@tauri-apps/api/event'
+import { open } from '@tauri-apps/api/dialog';
 
 
 
@@ -34,6 +35,11 @@ import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import FakeCover from './FakeCover/FakeCover';
 import { SetSortSettings } from '@store/slices/appState';
 
+import AddFiles from "@resources/feathericons/folder-plus.svg"
+import toast, { Toaster } from 'react-hot-toast';
+
+
+const SUPPORTED_FORMATS = ['epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc']
 interface BookData {
   author: string;
   title:string,
@@ -69,28 +75,49 @@ const Shelf = () =>{
 
   const navigate = useNavigate();
 
+  const importBooks = (files: any) =>{
+    let myBooksState = myBooks;
+    files.forEach((file:string)=>{
+
+      if(!SUPPORTED_FORMATS.includes(file.split(".").slice(-1)[0])){
+        toast.error("Unsupported Filetype: " + file.split("/").slice(-1)[0])
+        return
+      }
+
+      invoke('import_book', {payload:file}).then((response:any)=>{
+        
+        if(response){
+          myBooksState = [...myBooksState, {title: response.title, modified: response.modified, author: response.author, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
+          setBooks(myBooksState)
+    
+        }
+      }).catch((err)=>{
+        console.log(err)
+      })
+    })
+  }
+
+  const fileOpener = async ()=>{
+    const files = await open({
+      multiple: true,
+      filters: [{
+        name: `Ebook Formats (${SUPPORTED_FORMATS.join(", ")})`,
+        extensions: SUPPORTED_FORMATS
+      }]
+    });
+    if(!files) return
+    importBooks(files)
+  }
+
   useEffect(()=>{
     const unmountPointer = {pointer:()=>{return}}
     if(window.__TAURI__){
-      let myBooksState = myBooks;
       listen('tauri://file-drop', event => {
         console.log(event)
         const files:any = event.payload
 
-        files.forEach((file:string[])=>{
+        importBooks(files)
 
-
-          invoke('import_book', {payload:file}).then((response:any)=>{
-            console.log("IMPORT BOOK RESPONSE", response)
-            if(response){
-              myBooksState = [...myBooksState, {title: response.title, modified: response.modified, author: response.author, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
-              setBooks(myBooksState)
-        
-            }
-          }).catch((err)=>{
-            console.log(err)
-          })
-        })
 
 
       }).then((unmount)=>{
@@ -185,7 +212,7 @@ const Shelf = () =>{
               setBooks((data as BookData[]))
             })
             
-            // setSelectedBooks(new Set([]))
+            setSelectedBooks(new Set([]))
           }}
         />
       </div>
@@ -203,7 +230,15 @@ const Shelf = () =>{
           isDragActive && <div style={{height:"100%", width:"100%", pointerEvents:"none"}}> Add book to library...</div> 
         }
         
-        {(myBooks.length==0)&&<h3 style={{height:"100%", border:"1px solid grey"}}>Drag & Drop your books to get started</h3>}
+        {(myBooks.length==0)&&<div onClick={fileOpener} className={styles.getStarted}>
+          <div>
+            <AddFiles viewBox="0 0 24 24"/><br/><br/><div>Drag & drop your books to get started</div>
+          </div>
+          
+          
+          
+        </div>}
+        
         {myBooks
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
           .sort((a, b) =>{ 
@@ -316,6 +351,8 @@ const Shelf = () =>{
               </div>
             )
           })}
+
+        {(myBooks.length>0)&&<div className={styles.placeholderBook} onClick={fileOpener} ><AddFiles viewBox="0 0 24 24"/></div>}
       </div>
       <div style={bottomBarActive?{}:{display:"none"}} className={styles.sortOffOverlay} onClick={()=>{
         setBottomBarActive(false)
@@ -351,6 +388,10 @@ const Shelf = () =>{
 
 
       </div>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
     </>
 
   )
