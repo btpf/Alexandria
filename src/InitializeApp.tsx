@@ -42,7 +42,6 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   }, [isFullscreen]);
 
 
-  console.log(themes, selectedTheme)
   return (
     <div className={styles.appContainer} style={{
       "--background-secondary":themes[selectedTheme].ui.secondaryBackground,

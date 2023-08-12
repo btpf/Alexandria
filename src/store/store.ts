@@ -8,9 +8,24 @@ import {enableMapSet} from "immer"
 import { invoke } from '@tauri-apps/api'
 import { LOADSTATE } from './slices/constants'
 import { bookStateStructure } from './slices/EpubJSBackend/epubjsManager.d'
+import {debounce} from '@github/mini-throttle'
 
 enableMapSet()
 
+
+const saveAppStateLocally = debounce((currentState:any)=>{
+  invoke("set_global_themes", {payload:currentState.appState.themes})
+
+
+  invoke("set_settings", {payload:{
+    
+    selectedTheme: currentState.appState.selectedTheme,
+    sortBy: currentState.appState.sortBy,
+    sortDirection: currentState.appState.sortDirection
+  
+  }})
+
+}, 500)
 const store =  configureStore({
   reducer: {
     counter: counterSlice,
@@ -48,6 +63,9 @@ const store =  configureStore({
           // During the loading phase, all sorts of synced actions will get called, but this is only the initial population,
           // And nothing here should be saved.
           if(window.__TAURI__ && currentBook.loadState == LOADSTATE.COMPLETE){
+            if(!currentBook.data){
+              return
+            }
             const saveData = {
               title: currentBook.title,
               author: currentBook.author,
@@ -66,17 +84,7 @@ const store =  configureStore({
           }
 
         }else if (action.type.includes("appState")){
-          console.log("Synced App State")
-          console.log(currentState.appState.themes)
-          invoke("set_global_themes", {payload:currentState.appState.themes})
-          
-          invoke("set_settings", {payload:{
-            
-            selectedTheme: currentState.appState.selectedTheme,
-            sortBy: currentState.appState.sortBy,
-            sortDirection: currentState.appState.sortDirection
-          
-          }})
+          saveAppStateLocally(currentState)
         }
         
 

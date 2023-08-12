@@ -110,14 +110,23 @@ const GlobalTheme = ()=>{
   const idxofdark = OrderedAppThemeKeys.indexOf("Default Dark");
   [ OrderedAppThemeKeys[1], OrderedAppThemeKeys[idxofdark] ] = [ OrderedAppThemeKeys[idxofdark], OrderedAppThemeKeys[1] ];
 
+  let ignoreMouseUp = false
   return (
     <div className={styles.themeContainer} onClick={()=>{
+      if(ignoreMouseUp){
+        ignoreMouseUp = false
+        return
+      }
       if(pickerPosition.x != -500){
         setPosition({x:-500, y:-500})
       }
     }}>
 
-      <div className={styles.colorPickerContainer} style={{left:pickerPosition.x, top:pickerPosition.y}}>
+      <div onMouseDown={()=>{
+        ignoreMouseUp = true
+      }} onMouseUp={()=>ignoreMouseUp=false} onClick={(e)=>{
+        e.stopPropagation()
+      }} className={styles.colorPickerContainer} style={{left:pickerPosition.x, top:pickerPosition.y}}>
         <HexColorPicker onClick={(e)=>{
         // If the color picker is clicked, prevent the event from being propagated up to the themeContainer and the position being set offscreen
           e.stopPropagation()
@@ -236,7 +245,6 @@ const GlobalTheme = ()=>{
                   const bounds = e.currentTarget.getBoundingClientRect()
                   setPosition({x:bounds.x - 90, y:bounds.y - (250 + 5)})
                   setColorUpdater(()=>(color:string) => {
-                    console.log(lastValidTheme, color, item.path)
                     dispatch(UpdateTheme({
                       themeName: lastValidTheme,
                       newColor: color,
@@ -292,7 +300,6 @@ const GlobalTheme = ()=>{
                   const bounds = e.currentTarget.getBoundingClientRect()
                   setPosition({x:bounds.x - 90, y:bounds.y - (250 + 5)})
                   setColorUpdater(()=>(color:string) => {
-                    console.log(lastValidTheme, color, item.path)
                     dispatch(UpdateTheme({
                       themeName: lastValidTheme,
                       newColor: color,
