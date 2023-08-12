@@ -360,7 +360,8 @@ const GlobalTheme = ()=>{
               <option value={"screen"}>Screen</option>
               <option value={"color-dodge"}>Color-Dodge</option>
               <option value={"exclusion"}>Exclusion</option>
-              <option value={"Lighten"}>lighten</option>
+              <option value={"lighten"}>lighten</option>
+              <option value={"multiply"}>Multiply</option>
           
             </select>
           </div>
