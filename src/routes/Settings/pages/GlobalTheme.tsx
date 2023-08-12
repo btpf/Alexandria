@@ -8,7 +8,7 @@ import TrashIcon from '@resources/feathericons/trash-2.svg'
 import { useAppSelector } from "@store/hooks";
 import {  AddTheme, DeleteTheme, RenameTheme, setSelectedTheme, UpdateTheme } from "@store/slices/appState";
 import { useDispatch } from "react-redux";
-import { invoke } from "@tauri-apps/api";
+// import { invoke } from "@tauri-apps/api";
 
 import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
 import { GetAllKeys } from "@store/utlity";
@@ -43,6 +43,7 @@ const uiOptions = [
 const readerOptions = [
   {path:["reader","body", "color"], label: "Color"},
   {path:["reader","body", "background"], label: "Background Color"},
+  {path:["reader","body", "link"], label: "Link Color"},
   // {path:["reader","primaryText"], label: "Primary Text"},
   // {path:["reader","secondaryText"], label: "Secondary Text"}
 ]
@@ -318,8 +319,44 @@ const GlobalTheme = ()=>{
               </div>
             )
           })}
-          
 
+          <div style={{marginLeft:10}}>Image Settings</div>
+          <div className={styles.themePropertyRow}>
+            <div className={styles.themePropertyName}>
+            Invert Images 
+            </div>
+            <input disabled={isDefaultTheme} type="radio" onChange={()=>null} onClick={()=>{
+              const checkValue = appThemes[lastValidTheme]?.reader?.image?.invert || false
+              dispatch(UpdateTheme({
+                themeName: lastValidTheme,
+                newColor: !checkValue,
+                path: ["reader","image","invert"]
+              }))
+            }} checked={appThemes[lastValidTheme]?.reader?.image?.invert || false} style={{width:"25px", height:"25px"}} />
+          </div>
+          
+          
+          <div className={styles.themePropertyRow}>
+            <div style={{width:"auto"}} className={styles.themePropertyName}>
+            Mix-blend mode
+            </div>
+            <select disabled={isDefaultTheme} onChange={(e)=>{
+              const val = e.target.value
+              dispatch(UpdateTheme({
+                themeName: lastValidTheme,
+                newColor: val,
+                path: ["reader","image","mixBlendMode"]
+              }))
+            }} value={appThemes[lastValidTheme]?.reader?.image?.mixBlendMode} style={{width:"auto", marginLeft:"auto"}} className={styles.comboBox}>
+              <option value={""}>None</option>
+              <option value={"difference"}>Difference</option>
+              <option value={"screen"}>Screen</option>
+              <option value={"color-dodge"}>Color-Dodge</option>
+              <option value={"exclusion"}>Exclusion</option>
+              <option value={"Lighten"}>lighten</option>
+          
+            </select>
+          </div>
           
 
           

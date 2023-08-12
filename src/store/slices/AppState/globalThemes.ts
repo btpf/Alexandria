@@ -21,15 +21,12 @@ export type ThemeType = {
     body: {
       background: string,
       color: string,
+      link: string
     },
-    
-    'a:link': {
-      color: string,
-      'text-decoration': string,
-    },
-    'a:link:hover': {
-      background: string,
-    },
+    image:{
+      mixBlendMode: string,
+      invert:boolean
+    }
   }
 }
 
@@ -46,14 +43,12 @@ export const BaseThemeDark = {
     body: {
       background: `#181818`,
       color: `#fff`,
+      link: "lightblue"
     },
-    'a:link': {
-      color: `#1e83d2`,
-      'text-decoration': 'none',
-    },
-    'a:link:hover': {
-      background: 'rgba(0, 0, 0, 0.1)',
-    },
+    image:{
+      mixBlendMode: '',
+      invert:false
+    }
   }
 
 }
@@ -69,15 +64,13 @@ export const BaseThemeLight = {
     body: {
       background: `white`,
       color: `black`,
+      link: "blue"
     },
+    image:{
+      mixBlendMode: '',
+      invert:false
+    }
     
-    'a:link': {
-      color: `#0000EE`,
-      'text-decoration': 'inherit',
-    },
-    'a:link:hover': {
-      background: 'inherit',
-    },
   }
 }
 
@@ -134,6 +127,7 @@ type UpdateThemePayload = {
   path: GetAllKeys<ThemeType>
 }
 
+// import { createReducer, createAction, current } from '@reduxjs/toolkit'
 
 const UpdateTheme:appStateReducer = (state, action: PayloadAction<UpdateThemePayload>) =>{
 
@@ -143,7 +137,6 @@ const UpdateTheme:appStateReducer = (state, action: PayloadAction<UpdateThemePay
     const path = action.payload.path
     for (let index = 0; index < path.length - 1; index++) {
       currentObject = currentObject[path[index]]
-      
     }
 
     currentObject[path[path.length - 1]] = action.payload.newColor

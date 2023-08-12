@@ -58,7 +58,21 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-weight: ${action.payload.theme.fontWeight} !important;
       word-spacing: ${action.payload.theme.wordSpacing}% !important;
     }
+    a{
+      color: ${theme.reader.body.link};
+      text-decoration: none;
+    }
+    img{
+        ${theme.reader.image.invert? "filter: invert(100%);":""}
+        ${theme.reader.image.mixBlendMode? `mix-blend-mode: ${theme.reader.image.mixBlendMode};`:""}
+      }
     `
+
+    // img{
+    //   filter: invert(100%);
+    //   mix-blend-mode: difference;
+    //   mix-blend-mode: screen;
+    // }
     css += action.payload.theme.fontCache
 
     state[action.payload.view].data.theme = {...action.payload.theme}

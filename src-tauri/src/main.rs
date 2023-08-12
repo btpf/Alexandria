@@ -626,12 +626,25 @@ struct ReaderThemeBody {
     background: String,
     #[serde(default)]
     color: String,
+    #[serde(default)]
+    link: String
+
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+struct ReaderImages {
+    #[serde(default)]
+    mixBlendMode: String,
+    #[serde(default)]
+    invert: bool
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 struct ReaderTheme {
     #[serde(default)]
-    body: ReaderThemeBody
+    body: ReaderThemeBody,
+    #[serde(default)]
+    image: ReaderImages
 }
 
 

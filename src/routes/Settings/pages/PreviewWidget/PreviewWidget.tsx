@@ -77,7 +77,35 @@ Book Title
         </div>
       </div>
       <div style={{backgroundColor:readerBackgroundColor, color:readerColor}} className={styles.widgetContentContainer}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut <div
+          
+          style={{
+            display:"inline",
+            backgroundColor:"	rgb(50,205,50,0.5)"
+          }}>aliquip </div>
+        <div
+          className={styles.noteContainer}
+          style={{position:"absolute", fontSize:5,padding:"3px 0px 0px 3px", display:"inline", width:40, height:40, marginTop:-40,marginLeft:-35, backgroundColor:"var(--background-primary)"}}> Note text </div>
+           ex ea commodo consequat.
+        <br/>
+        <div>
+          <div
+            style={{
+              "filter":appThemes[selectedTheme].reader.image.invert?"invert()":"",
+              mixBlendMode:appThemes[selectedTheme].reader.image.mixBlendMode
+            }}>        
+            <HomeIcon viewBox="0 0 24 24" height={40} width={40} 
+              style={{
+                background:"white",
+                color:"black",
+
+              }} 
+        
+              className={styles.imageExample}/>
+          </div>
+        </div>
+
+
       </div>
     </div>
   )
