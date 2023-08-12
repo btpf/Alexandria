@@ -318,7 +318,7 @@ class Reader extends React.Component<ReaderProps>{
 
       
 
-    const renderMode:layoutTypes = forceRenderMode || (result?.data?.theme?.renderMode as layoutTypes) || "auto";
+    const renderMode:layoutTypes = forceRenderMode || (result?.data?.theme?.renderMode as layoutTypes) || "single";
 
     mySettings = {...mySettings, 
       ...layouts[renderMode]

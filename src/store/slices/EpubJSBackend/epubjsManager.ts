@@ -111,7 +111,7 @@ export const SyncedAddRendition = createAsyncThunk(
 
 export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>) =>{
   builder.addCase(SyncedAddRendition.pending, (state, action) => {
-    const readerMarginsToUse = action?.meta?.arg?.saveData?.data?.theme?.readerMargins ? action.meta.arg.saveData.data.theme.readerMargins: 100
+    const readerMarginsToUse = action?.meta?.arg?.saveData?.data?.theme?.readerMargins ? action.meta.arg.saveData.data.theme.readerMargins: 75
     const renderModeToUse = action?.meta?.arg?.saveData?.data?.theme?.renderMode ? action.meta.arg.saveData.data.theme.renderMode: "default"
     const t:bookStateStructure = {
       title: action.meta.arg.saveData.title || action.meta.arg.instance.book.packaging.metadata.title,
