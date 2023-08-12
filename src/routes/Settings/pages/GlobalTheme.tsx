@@ -356,12 +356,13 @@ const GlobalTheme = ()=>{
               }))
             }} value={appThemes[lastValidTheme]?.reader?.image?.mixBlendMode} style={{width:"auto", marginLeft:"auto"}} className={styles.comboBox}>
               <option value={""}>None</option>
-              <option value={"difference"}>Difference</option>
+              <option value={"multiply"}>Multiply</option>
               <option value={"screen"}>Screen</option>
+              <option value={"difference"}>Difference</option>
               <option value={"color-dodge"}>Color-Dodge</option>
               <option value={"exclusion"}>Exclusion</option>
               <option value={"lighten"}>lighten</option>
-              <option value={"multiply"}>Multiply</option>
+              
           
             </select>
           </div>
