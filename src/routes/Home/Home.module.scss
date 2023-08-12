@@ -88,7 +88,7 @@ $bookmarkHeight: 23px;
   height: calc(100% - (75px + 10px));
   display: grid;
   justify-content: center;
-  gap: 5px 5px;
+  gap: 10px 10px;
   grid-template-columns: repeat(auto-fill, var(--book-width));
   grid-template-rows: repeat(auto-fill, var(--book-height));
   color: var(--text-primary);
@@ -242,11 +242,6 @@ $bookmarkHeight: 23px;
 }
 
 @include lt-md{
-  .boxTopBar > svg:last-of-type{
-    // transform-origin: 50% 0%;
-    // scale: 1;
-    display: none;
-  }
   .boxTopBar > svg:first-of-type{
     scale: 1;
     width: calc(#{$bookmarkWidth} * 1);
@@ -256,6 +251,12 @@ $bookmarkHeight: 23px;
     padding-top:3px;
   }
 
+}
+
+@include lt-sm{
+  .boxTopBar > svg:last-of-type{
+    display: none;
+  }
 }
 
 .bookImage{
