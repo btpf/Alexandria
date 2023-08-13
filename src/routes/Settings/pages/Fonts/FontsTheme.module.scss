@@ -100,6 +100,7 @@
   height:60px;
   // border: 1px solid black;
   align-items: center;
+  justify-content: space-between;
 }
 
 .label{
@@ -132,4 +133,78 @@
   width:410px;
   color: var(--text-secondary);
   margin-top:15px;
+}
+
+.localButtonsContainer{
+  display:flex;
+  align-items: center;
+  flex-basis: 33%;
+}
+
+.remoteButtonsContainer{
+  flex-basis: 33%;
+  align-items: center;
+
+  filter: drop-shadow(0px 4px 4px rgba(0, 10, 255, 0.25));
+  scale:0.9;
+  cursor:pointer;
+  display:flex;
+  justify-content: flex-end;
+}
+
+.fontNameBox{
+  flex-basis: 33%;
+  text-align: center;
+}
+
+
+.slider{
+  color:black;
+}
+
+
+.slider > div[class=rc-slider-rail]{
+  background-color:var(--text-secondary) !important;
+  height: 6px;
+}
+
+.slider > div[class=rc-slider-track]{
+  background-color:var(--text-secondary) !important;
+  // background-color: var(--slider-track-color) !important;
+  height: 6px;
+}
+
+.slider > div[class=rc-slider-handle]{
+  // border-color: var(--text-secondary);
+  border: 1px solid var(--text-secondary);
+  background-color:var(--background-primary);
+  z-index: 1;
+  height: 18px;
+  width: 18px;
+  margin-top: calc( -6px);
+  opacity: 1;
+}
+
+.slider > div[class="rc-slider-handle rc-slider-handle-dragging"]{
+  box-shadow: none !important;
+  border:none;
+  border-color: gray;
+  z-index: 1;
+}
+.slider span[class=rc-slider-mark-text]{
+  color: var(--text-primary) !important;
+  opacity: 1;
+}
+.slider span[class="rc-slider-mark-text rc-slider-mark-text-active"]{
+  color: var(--text-primary) !important;
+}
+
+// Note: This disables the default bubbles which are used to click. This is replaced by | character
+.slider > div[class=rc-slider-step]{
+  display:none;
+}
+
+// Container for | characters
+.slider > div[class=rc-slider-mark]{
+  top:24px;
 }
