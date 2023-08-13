@@ -21,10 +21,10 @@ body {
 
 .appContainer{
   color:red;
-  overflow:auto;
   font-family: 'noto sans', 'open sans', sans-serif;
   border-radius: var(--rounded-corners);
   border: 1px solid black;
+  overflow:hidden;
   
 }
 
