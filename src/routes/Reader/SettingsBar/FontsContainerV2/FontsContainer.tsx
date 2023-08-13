@@ -66,7 +66,7 @@ const FontsContainer = ()=>{
 
       <div className={styles.settingsContainer}>
         <div>
-          <div>Font Size</div>
+          <div style={{fontWeight:"bold"}}>Font Size</div>
           <div className={styles.fontSizeContainer}>
           
             <div className={styles.resizeContainer} onClick={()=>{
@@ -82,7 +82,7 @@ const FontsContainer = ()=>{
         </div>
 
         <div>
-          <div>Font Weight</div>
+          <div style={{fontWeight:"bold"}}>Font Weight</div>
           <div className={styles.fontSizeContainer}>
             <div className={styles.resizeContainer} onClick={()=>{
               // dispatch(SetFont({view: 0, fontSize: fontSize-5}))
