@@ -7,7 +7,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "alexandria",
+    "productName": "Alexandria",
     "version": "../package.json"
   },
   "tauri": {
