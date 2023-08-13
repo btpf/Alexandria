@@ -105,11 +105,11 @@
   border-right: 1px solid rgba(0,0,0,0.2);
   background-color: var(--background-secondary);
   color: var(--text-primary);
+
+  display:flex;
+  flex-direction: column;
 }
 
-.navbar > div:first-of-type{
-  margin-top: 20px;
-}
 
 .navbar > div{
   margin: 30px 0 15px 0;
