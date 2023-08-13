@@ -25,7 +25,6 @@ const Settings = (props:any)=>{
   return (
     <div className={styles.settingsPageContainer}>
       <div data-tauri-drag-region className={styles.titleBar}>
-
         {/* This is the titlebar for desktop screens */}
         <div onClick={()=> backPath?navigate(backPath):navigate("/")} className={styles.backButtonContainer + " " + styles.hidesm}>
           <BackArrow/>
@@ -44,17 +43,17 @@ const Settings = (props:any)=>{
         </div>
       </div>
 
-      <div  className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
+      <div className={`${mobileTitle!="Settings"?styles.navbarActive:""} ${styles.responsiveSettingsGrid}`}>
         <div className={styles.navbar}>
-          <div onClick={()=>navigate("Themes", {state:{backPath}})}>Themes</div>
+          <div style={location.pathname.endsWith("Themes")? {fontWeight:"bold"}:{}} onClick={()=>navigate("Themes", {state:{backPath}})}>Themes</div>
           {/* <div onClick={()=>navigate("Reader Theme")}>Reader Theme</div> */}
-          <div onClick={()=>navigate("Fonts", {state:{backPath}})}>Fonts</div>
+          <div  style={location.pathname.endsWith("Fonts")? {fontWeight:"bold"}:{}} onClick={()=>navigate("Fonts", {state:{backPath}})}>Fonts</div>
         </div>
 
         <div className={styles.contentContainer}>
           <Routes>
             <Route path="/" element={<GlobalTheme />} />
-            <Route  path="/Themes" element={<GlobalTheme />} />
+            <Route path="/Themes" element={<GlobalTheme />} />
             {/* <Route path="/Reader Theme" element={<ReaderTheme />} /> */}
             <Route path="/Fonts" element={<Fonts />} />
           </Routes>
