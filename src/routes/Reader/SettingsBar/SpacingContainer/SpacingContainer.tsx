@@ -21,7 +21,7 @@ const SpacingContainer = ()=>{
           <div className={styles.settingButton} onClick={()=>{
             dispatch(setWordSpacingThunk({view:0, value: wordSpacing - 5}))
           }}>-</div>
-          <div className={styles.resizeSize}>{wordSpacing >= 0 && "+"}{wordSpacing}%</div>
+          <div className={styles.resizeSize}>{wordSpacing}px</div>
           <div className={styles.settingButton} onClick={()=>{
             dispatch(setWordSpacingThunk({view:0, value: wordSpacing + 5}))
           }}>+</div>

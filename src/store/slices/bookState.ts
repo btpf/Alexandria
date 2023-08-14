@@ -49,22 +49,29 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-family: "${action.payload.theme.font}" !important;
       font-size: ${action.payload.theme.fontSize}% !important;
       font-weight: ${action.payload.theme.fontWeight} !important;
-      word-spacing: ${action.payload.theme.wordSpacing}% !important;
+      word-spacing: ${action.payload.theme.wordSpacing}px !important;
       line-height: ${action.payload.theme.lineHeight}% !important;
     }
     p{
-      font-family: "${action.payload.theme.font}" !important;
-      font-size: ${action.payload.theme.fontSize}% !important;
-      font-weight: ${action.payload.theme.fontWeight} !important;
-      word-spacing: ${action.payload.theme.wordSpacing}% !important;
+      font-family: inherit !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
+      word-spacing: inherit !important;
+      background-color: inherit;
+    }
+    div{
+      background-color: inherit;
+    }
+    section{
+      background-color: inherit;
     }
     a{
       color: ${theme.reader.body.link};
       text-decoration: none;
     }
     img{
-        ${theme.reader.image.invert? "filter: invert(100%);":""}
-        ${theme.reader.image.mixBlendMode? `mix-blend-mode: ${theme.reader.image.mixBlendMode};`:""}
+        ${theme.reader.image.invert? "filter: invert(100%);":"unset"}
+        ${theme.reader.image.mixBlendMode? `mix-blend-mode: ${theme.reader.image.mixBlendMode};`:"unset"}
       }
     `
 
