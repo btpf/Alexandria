@@ -27,6 +27,7 @@ import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import HomeIcon from '@resources/feathericons/home.svg'
 import PreviewWidget from "./PreviewWidget/PreviewWidget";
 import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
+import SquareAdd from '@resources/feathericons/file-plus.svg'
 
 // import styles from './Settings.module.scss'
 
@@ -193,7 +194,7 @@ const GlobalTheme = ()=>{
         </select>
         <div onClick={()=>{
           dispatch(AddTheme())
-        }} className={styles.newCombo} style={isDefaultTheme?{marginRight:"calc(-55px - 16px + 1px)"}:{}}><Copy/></div>
+        }} className={styles.newCombo} style={isDefaultTheme?{marginRight:"calc(-55px - 16px + 1px)"}:{}}><SquareAdd/></div>
       </div>
 
       <div className={styles.comboContainer}>
