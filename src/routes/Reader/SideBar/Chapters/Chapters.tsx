@@ -41,20 +41,25 @@ const Sidebar = (props:SidebarTypes)=>{
     })
     setExpandableTree(nextState)
   }
-
+  
   const recursiveMap = (chapterList:NavItem[], level:Array<string>, currentTree:ExpandingTree=expandableTree) =>{
     return chapterList.map((item)=>{
       return (
-        <div className={styles.TocMapContainer} style={{paddingLeft: 20 * level.length}} key={`${item.href} + ${item.id}`}>
+        <div className={styles.TocMapContainer} style={{paddingLeft: 20 * level.length}} key={`${item.href} + ${item.id}`}
+          onClick={(e)=>{
+            e.stopPropagation()
+            e.preventDefault()
+            props.renditionInstance?.display(item.href)
+            dispatch(SelectSidebarMenu({view:0, state:false}))
+          }}
+        >
           <div className={styles.rootChapterFlexContainer}>
 
-            <div className={styles.tocChapterTitle}
-              onClick={()=>{
-                props.renditionInstance?.display(item.href)
-                dispatch(SelectSidebarMenu({view:0, state:false}))
-              }}>{item.label}</div>
+            <div className={styles.tocChapterTitle}>{item.label}</div>
 
-            <div className={styles.tocExpander} onClick={()=>{
+            <div className={styles.tocExpander} onClick={(e)=>{
+              e.stopPropagation();
+              e.preventDefault()
               if(item.subitems){
                 toggleLevel([...level, item.id])
               }

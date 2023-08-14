@@ -18,6 +18,11 @@ const Dictionary = ()=>{
     const template = "https://en.wiktionary.org/api/rest_v1/page/definition/"
     fetch(template + redirect.toLowerCase()).then((response)=>{
       response.json().then((js)=>{
+        if(!Object.keys(js).includes("en")){
+          console.log("Error Caught, no definition found")
+          setResponse("<h1> Definition Not Found </h1>")
+          return
+        }
         const capitalized = redirect.charAt(0).toUpperCase() + redirect.slice(1)
         let finalStr = `<div style="font-weight:bold;font-size:24px;margin-top:10px; color: var(--text-primary)">${capitalized}</div>`;
         for(let i = 0; i < js.en.length; i++){
@@ -51,7 +56,7 @@ const Dictionary = ()=>{
         const replacement = document.createElement("div");
         // replacement.style = "display:inline; color:red; text-decoration:underline; cursor:pointer;"
         // lightblue for dark theme, blue for light theme
-        replacement.style.cssText = "display:inline; color:blue; cursor:pointer;"
+        replacement.style.cssText = "display:inline; color:var(--link); cursor:pointer;"
         replacement.innerHTML = item.innerHTML
         replacement.onclick = () =>{
           let redirect = item.title
