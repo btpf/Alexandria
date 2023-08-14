@@ -181,7 +181,7 @@ class Reader extends React.Component<ReaderProps>{
   componentWillUnmount(){
     console.log("UNMOUNTING")
     // This handles the edgecase where the locations are loading, but the user exits the page.
-    if(this.props.LoadState == LOADSTATE.LOADING){
+    if(this.props.LoadState != LOADSTATE.COMPLETE){
       this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
       return
     }
@@ -350,7 +350,7 @@ class Reader extends React.Component<ReaderProps>{
     const displayed = this.rendition.display();
 
 
-    this.props.SyncedAddRendition(payload)
+    await this.props.SyncedAddRendition(payload)
 
   }
 
