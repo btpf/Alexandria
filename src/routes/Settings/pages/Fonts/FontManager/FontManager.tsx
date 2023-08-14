@@ -247,7 +247,7 @@ const FontManager = (props:any)=>{
         
                   }}/>
                 
-                  :Object.keys(fontList).includes(currentDataList[modifiedIndex].name)?<div>Font Saved</div>:<div/>}
+                  :Object.keys(fontList).includes(currentDataList[modifiedIndex].name)?<div style={{fontFamily:"noto sans"}}>Font Saved</div>:<div/>}
               </div>
             </div>)
           }
