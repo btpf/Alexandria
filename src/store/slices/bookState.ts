@@ -70,8 +70,8 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       text-decoration: none;
     }
     img{
-        ${theme.reader.image.invert? "filter: invert(100%);":"unset"}
-        ${theme.reader.image.mixBlendMode? `mix-blend-mode: ${theme.reader.image.mixBlendMode};`:"unset"}
+        ${`filter: ${theme.reader.image.invert?"invert(100%)":"unset"};`}
+        ${`mix-blend-mode: ${theme.reader.image.mixBlendMode?theme.reader.image.mixBlendMode:"unset"};`}
       }
     `
 
