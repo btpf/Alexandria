@@ -31,13 +31,14 @@
 
 ## Screenshots:
 <h2 align="center">Default Light & Dark Themes</h2>
-<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/07cb84b2-0666-46c9-bbf4-e7872d6b508b"> </div>
+<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/46fa4d93-8365-44bd-afd0-eb4bbbdba878"> </div>
+
   
 <h2 align="center">Annotations Popup</h2>
-<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/b8ca5556-ba59-4625-8b77-cbbdca6b24b0"> </div>
+<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/a456dfff-0849-4de1-aac4-cface9b032e3"> </div>
 
 <h2 align="center">Theme Customizer</h2>
-<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/037d9164-431b-417a-aa8f-1db8e90ffc06"> </div>
+<div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/22e5d80d-b0e2-4098-bf79-738bc1d9a2de"> </div>
 
 <h2 align="center">Reader Settings</h2>
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/f2ce3aba-0785-472a-965e-0e2d59a36140"> </div>
