@@ -1,6 +1,6 @@
 <h1 align="center">Alexandria</h1>
 <div align="center">A minimalistic Cross Platform eBook reader, built with Tauri ❤️ Epub.js</div>
-<div align="center"><a href="/">Download</a> | <a href="/">Website</a></div>
+<div align="center"><a href="https://github.com/btpf/Alexandria/releases">Download</a> | <a href="/">Website</a></div>
 <br>
 
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/6ff644fa-b4bf-4a8b-bc85-c1f44c21b2a3"> </div>
