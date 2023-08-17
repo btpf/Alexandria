@@ -30,11 +30,12 @@ const Home = () =>{
   const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
   const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const bookmarks = useAppSelector((state) => state.bookState[0]?.data.bookmarks)
+  const displayedCFI = useAppSelector((state) => state.bookState[0]?.data.cfi)
 
   const [isPageBookmarked, setPageBookmarked] = useState(false)
   const [mouseOverMenu, setMouseOverMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
-  const sidebarOpen = useAppSelector((state) => state.bookState[0]?.state?.sidebarMenuSelected)
+  const sidebarOpen = useAppSelector((state) => state?.bookState[0]?.state?.sidebarMenuSelected)
 
   // const ThemeName = useAppSelector((state)=> state.bookState[0]?.data?.theme?.themeName)
   const ReaderBackgroundColor = useAppSelector((state) => {
@@ -98,6 +99,7 @@ const Home = () =>{
 
         <div style={!showMenuUi?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
+          {/* - {displayedCFI} */}
         </div>
         <div className={`${styles.menuButtonContainerRight} ${!showMenuUi && styles.optionsToggled}`}>
           <Search viewBox="0 0 24 24" onClick={()=>{

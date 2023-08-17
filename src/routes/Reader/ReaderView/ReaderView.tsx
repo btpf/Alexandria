@@ -133,13 +133,6 @@ class Reader extends React.Component<ReaderProps>{
         return
       }
       
-      // This is needed because it can cause the first page of the book to be skipped when opening
-      // Since cfiFromPercentage is not always accurate.
-      if(store.getState().bookState["0"].data.progress != 0){
-        this.rendition.display(store.getState().bookState[0].data.cfi).then(()=>{
-          this.rendition.display(store.getState().bookState[0].data.cfi)
-        })
-      }
 
       // This is also found in the epubjsManager
       // If loading the data has finished, when we reach this state, the book parsing is complete
@@ -194,7 +187,9 @@ class Reader extends React.Component<ReaderProps>{
 
   componentDidUpdate(prevProps: any, prevState: any) {
     if(this.props.LoadState != prevProps.LoadState && this.props.LoadState == LOADSTATE.COMPLETE){
-      this.rendition.display(this.props.progress)
+      this.rendition.display(store.getState().bookState[0].data.cfi).then(()=>{
+        this.rendition.display(store.getState().bookState[0].data.cfi)
+      })
     }
     if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode && this.props.LoadState == LOADSTATE.COMPLETE){
       const bookInstance = this.book
