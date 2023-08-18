@@ -1,0 +1,182 @@
+@use 'breakpoints.scss' as *;
+
+
+.titleBar{
+  height: 50px;
+  width: 100%;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap:25px;
+  background-color: var(--background-primary);
+  color: var(--text-primary)
+  //   margin-bottom:25px;
+}
+
+
+.titleBarButtonsContainer{
+  margin-left:auto;
+  height:100%;
+  pointer-events: none;
+  @include lt-sm{
+    display:none;
+  }
+}
+
+.titleText{
+  font-size:25px;
+  pointer-events: none;
+}
+
+
+.backButtonContainer{
+  margin-left:25px;
+  cursor:pointer;
+  width: 50px;
+  height:50px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.infoPageContainer{
+  display:flex;
+  flex-direction: column;
+  height:100vh;
+  overflow:hidden;
+}
+
+.coverStyles{
+  max-width: 100%;
+  max-height: 50vh;
+  height: auto;
+  object-fit: contain;
+}
+
+.bookTitle{
+  text-align: center;
+}
+
+.overflowContainer{
+  height:calc(100vh - 50px);
+  width: 100%;
+  overflow:auto;
+}
+
+.contentContainer{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y:visible;
+  height:100%;
+  flex-wrap: wrap;
+}
+
+.leftSide{
+  flex-basis: 50%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y:visible;
+
+
+  @include lt-md{
+    flex-basis: 100vw;
+  }
+}
+.rightSide{
+  flex-basis: 50%;
+  justify-content: flex-start;
+  height:100%;
+  overflow:visible;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  @include lt-md{
+    flex-basis: 100vw;
+  }
+}
+
+
+.bookDescription{
+  padding: 0 40px 0 40px;
+  max-width: 800px;
+}
+.highlightContainer{
+  // height: 600px;
+  max-width: 500px;
+  max-height:600px;
+  width:100%;
+  border-top: 1px solid rgba(0,0,0,0.2);
+  overflow:auto;
+  padding-bottom: 100px;
+}
+
+
+
+
+.annotationContainer{
+  display: flex;
+  width: 100%;
+  height: auto;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.AnnotationLeftSubContainer{
+  display: flex;
+  align-items: center;
+  min-width: 50px;
+  justify-content: center;
+  color: gray;
+}
+.AnnotationLeftSubContainer:hover{
+  color:red;
+  cursor:pointer;
+}
+.AnnotationRightSubContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+}
+
+.AnnotationChapter{
+  color: var(--text-secondary);
+}
+
+.highlightedTextContainer{
+  padding-left:10px;
+}
+
+.noteTextContainer{
+  white-space: pre-line;
+  border-left: 3px solid rgb(0 0 0 / 10%);
+  padding-left: 5px;
+}
+
+.annotationTitleContainer{
+  display: flex;
+  width: 50%;
+  justify-content: space-around;
+  align-items: center;
+  > div{
+    flex-basis: 33%;
+  }
+
+}
+.exportButton{
+  background-color: var(--background-primary);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 50px;
+  height: 30px;
+  padding: 5px;
+  cursor: pointer;
+  max-width: 100px;
+}

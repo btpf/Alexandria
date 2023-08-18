@@ -4,6 +4,7 @@ import React from "react";
 import Home from './Home/Home'
 import Reader from "./Reader/Reader";
 import Settings from "./Settings/Settings";
+import Info from "./Info/Info";
 
 export default (
   createRoutesFromElements(
@@ -11,6 +12,7 @@ export default (
       <Route path="/" element={<Home />} />
       <Route path="/settings/*" element={<Settings />} />
       <Route path="/reader" element={<Reader />} />
+      <Route path="/info/:bookHash" element={<Info />} />
       <Route path="/reader/:bookHash/" element={<Reader />}/>
     </>
   )

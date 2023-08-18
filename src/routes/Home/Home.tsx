@@ -321,7 +321,7 @@ const Shelf = () =>{
                       }} onClick={()=>{
                         setSelectedBooks(new Set([...selectedBooks].filter((item)=> item != book.hash)))
                       }} className={styles.bookOptionsReturn}><div>Back</div> <div><RightArrow/></div></div>
-                    <div className={styles.bookOptionsInfo}>Info</div>
+                    <div onClick={()=> navigate("/info/" + book.hash)} className={styles.bookOptionsInfo}>Info</div>
                     <div onClick={()=>{
                       invoke("delete_book",{checksum:book.hash})
                                   
