@@ -2,11 +2,11 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { WritableDraft } from 'immer/dist/internal';
 import {Theme} from './EpubJSBackend/data/theme/themeManager.d'
 import {actions as globalThemeActions} from './AppState/globalThemes'
-import {actions as stateActions} from './AppState/state'
+import {actions as stateActions} from './AppState/state/stateManager'
 import { defaultAppState } from './appStateTypes';
 import { BaseThemeDark, BaseThemeLight } from './AppState/globalThemes';
 import { setThemeThunk } from './EpubJSBackend/data/theme/themeManager';
-
+import {actions as modalActions} from './AppState/state/modals/modals';
 
 
 export type appStateReducer = (state: WritableDraft<defaultAppState>, action: PayloadAction<any>) => any
@@ -21,8 +21,20 @@ const initialState: defaultAppState = {
   selectedTheme: "Default Light",
   sortBy:"title",
   sortDirection:"ASC",
+  readerMargins: 75,
   state:{
-    fullscreen: false
+    fullscreen: false,
+    selectedRendition: 0,
+    dualReaderMode: true,
+    dictionaryWord: "",
+    sidebarMenuSelected: false,
+    menuToggled: true, 
+    themeMenuActive: false,
+    modals:{
+      selectedCFI: "",
+      quickbarModal: {visible: false, x:0, y:0},
+      noteModal: {visible: false, x:0, y:0}
+    }
   }
 }
 
@@ -38,6 +50,7 @@ export const appState = createSlice({
     // ...readerThemeActions,
     ...globalThemeActions,
     ...stateActions,
+    ...modalActions,
     SetSortSettings:(state, action: PayloadAction<SortPayload>) =>{
       state.sortDirection = action.payload.sortDirection
       state.sortBy = action.payload.sortBy
@@ -68,7 +81,24 @@ export const {
   LoadThemes,
 
   SetFullScreen,
-  SetSortSettings
+  SetSortSettings,
+  SetSelectedRendition,
+  setReaderMargins,
+
+  /* State */
+  SelectSidebarMenu,
+  CloseSidebarMenu,
+  ToggleMenu, 
+  SetDictionaryWord,
+  ToggleThemeMenu,
+
+  /* Modals */
+  MoveQuickbarModal,
+  HideQuickbarModal,
+  MoveNoteModal,
+  ShowNoteModal,
+  HideNoteModal,
+  SetModalCFI,
 } = appState.actions
 
 export default appState.reducer

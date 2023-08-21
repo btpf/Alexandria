@@ -1,5 +1,4 @@
 export interface MoveModalAction{
-    view:number,
     x: number,
     y: number,
     visible: boolean

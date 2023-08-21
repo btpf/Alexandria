@@ -45,7 +45,7 @@ const store =  configureStore({
         // Although it will break dev tools, and is against the recommendation of markerikson, I believe this approach
         // is "correct" enough
         ignoredActions: ['bookState/AddRendition', 'bookState/AddBookmark'],
-        ignoredPaths: ['bookState.0.instance', 'bookState.1.instance', 'bookState.0.data.bookmarks']
+        ignoredPaths: ['bookState.0.instance', 'bookState.1.instance', 'bookState.0.data.bookmarks', 'bookState.1.data.bookmarks']
       },
     }).concat(storeAPI => next => action => {
       
@@ -55,7 +55,7 @@ const store =  configureStore({
         if(action.type.includes("bookState")){
 
           console.log("Synced bookState Action:", action)
-          const currentBook:bookStateStructure = currentState.bookState[0]
+          const currentBook:bookStateStructure = currentState.bookState[currentState.appState.state.selectedRendition]
           const bookUID = currentBook.hash
   
   

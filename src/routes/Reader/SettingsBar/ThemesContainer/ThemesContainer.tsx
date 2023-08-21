@@ -13,8 +13,10 @@ interface ThemeInterface{
 
 const ThemesContainer = ()=>{
   const dispatch = useAppDispatch()
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const isDualReaderMode = useAppSelector((state) => state.appState.state.dualReaderMode)
+
   const appThemes = useAppSelector((state) => state.appState.themes)
-  const fontSize = useAppSelector((state) => state.bookState[0]?.data.theme.fontSize)
 
   const OrderedAppThemeKeys = Object.keys(appThemes);
   const idxoflight = OrderedAppThemeKeys.indexOf("Default Light");
@@ -28,8 +30,12 @@ const ThemesContainer = ()=>{
         const {background, color} = (appThemes[item].reader).body
         return (
           <div key={item} onClick={()=>{
-            // dispatch(SetTheme({view:0, theme:appThemes[item]}))
-            dispatch(setThemeThunk({themeName: item, view:0}))
+            if(isDualReaderMode){
+              dispatch(setThemeThunk({themeName: item, view:0}))
+              dispatch(setThemeThunk({themeName: item, view:1}))
+              return
+            }
+            dispatch(setThemeThunk({themeName: item, view:selectedRendition}))
           }} style={{backgroundColor: background, color}} className={styles.theme}>
             {item}
           </div>

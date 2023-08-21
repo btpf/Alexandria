@@ -18,10 +18,9 @@ const menuExpanded = {
 }
 
 const SettingsBar = ()=>{
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
   const dispatch = useAppDispatch()
   const [menu, setMenu] = useState("Fonts")
-  const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
+  const ThemeMenuActive = useAppSelector((state) => state?.appState?.state?.themeMenuActive)
   const navigate = useNavigate();
 
   const showQuickSettingsIcon = menu == "Fonts" || menu == "Themes" 

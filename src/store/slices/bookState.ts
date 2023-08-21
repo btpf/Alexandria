@@ -1,7 +1,6 @@
 import { ActionReducerMapBuilder, createAction, createSlice, current, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {BookInstances} from './bookStateTypes'
 
-import {actions as modalActions} from './EpubJSBackend/state/modals/modals';
 import {actions as stateActions} from './EpubJSBackend/state/stateManager';
 import {actions as dataActions} from './EpubJSBackend/data/dataManager';
 import {actions as epubjsManagerActions, RenditionBuilder} from './EpubJSBackend/epubjsManager';
@@ -106,7 +105,6 @@ export const bookState = createSlice({
  
     ...epubjsManagerActions,
     ...dataActions,
-    ...modalActions,
     ...stateActions,
     ...themeManagerActions
     
@@ -131,7 +129,6 @@ export const {
   // SetFont,
   // SetTheme,
   setRenderMode,
-  setReaderMargins,
 
   /* dataManager */
   ToggleBookmark,
@@ -142,22 +139,11 @@ export const {
   SetProgress,
 
   /* state manager */
-  SelectSidebarMenu,
-  CloseSidebarMenu,
-  ToggleMenu, 
-  ToggleThemeMenu,
   SkipMouseEvent,
   AllowMouseEvent,
-  SetDictionaryWord,
   setProgrammaticProgressUpdate,
   
-  /* Modals */
-  MoveQuickbarModal,
-  HideQuickbarModal,
-  MoveNoteModal,
-  ShowNoteModal,
-  HideNoteModal,
-  SetModalCFI,
+
 } = actions
 
 export default bookState.reducer

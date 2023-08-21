@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api"
 import { castDraft } from "immer"
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from "src/routes/Reader/ReaderView/functions/ModalUtility"
 // import { bookState } from "../bookStateSlice"
-import { bookState, setReaderMargins, setRenderMode } from "../bookState"
+import { bookState, setRenderMode } from "../bookState"
 
 
 // import { bookState } from "../bookStateSlice"
@@ -14,6 +14,7 @@ import { bookStateHydrationStructure, bookStateStructure, dataInterface, loadPro
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 import { setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"
 import { RootState } from "@store/store"
+import { MoveNoteModal, SetModalCFI } from "../appState"
 
 export type SyncedAddRenditionPayload = {firstLoad?:boolean, saveData:bookStateHydrationStructure} & BackendInstance
 
@@ -27,7 +28,7 @@ export const SyncedAddRendition = createAsyncThunk(
     if(renditionData.firstLoad){
       // In the case where nothing else is set, at least set the theme to the globally selected one.
       thunkAPI.dispatch(setThemeThunk({
-        view: 0,
+        view: renditionData.UID,
         themeName: (thunkAPI.getState() as RootState).appState.selectedTheme
       }))
 
@@ -42,12 +43,12 @@ export const SyncedAddRendition = createAsyncThunk(
       const renditionInstance = renditionData.instance
       
       for (const [cfiRange, value] of Object.entries(highlights)) {
-        thunkAPI.dispatch(bookState.actions.AddHighlight({highlightRange:cfiRange, color:value.color, note:value.note, view:0}))
+        thunkAPI.dispatch(bookState.actions.AddHighlight({highlightRange:cfiRange, color:value.color, note:value.note, view:renditionData.UID}))
       
         renditionInstance.annotations.highlight(cfiRange,{}, (e:MouseEvent) => {
       
           // This will prevent page turning when clicking on highlight
-          thunkAPI.dispatch(bookState.actions.SkipMouseEvent(0))
+          thunkAPI.dispatch(bookState.actions.SkipMouseEvent(renditionData.UID))
       
 
           const boundingBox = renditionInstance.getRange(cfiRange).getBoundingClientRect()
@@ -57,9 +58,9 @@ export const SyncedAddRendition = createAsyncThunk(
             NOTE_MODAL_WIDTH,
             NOTE_MODAL_HEIGHT)
                 
-          thunkAPI.dispatch(bookState.actions.SetModalCFI({view:0,selectedCFI:cfiRange}))
-          thunkAPI.dispatch(bookState.actions.MoveNoteModal({
-            view: 0,
+          thunkAPI.dispatch(SetModalCFI(cfiRange))
+          thunkAPI.dispatch(MoveNoteModal({
+            view: renditionData.UID,
             x,
             y,
             visible: true
@@ -71,34 +72,29 @@ export const SyncedAddRendition = createAsyncThunk(
 
       bookmarks.forEach((bookmark)=>{
         thunkAPI.dispatch(bookState.actions.ToggleBookmark({
-          view: 0,
+          view: renditionData.UID,
           bookmarkLocation: bookmark
         }))
       })
       
-      thunkAPI.dispatch(bookState.actions.SetProgress({view:0, progress:renditionData.saveData.data.progress, cfi: renditionData.saveData.data.cfi}))
+      thunkAPI.dispatch(bookState.actions.SetProgress({view:renditionData.UID, progress:renditionData.saveData.data.progress, cfi: renditionData.saveData.data.cfi}))
 
       
       await thunkAPI.dispatch(setFontThunk({
-        view: 0,
+        view: renditionData.UID,
         font: renditionData.saveData.data.theme.font,
         fontSize: renditionData.saveData.data.theme.fontSize,
         fontWeight: renditionData.saveData.data.theme.fontWeight
       }))
 
       await thunkAPI.dispatch(setLineHeightThunk({
-        view:0,
+        view:renditionData.UID,
         value: renditionData.saveData.data.theme.lineHeight
       }))
 
       await thunkAPI.dispatch(setWordSpacingThunk({
-        view:0,
+        view:renditionData.UID,
         value: renditionData.saveData.data.theme.wordSpacing
-      }))
-
-      await thunkAPI.dispatch(setReaderMargins({
-        view:0,
-        value: renditionData.saveData.data.theme.readerMargins
       }))
 
     }
@@ -111,7 +107,7 @@ export const SyncedAddRendition = createAsyncThunk(
 
 export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>) =>{
   builder.addCase(SyncedAddRendition.pending, (state, action) => {
-    const readerMarginsToUse = action?.meta?.arg?.saveData?.data?.theme?.readerMargins ? action.meta.arg.saveData.data.theme.readerMargins: 75
+    // const readerMarginsToUse = action?.meta?.arg?.saveData?.data?.theme?.readerMargins ? action.meta.arg.saveData.data.theme.readerMargins: 75
     const renderModeToUse = action?.meta?.arg?.saveData?.data?.theme?.renderMode ? action.meta.arg.saveData.data.theme.renderMode: "default"
     const t:bookStateStructure = {
       title: action.meta.arg.saveData.title || action.meta.arg.instance.book.packaging.metadata.title,
@@ -133,22 +129,13 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontWeight: 400,
           wordSpacing: 0,
           lineHeight: 100,
-          readerMargins: readerMarginsToUse,
+          // readerMargins: readerMarginsToUse,
           renderMode: renderModeToUse
         }
       }, 
       state:{
         isProgrammaticProgressUpdate: false,
-        sidebarMenuSelected: false,
-        menuToggled: true, 
-        themeMenuActive: false,
         skipMouseEvent: false,
-        dictionaryWord: "",
-        modals:{
-          selectedCFI: "",
-          quickbarModal: {visible: false, x:0, y:0},
-          noteModal: {visible: false, x:0, y:0}
-        }
       }}
     // https://github.com/immerjs/immer/issues/389
     

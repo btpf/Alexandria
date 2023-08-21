@@ -5,7 +5,8 @@ import Trash from '@resources/feathericons/trash-2.svg'
 import styles from './Annotations.module.scss'
 import { NavItem, Rendition } from 'epubjs'
 import Spine from 'epubjs/types/spine'
-import { DeleteHighlight, CloseSidebarMenu } from '@store/slices/bookState'
+import { DeleteHighlight } from '@store/slices/bookState'
+import { CloseSidebarMenu } from '@store/slices/appState'
 
 
 interface AnnotationData{
@@ -55,8 +56,9 @@ const getChapterCFIMap = (renditionInstance: Rendition)=>{
 
 const Annotations = ()=>{
   const dispatch = useAppDispatch()
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-  const annotations = useAppSelector((state) => state.bookState[0]?.data.highlights)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const renditionInstance = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
+  const annotations = useAppSelector((state) => state.bookState[selectedRendition]?.data.highlights)
   const [data, updateData] = useState<Array<AnnotationData>>([])
 
   // Handles case where new annotation is made
@@ -121,14 +123,14 @@ const Annotations = ()=>{
           <div key={item.AnnotationCFI} className={styles.annotationContainer}>
             <div className={styles.AnnotationLeftSubContainer} onClick={()=>{
               renditionInstance.annotations.remove(item.AnnotationCFI, "highlight")
-              dispatch(DeleteHighlight({highlightRange:item.AnnotationCFI, color:"any", note:"", view:0}))
+              dispatch(DeleteHighlight({highlightRange:item.AnnotationCFI, color:"any", note:"", view:selectedRendition}))
               
             }}> 
               <Trash/>
             </div>
             <div className={styles.AnnotationRightSubContainer} onClick={()=>{
               renditionInstance.display(item.AnnotationCFI)
-              dispatch(CloseSidebarMenu(0))
+              dispatch(CloseSidebarMenu())
             }}> 
               <div className={styles.AnnotationChapter}>{item.title}</div>
                     

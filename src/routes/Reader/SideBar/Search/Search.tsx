@@ -5,14 +5,16 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-import { CloseSidebarMenu } from '@store/slices/bookState'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { FindResults } from 'epubjs/types/section';
+import { CloseSidebarMenu } from '@store/slices/appState';
 
 
 const Search = (props:{query:string})=>{
   const dispatch = useAppDispatch()
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+
+  const renditionInstance = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
 
   const [searchText, setSearchText] = useState(props.query)
 
@@ -117,7 +119,7 @@ const Search = (props:{query:string})=>{
             
             highlighter()
 
-            dispatch(CloseSidebarMenu(0))
+            dispatch(CloseSidebarMenu())
           }}>
             <div className={styles.resultChapter}>{result.cfi}</div>
             <div className={styles.resultTextContainer}>{result.excerpt}</div>

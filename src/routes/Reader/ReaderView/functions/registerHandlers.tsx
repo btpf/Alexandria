@@ -1,5 +1,7 @@
-import { AllowMouseEvent, HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetLoadState, SetModalCFI, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent, ToggleMenu, ToggleThemeMenu } from "@store/slices/bookState";
+import { HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetModalCFI, SetSelectedRendition, ToggleMenu, ToggleThemeMenu } from "@store/slices/appState";
+import { AllowMouseEvent, SetLoadState, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent } from "@store/slices/bookState";
 import { LOADSTATE } from "@store/slices/constants";
+import { bookStateStructure } from "@store/slices/EpubJSBackend/epubjsManager.d";
 import store from "@store/store";
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
@@ -15,7 +17,7 @@ import {
 
 // import {bookStateStructure} from 'src/store/slices/EpubJSBackend/epubjsManager.d'
 
-export default (renditionInstance:Rendition)=>{
+export default (renditionInstance:Rendition, view:number)=>{
 
   // const renditionInstance = initialState.bookState["0"].instance;
   let NoteModalVisible!:boolean;
@@ -27,10 +29,12 @@ export default (renditionInstance:Rendition)=>{
   let DictionaryWord!:string
   let isProgrammaticProgressUpdate!:boolean
   let loadState!:LOADSTATE
+  let selectedRendition!:number
+  let isDualReaderMode!:boolean
 
   let timer:any = null;
 
-  let flexContainer:(Element | null | undefined) = null;
+  let backgroundElement:(Element | null | undefined) = null;
 
   let sidebarOpen!: boolean|string;
 
@@ -40,21 +44,26 @@ export default (renditionInstance:Rendition)=>{
   let oldThemeState = {};
   const unsubscribeRedux = store.subscribe(()=>{
     const newState = store.getState()
-    NoteModalVisible = newState.bookState["0"]?.state.modals?.noteModal?.visible
-    QuickbarModalVisible = newState.bookState["0"]?.state?.modals?.quickbarModal?.visible;
-    selectedCFI = newState.bookState["0"]?.state?.modals?.selectedCFI;
-    ThemeMenuActive = newState.bookState["0"]?.state?.themeMenuActive;
-    skipMouseEvent = newState.bookState["0"]?.state?.skipMouseEvent
-    DictionaryWord = newState.bookState["0"]?.state?.dictionaryWord
-    fontName = newState.bookState["0"]?.data?.theme?.font
-    isProgrammaticProgressUpdate = newState.bookState['0']?.state?.isProgrammaticProgressUpdate
-    loadState = newState.bookState['0']?.loadState
-    sidebarOpen = newState.bookState[0]?.state?.sidebarMenuSelected
-    viewMode = newState.bookState[0]?.data?.theme?.renderMode
+    const bookState:bookStateStructure = newState.bookState[view]
 
-    const theme = newState.bookState["0"]?.data?.theme
+    NoteModalVisible = newState.appState.state.modals?.noteModal?.visible
+    // QuickbarModalVisible = newState.bookState[view]?.state?.modals?.quickbarModal?.visible;
+    QuickbarModalVisible = newState?.appState?.state?.modals?.quickbarModal?.visible
+    selectedCFI = newState.appState.state?.modals?.selectedCFI;
+    ThemeMenuActive = newState.appState.state?.themeMenuActive;
+    skipMouseEvent = bookState?.state?.skipMouseEvent
+    DictionaryWord = newState.appState.state?.dictionaryWord
+    fontName = bookState?.data?.theme?.font
+    isProgrammaticProgressUpdate = bookState?.state?.isProgrammaticProgressUpdate
+    loadState = bookState?.loadState
+    sidebarOpen = newState?.appState?.state?.sidebarMenuSelected
+    viewMode = bookState?.data?.theme?.renderMode
+    selectedRendition = newState.appState.state.selectedRendition
+    isDualReaderMode = newState.appState.state.dualReaderMode
+
+    const theme = newState.bookState[view]?.data?.theme
     if(theme && JSON.stringify(theme) !== JSON.stringify(oldThemeState)){
-      oldThemeState = newState.bookState["0"].data.theme
+      oldThemeState = newState.bookState[view].data.theme
 
       // Timeout to allow epubjs rerender first
       setTimeout(()=>[
@@ -83,6 +92,7 @@ export default (renditionInstance:Rendition)=>{
   
 
   const keyboardEventsHandler = (event) =>{
+    if(view != selectedRendition) return
     if (event.keyCode == 40 || event.keyCode == 39) {
       renditionInstance.next()
     }
@@ -93,19 +103,19 @@ export default (renditionInstance:Rendition)=>{
     if(event.ctrlKey && event.keyCode == 70){
       if(sidebarOpen){
         if(sidebarOpen == "Search"){
-          store.dispatch(SelectSidebarMenu({view:0, state:false}))
+          store.dispatch(SelectSidebarMenu(false))
         }else{
-          store.dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+          store.dispatch(SelectSidebarMenu("Search"))
         }
       }else{
-        store.dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+        store.dispatch(SelectSidebarMenu("Search"))
       }
     }
   }
 
   const unsubscribe = ()=>{
     unsubscribeRedux()
-    flexContainer?.removeEventListener("click", flexClickHandler)
+    backgroundElement?.removeEventListener("click", clickHandler)
     window.removeEventListener("keydown", keyboardEventsHandler)
     window.removeEventListener("wheel", scrollEventsHandler);
   }
@@ -134,8 +144,15 @@ export default (renditionInstance:Rendition)=>{
 
     // If the element clicked was the 'reader-background' container,
     // then the epub iframe was not clicked (Margins were set and click landed outside of epubjs width)
-
     const whitespaceClicked = event.target.id == "reader-background"
+
+    
+    if(view != selectedRendition && !whitespaceClicked){
+      store.dispatch(SetSelectedRendition(view))
+      return
+    }
+
+
 
     // If a triple click, prevent it from going through (As this is a useless feature)
     if (event.detail > 2){
@@ -154,7 +171,7 @@ export default (renditionInstance:Rendition)=>{
 
     // If the dictionary is open and the book is clicked, close the dictionary
     if(DictionaryWord){
-      store.dispatch(SetDictionaryWord({view:0, word:""}))
+      store.dispatch(SetDictionaryWord(""))
       return
     }
 
@@ -172,17 +189,15 @@ export default (renditionInstance:Rendition)=>{
 
 
       if(NoteModalVisible || QuickbarModalVisible){
-
         // If the note popup is visible
         if(NoteModalVisible){
-          store.dispatch(HideNoteModal(0))
+          store.dispatch(HideNoteModal())
 
 
           // If clicking off of the noteModal, the selectedCFI Must be removed
-          store.dispatch(SetModalCFI({
-            view: 0,
-            selectedCFI: ""
-          }))
+          store.dispatch(SetModalCFI(
+            ""
+          ))
 
         }
 
@@ -200,7 +215,7 @@ export default (renditionInstance:Rendition)=>{
           renditionInstance.annotations.remove(selectedCFI, "highlight")
 
           // hide quickbarModal
-          store.dispatch(HideQuickbarModal(0))
+          store.dispatch(HideQuickbarModal())
         }
 
         console.log("Contents remove all ranges")
@@ -220,18 +235,64 @@ export default (renditionInstance:Rendition)=>{
 
         // If the epubjs iframe was clicked
         if(!whitespaceClicked){
-        // Here, the X is how far away from the left side of the screen the wrapper is.
-        // This will be affected by the reader margins in settings.
-          totalMargins = (wrapper.getBoundingClientRect().x * 2)
+          const parentElement = wrapper.parentElement
+          if(!parentElement) return
+          // This code will handle the case where the user is using a dual reader
+          // In which case, the x will be offset. For the first view, 0
+          // for the second view, it will be 50% of the width. So this x
+          // Should be the pixels = 50%
+          const dualReaderOffset = wrapper.parentElement.getBoundingClientRect().x
+
+          // Here, the X is how far away from the left side of the screen the wrapper is.
+          // This will be affected by the reader margins in settings.
+          // Since our margins are calculated by how far from the left side of the screen
+          // our wrapper is, our total margins calculation must deduct how far it is offset
+          // due to being in a dual reader mode
+          totalMargins = ((wrapper.getBoundingClientRect().x - dualReaderOffset) * 2)
 
           third = (wrapper.clientWidth + totalMargins) / 3;
           // event.pageX is where the mouse was on the page
           // wrapper.scrollLeft is how far from the left the wrapper is
           // wrapper here refers to the css epub.js uses to hide loaded, but not visible pages.
-          x = (event.pageX + totalMargins/2) - wrapper.scrollLeft;
+          x = (event.pageX + totalMargins/2) - wrapper.scrollLeft ;
         }else{
-          third = event.target.getBoundingClientRect().width / 3
+          console.log("Handling whitespace logic")
+          // get the width of the background whitespace element
+          let whitespaceWidth = event.target.getBoundingClientRect().width
+          // Get the position of the click
           x = event.pageX
+          // If dual reader mode is true, divide the whitespace width by 2
+          if(isDualReaderMode){
+            whitespaceWidth /= 2
+            
+            // If x is in the left half of the screen
+            if(x <= whitespaceWidth){
+              // since this evenhandler is added twice for the left and right renditions
+              // cancel the one which is not the click handled by this handler.
+
+              // In this case, we will stop the event logic if we are on the left side of the screen
+              // and the handler is for the right side rendition
+              if(view == 1){
+                return
+              }
+            }else{
+
+              if(view == 0){
+                return
+              }
+
+              // if we are on the rightside, then we will make our x -= whitespaceWidth
+              // Since this logic will be used to see if we clicked on the left or right half
+              // of the right side
+
+              x-= whitespaceWidth
+            }
+          }
+
+          third = whitespaceWidth / 3
+
+
+          
         }
 
 
@@ -251,20 +312,24 @@ export default (renditionInstance:Rendition)=>{
             // This will prevent case where text is quickly highlighted causing page to transition
             if (getSelectedText().length == 0) {
               if (x < third) {
-                renditionInstance.prev()
+                console.log("left")
+                renditionInstance.prev().then(()=>{
+                  console.log("Prev done")
+                })
               } else if (x > (third * 2)) {
+                console.log("right")
                 renditionInstance.next()    
               }else{
-          
-                store.dispatch(ToggleMenu(0))
+                console.log("middle")
+                store.dispatch(ToggleMenu())
                 if(ThemeMenuActive){
-                  store.dispatch(ToggleThemeMenu(0))
+                  store.dispatch(ToggleThemeMenu())
                 }
 
               }
             }
           }else{
-            store.dispatch(AllowMouseEvent(0))
+            store.dispatch(AllowMouseEvent(view))
           }
       
           // If mouse mouseup event at least once in this time period, but not double clicked (Would cancel timeout), we want to transition to the next page
@@ -290,7 +355,7 @@ export default (renditionInstance:Rendition)=>{
     const clonedContents = renditionInstance?.getRange(cfiRange)?.cloneContents()
     if(!clonedContents || clonedContents.querySelectorAll("img").length > 0){
       clearSelection()
-      store.dispatch(SkipMouseEvent(0))
+      store.dispatch(SkipMouseEvent(view))
       return
     }
    
@@ -326,19 +391,15 @@ export default (renditionInstance:Rendition)=>{
 
 
     store.dispatch(MoveQuickbarModal({
-      view: 0,
       x,
       y,
       visible: true
     }))
-
-    store.dispatch(SetModalCFI({
-      view: 0,
-      selectedCFI: cfiRange
-    }))
+    store.dispatch(SetModalCFI(
+      cfiRange
+    ))
 
     store.dispatch(MoveNoteModal({
-      view: 0,
       x: invisiblenoteModal.x,
       y: invisiblenoteModal.y,
       visible: false
@@ -351,16 +412,22 @@ export default (renditionInstance:Rendition)=>{
     
   renditionInstance.on('rendered', redrawAnnotations)
 
-  const flexClickHandler = (e)=>{
+  const flexClickHandler = (e:any)=>{
     if(e.target == flexContainer){
       clickHandler(e)
     }
   }
   renditionInstance.on("attached",()=>{
-    flexContainer = renditionInstance.manager?.container.parentElement?.previousElementSibling
-    if(flexContainer != null){
-      flexContainer.addEventListener("click", flexClickHandler)
+    backgroundElement = window.document.getElementById("reader-background")
+    if(backgroundElement){
+      // Simply remove the click listener, which will fix issue in case of 
+      // backgroundElement.removeEventListener("click", clickHandler)
+      console.log("Background element found")
+      backgroundElement.addEventListener("click", clickHandler)
+    }else{
+      console.log("Error: Background container not found")
     }
+    
 
 
       
@@ -370,16 +437,16 @@ export default (renditionInstance:Rendition)=>{
   const pageTurnHandler = (e:any)=>{
     if(loadState != LOADSTATE.COMPLETE) return
     if(isProgrammaticProgressUpdate){
-      store.dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
+      store.dispatch(setProgrammaticProgressUpdate({view:view, state:false}))
       return
     }
     // On the event from epubjs, set the epubNavigate to true
     // This will cancel out a loop of the epub reader changing
-    store.dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
+    store.dispatch(setProgrammaticProgressUpdate({view:view, state:true}))
 
     // This may be preventing a race condition with setEpubNavigate
     setTimeout(()=>{
-      store.dispatch(SetProgress({view: 0, cfi: e.start,  progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+      store.dispatch(SetProgress({view: view, cfi: e.start,  progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
     }, 1)
   }
 

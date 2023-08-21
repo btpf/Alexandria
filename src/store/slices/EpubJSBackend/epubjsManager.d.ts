@@ -10,7 +10,6 @@ interface dataInterface{
     fontWeight: number,
     wordSpacing: number,
     lineHeight: number,
-    readerMargins: number,
     renderMode: string
   }
 }
@@ -30,16 +29,8 @@ export interface bookStateStructure extends bookStateHydrationStructure{
     data?: dataInterface,
     state:{
       isProgrammaticProgressUpdate: boolean,
-      sidebarMenuSelected: boolean|string,
-      menuToggled: boolean,
-      themeMenuActive: boolean,
       skipMouseEvent: boolean,
-      dictionaryWord: string,
-      modals:{
-        selectedCFI: string,
-        quickbarModal: {visible: boolean, x:number, y:number},
-        noteModal: {visible: boolean, x:number, y:number}
-      },
+
     },
   }
   

@@ -7,7 +7,8 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 
 const Dictionary = ()=>{
-  const DictionaryWord = useAppSelector((state) => state.bookState[0]?.state.dictionaryWord)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const DictionaryWord = useAppSelector((state) => state.appState.state.dictionaryWord)
   const dispatch = useAppDispatch()
   const dictionaryContainerRef = useRef<HTMLInputElement>(null);
   
@@ -74,6 +75,7 @@ const Dictionary = ()=>{
   },[response])
 
   useEffect(()=>{
+    console.log("New dictionary word detected")
     if(!DictionaryWord){
       return
     }

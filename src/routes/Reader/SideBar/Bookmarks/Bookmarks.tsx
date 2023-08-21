@@ -4,9 +4,10 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { NavItem, Rendition } from 'epubjs'
 import Spine from 'epubjs/types/spine'
-import { DeleteHighlight, CloseSidebarMenu, ToggleBookmark } from '@store/slices/bookState'
+import { DeleteHighlight, ToggleBookmark } from '@store/slices/bookState'
 
 import styles from './Bookmarks.module.scss'
+import { CloseSidebarMenu } from '@store/slices/appState'
 
 
 interface Bookmark{
@@ -49,10 +50,12 @@ const getChapterCFIMap = (renditionInstance: Rendition)=>{
   return allChapters
 }
 
-const Annotations = ()=>{
+const Bookmarks = ()=>{
   const dispatch = useAppDispatch()
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-  const bookmarks = useAppSelector((state) => state.bookState[0]?.data.bookmarks)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+
+  const renditionInstance = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
+  const bookmarks = useAppSelector((state) => state.bookState[selectedRendition]?.data.bookmarks)
   const [orderedBookmarks, setOrderedBookmarks] = useState(Array<Bookmark>)
 
 
@@ -103,7 +106,7 @@ const Annotations = ()=>{
           <div key={item.cfi} className={styles.annotationContainer}>
             <div className={styles.AnnotationLeftSubContainer} onClick={()=>{
               renditionInstance.annotations.remove(item.cfi, "highlight")
-              dispatch(ToggleBookmark({view:0,bookmarkLocation:item.cfi}))
+              dispatch(ToggleBookmark({view: selectedRendition,bookmarkLocation:item.cfi}))
                 
             }}> 
               <Trash/>
@@ -112,7 +115,7 @@ const Annotations = ()=>{
               renditionInstance.display(item.cfi).then(()=>{
                 renditionInstance.display(item.cfi)
               })
-              dispatch(CloseSidebarMenu(0))
+              dispatch(CloseSidebarMenu())
             }}> 
               <div className={styles.AnnotationChapter}>{item.cfi}</div>
                       
@@ -126,4 +129,4 @@ const Annotations = ()=>{
   )
 }
 
-export default Annotations
+export default Bookmarks

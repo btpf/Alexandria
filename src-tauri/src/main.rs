@@ -410,8 +410,6 @@ struct themePayload {
     #[serde(default)]
     lineHeight: i64,
     #[serde(default)]
-    readerMargins: i64,
-    #[serde(default)]
     renderMode: String
 
 
@@ -714,7 +712,9 @@ struct SettingsConfig {
     #[serde(default)]
     sortDirection: String,
     #[serde(default)]
-    sortBy: String
+    sortBy: String,
+    #[serde(default)]
+    readerMargins: i64,
 }
 
 #[tauri::command]

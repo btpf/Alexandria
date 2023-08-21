@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from 'react-redux'
 import { platform } from '@tauri-apps/api/os';
 
 import store, {RootState} from '@store/store'
-import {RemoveRendition, ToggleMenu, SetLoadState, ToggleThemeMenu, SyncedAddRendition} from '@store/slices/bookState'
+import {RemoveRendition, SetLoadState, SyncedAddRendition} from '@store/slices/bookState'
 import registerHandlers from './functions/registerHandlers';
 import { Unsubscribe } from '@reduxjs/toolkit';
 import QuickbarModal from './functions/QuickbarModal';
@@ -28,15 +28,18 @@ import { LOADSTATE } from '@store/slices/constants';
 import { SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
 import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
 import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsManager.d';
-const mapState = (state: RootState) => {
+import { ToggleMenu } from '@store/slices/appState';
+
+
+const mapState = (state: RootState, ownProps:inheritedProps) => {
   if(Object.keys(state.bookState).includes("0")){
     return {
-      LoadState: state.bookState[0].loadState,
+      LoadState: state.bookState[ownProps.view].loadState,
       UIBackgroundColor: state.appState.themes[state.appState.selectedTheme].ui.primaryBackground,
-      ThemeMenuActive: state.bookState[0].state.themeMenuActive,
-      renderMode:state.bookState[0]?.data.theme.renderMode,
-      readerMargins: state.bookState[0]?.data.theme.readerMargins,
-      progress: state.bookState[0]?.data?.progress,
+      ThemeMenuActive: state.bookState[ownProps.view].state.themeMenuActive,
+      renderMode:state.bookState[ownProps.view]?.data.theme.renderMode,
+      readerMargins: state.appState.readerMargins,
+      progress: state.bookState[ownProps.view]?.data?.progress,
       selectedTheme: state.appState.selectedTheme
     }
     
@@ -46,18 +49,21 @@ const mapState = (state: RootState) => {
 
 }
 
-const connector = connect(mapState, {ToggleMenu, SetLoadState, RemoveRendition, ToggleThemeMenu, SyncedAddRendition})
+const connector = connect(mapState, {ToggleMenu, SetLoadState, RemoveRendition, SyncedAddRendition})
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
+type inheritedProps = {
+  view: number,
+  bookHash: string | undefined
+}
 
-type ReaderProps = PropsFromRedux & {
+type ReaderProps = PropsFromRedux & inheritedProps &  {
   router:{
     location: Location
     navigate: NavigateFunction 
     params: Readonly<Params<string>>
   }
-
 }
 
 // https://stackoverflow.com/questions/59072200/useselector-destructuring-vs-multiple-calls
@@ -82,9 +88,9 @@ class Reader extends React.Component<ReaderProps>{
     type bookData = string
     let bookValue: bookData = ""
 
-    const {params} = this.props.router
-    if(window.__TAURI__ && params.bookHash){
-      bookValue = await invoke("get_book_by_hash",{bookHash: params.bookHash})
+    // const {params} = this.props.router
+    if(window.__TAURI__ && this.props.bookHash){
+      bookValue = await invoke("get_book_by_hash",{bookHash: this.props.bookHash})
       if(await platform() == "linux"){
         const splitPath = bookValue.split('/').slice(-4)
         // Main Issue:https://github.com/tauri-apps/tauri/issues/3725
@@ -112,7 +118,7 @@ class Reader extends React.Component<ReaderProps>{
       // We use the standard subscribe here since react-redux will not pass the state updates once unmounted.
       let cancel_Load = false
       const unsubscribe = store.subscribe(()=>{
-        const load_state = store.getState().bookState["0"].loadState
+        const load_state = store.getState().bookState[this.props.view].loadState
         if(load_state == LOADSTATE.CANCELED){
           cancel_Load = true
           // unsubscribe immediately
@@ -120,7 +126,7 @@ class Reader extends React.Component<ReaderProps>{
           // unsubscribe from registerHandlers.tsx
           this.unsubscribeHandlers()
           // Remove rendition from state immediately to prevent duplicate removals
-          this.props.RemoveRendition(0)
+          this.props.RemoveRendition(this.props.view)
         }
       })
       await this.book.locations.generate(1000)
@@ -138,12 +144,12 @@ class Reader extends React.Component<ReaderProps>{
       // If loading the data has finished, when we reach this state, the book parsing is complete
       // So set the overall state to complete
       // This allows us to ensure the app is completely loaded before moving forward.
-      switch (store.getState().bookState["0"].loadState) {
+      switch (store.getState().bookState[this.props.view].loadState) {
       case LOADSTATE.DATA_PARSING_COMPLETE:
-        this.props.SetLoadState({view:0, state:LOADSTATE.COMPLETE})
+        this.props.SetLoadState({view:this.props.view, state:LOADSTATE.COMPLETE})
         break;
       case LOADSTATE.LOADING:
-        this.props.SetLoadState({view:0, state:LOADSTATE.BOOK_PARSING_COMPLETE})
+        this.props.SetLoadState({view:this.props.view, state:LOADSTATE.BOOK_PARSING_COMPLETE})
         break;
       }
       
@@ -164,8 +170,6 @@ class Reader extends React.Component<ReaderProps>{
         {/* This will help prevent flashbang */}
         <div style={{backgroundColor:this.props.UIBackgroundColor, width: `${this.props.readerMargins}%`, marginLeft:"auto", marginRight:"auto"}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
         {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
-        <QuickbarModal/>
-        <NoteModal/>
       </>
     )
   }
@@ -175,29 +179,32 @@ class Reader extends React.Component<ReaderProps>{
     console.log("UNMOUNTING")
     // This handles the edgecase where the locations are loading, but the user exits the page.
     if(this.props.LoadState != LOADSTATE.COMPLETE){
-      this.props.SetLoadState({view: 0, state:LOADSTATE.CANCELED})
+      this.props.SetLoadState({view: this.props.view, state:LOADSTATE.CANCELED})
       return
     }
     this.unsubscribeHandlers();
 
-    this.props.RemoveRendition(0)
+    this.props.RemoveRendition(this.props.view)
     this.rendition.destroy();
   }
 
 
   componentDidUpdate(prevProps: any, prevState: any) {
     if(this.props.LoadState != prevProps.LoadState && this.props.LoadState == LOADSTATE.COMPLETE){
-      this.rendition.display(store.getState().bookState[0].data.cfi).then(()=>{
-        this.rendition.display(store.getState().bookState[0].data.cfi)
+      this.rendition.display(store.getState().bookState[this.props.view].data.cfi).then(()=>{
+        this.rendition.display(store.getState().bookState[this.props.view].data.cfi)
       })
     }
+    console.log(this.props.renderMode, prevProps.renderMode)
     if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode && this.props.LoadState == LOADSTATE.COMPLETE){
       const bookInstance = this.book
       this.rendition.destroy();
       this.unsubscribeHandlers()
-      this.props.RemoveRendition(0)
+      this.props.RemoveRendition(this.props.view)
       
       this.initializeRendition(this.props.renderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
+    }else{
+      console.log(this.props.renderMode, prevProps.renderMode )
     }
     if(this.props.readerMargins != prevProps.readerMargins && this.props.LoadState == LOADSTATE.COMPLETE){
       console.log("DID I CRASH HERE?", this.rendition)
@@ -330,7 +337,7 @@ class Reader extends React.Component<ReaderProps>{
     // eslint-disable-next-line prefer-const
     payload = {
       instance: this.rendition,
-      UID:0,
+      UID:this.props.view,
       hash: params.bookHash || "hashPlaceholder",
       saveData: result || {},
       initialLoadState: forceLoadState,
@@ -338,7 +345,7 @@ class Reader extends React.Component<ReaderProps>{
     }
 
 
-    this.unsubscribeHandlers = registerHandlers(this.rendition)
+    this.unsubscribeHandlers = registerHandlers(this.rendition, this.props.view)
 
 
       

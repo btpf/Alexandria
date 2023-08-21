@@ -33,11 +33,12 @@ const defaultMarks = {
 
 
 const SliderNavigator = ()=>{
-  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[0]?.instance)
-  const renditionState = useAppSelector((state) => state.bookState[0]?.loadState)
-  const currentPercent = useAppSelector((state) => state.bookState[0]?.data.progress)
-  const currentCfi = useAppSelector((state) => state.bookState[0]?.data.cfi)
-  const isProgrammaticProgressUpdate = useAppSelector((state) => state.bookState[0]?.state.isProgrammaticProgressUpdate)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
+  const renditionState = useAppSelector((state) => state.bookState[selectedRendition]?.loadState)
+  const currentPercent = useAppSelector((state) => state.bookState[selectedRendition]?.data.progress)
+  const currentCfi = useAppSelector((state) => state.bookState[selectedRendition]?.data.cfi)
+  const isProgrammaticProgressUpdate = useAppSelector((state) => state.bookState[selectedRendition]?.state.isProgrammaticProgressUpdate)
 
 
   const dispatch = useAppDispatch()
@@ -97,11 +98,11 @@ const SliderNavigator = ()=>{
     // If the previous update event was because of the epub reader
     // cancel the event
     if(isProgrammaticProgressUpdate){
-      dispatch(setProgrammaticProgressUpdate({view:0, state:false}))
+      dispatch(setProgrammaticProgressUpdate({view:selectedRendition, state:false}))
       return
     }
     const handler = setTimeout(() =>{ 
-      dispatch(setProgrammaticProgressUpdate({view:0, state:true}))
+      dispatch(setProgrammaticProgressUpdate({view:selectedRendition, state:true}))
       if(currentCfi)
         renditionInstance.display(currentCfi)
     }, 100);
@@ -175,7 +176,7 @@ const SliderNavigator = ()=>{
         // Controlling the slider with arrow keys leads to poor navigation experience
         window?.document?.getElementById("reader-background")?.focus()
         setMouseOnSlider(false)
-        dispatch(SetProgress({view: 0, progress: e/1000, cfi: renditionInstance.book.locations.cfiFromPercentage(e/1000)}))
+        dispatch(SetProgress({view: selectedRendition, progress: e/1000, cfi: renditionInstance.book.locations.cfiFromPercentage(e/1000)}))
       }}
       value={mouseOnSlider? placeholderProgress: currentPercent * 1000}
       max={1000}/>

@@ -7,23 +7,26 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import { invoke } from '@tauri-apps/api'
 import { convertFileSrc } from '@tauri-apps/api/tauri'
 import { setLineHeightThunk, setWordSpacingThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager'
-import { setReaderMargins, setRenderMode } from '@store/slices/bookState'
+import {  setRenderMode } from '@store/slices/bookState'
+import { setReaderMargins } from '@store/slices/appState'
 const SpacingContainer = ()=>{
   const dispatch = useAppDispatch()
-  const wordSpacing = useAppSelector((state) => state.bookState[0]?.data.theme.wordSpacing)
-  const lineHeight = useAppSelector((state) => state.bookState[0]?.data.theme.lineHeight)
-  const readerMargins = useAppSelector((state) => state.bookState[0]?.data.theme.readerMargins)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+
+  const wordSpacing = useAppSelector((state) => state.bookState[selectedRendition]?.data.theme.wordSpacing)
+  const lineHeight = useAppSelector((state) => state.bookState[selectedRendition]?.data.theme.lineHeight)
+  const readerMargins = useAppSelector((state) => state.appState.readerMargins)
   return ( 
     <>
       <div className={styles.settingContainer}>
         <div className={styles.settingLabel}>Word Spacing</div>
         <div className={styles.settingButtonContainer}>
           <div className={styles.settingButton} onClick={()=>{
-            dispatch(setWordSpacingThunk({view:0, value: wordSpacing - 5}))
+            dispatch(setWordSpacingThunk({view:selectedRendition, value: wordSpacing - 5}))
           }}>-</div>
           <div className={styles.resizeSize}>{wordSpacing}px</div>
           <div className={styles.settingButton} onClick={()=>{
-            dispatch(setWordSpacingThunk({view:0, value: wordSpacing + 5}))
+            dispatch(setWordSpacingThunk({view:selectedRendition, value: wordSpacing + 5}))
           }}>+</div>
         </div>
       </div>
@@ -31,9 +34,9 @@ const SpacingContainer = ()=>{
       <div className={styles.settingContainer}>
         <div className={styles.settingLabel}>Line Height</div>
         <div className={styles.settingButtonContainer}>
-          <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:0, value: lineHeight - 5}))}>-</div>
+          <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight - 5}))}>-</div>
           <div className={styles.resizeSize}>{lineHeight}%</div>
-          <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:0, value: lineHeight + 5}))}>+</div>
+          <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight + 5}))}>+</div>
         </div>
       </div>
 
@@ -50,13 +53,13 @@ const SpacingContainer = ()=>{
             // readerInstance.manager = false
             // readerInstance.setManager("continuous")
             // readerInstance.start()
-            // dispatch(setRenderMode({view:0, renderMode: "continuous"}))
-            dispatch(setReaderMargins({view: 0, value: Math.min(readerMargins+5, 100)}))
+            // dispatch(setRenderMode({view:selectedRendition, renderMode: "continuous"}))
+            dispatch(setReaderMargins( Math.min(readerMargins+5, 100)))
           }}>-</div>
           <div className={styles.resizeSize}>{100 - readerMargins}%</div>
           <div className={styles.settingButton} onClick={()=>{
 
-            dispatch(setReaderMargins({view: 0, value: Math.max(readerMargins-5, 5)}))
+            dispatch(setReaderMargins(Math.max(readerMargins-5, 5)))
             
           }}>+</div>
         </div>

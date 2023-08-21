@@ -5,10 +5,7 @@ import {
   ChangeHighlightColor, 
   DeleteHighlight, 
   ChangeHighlightNote,
-  SetModalCFI,
-  MoveNoteModal,
   SkipMouseEvent,
-  HideNoteModal,
 } from '@store/slices/bookState'
 
 // Transferred Imports
@@ -19,6 +16,7 @@ import Check from '@resources/feathericons/check.svg'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { useAppSelector, useAppDispatch } from '@store/hooks';
 import { CalculateBoxPosition } from './ModalUtility';
+import { HideNoteModal, MoveNoteModal, SetModalCFI } from '@store/slices/appState';
 
 
 
@@ -26,13 +24,13 @@ const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']
 
 
 const NoteModal = () =>{
-
-  const noteModalVisible = useAppSelector((state) => state.bookState[0]?.state?.modals.noteModal.visible)
-  const modalX = useAppSelector((state) => state.bookState[0]?.state?.modals.noteModal.x)
-  const modalY = useAppSelector((state) => state.bookState[0]?.state?.modals.noteModal.y)
-  const selectedCFI = useAppSelector((state) => state.bookState[0]?.state?.modals.selectedCFI)
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-  const annotations = useAppSelector((state) => state.bookState[0]?.data.highlights)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const noteModalVisible = useAppSelector((state) => state?.appState?.state?.modals.noteModal.visible)
+  const modalX = useAppSelector((state) => state?.appState?.state?.modals.noteModal.x)
+  const modalY = useAppSelector((state) => state?.appState?.state?.modals.noteModal.y)
+  const selectedCFI = useAppSelector((state) => state?.appState?.state?.modals.selectedCFI)
+  const renditionInstance = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
+  const annotations = useAppSelector((state) => state.bookState[selectedRendition]?.data.highlights)
   
 
   
@@ -49,7 +47,8 @@ const NoteModal = () =>{
       <div className={styles.noteContainer} style={{left:modalX, top:modalY}}>
         <textarea placeholder="Add Note" value={annotations? annotations[selectedCFI]?.note:""} 
           onChange={(event)=>{
-            dispatch(ChangeHighlightNote({highlightRange:selectedCFI, color:"any", note:event.target.value, view:0}))
+            console.log("Changehighlightnotepayload", {highlightRange:selectedCFI, color:"any", note:event.target.value, view:selectedRendition})
+            dispatch(ChangeHighlightNote({highlightRange:selectedCFI, color:"any", note:event.target.value, view:selectedRendition}))
           }}
           className={styles.noteContentContainer}>
         </textarea>
@@ -58,12 +57,9 @@ const NoteModal = () =>{
           <div className={styles.svgSelect}>
             <Trash onClick={()=>{
               renditionInstance.annotations.remove(selectedCFI, "highlight")
-              dispatch(DeleteHighlight({highlightRange:selectedCFI, color:"any", note:"", view:0}))
-              dispatch(SetModalCFI({
-                view: 0,
-                selectedCFI: ''
-              }))
-              dispatch(HideNoteModal(0))
+              dispatch(DeleteHighlight({highlightRange:selectedCFI, color:"any", note:"", view:selectedRendition}))
+              dispatch(SetModalCFI(""))
+              dispatch(HideNoteModal())
             }}/>
 
           </div>
@@ -71,7 +67,7 @@ const NoteModal = () =>{
             {COLORS.map((item)=>{
               return <div key={item} style={{backgroundColor:item}} className={styles.highlightBubble} onClick={()=>{
                 renditionInstance.annotations.remove(selectedCFI, "highlight")
-                dispatch(ChangeHighlightColor({highlightRange:selectedCFI, color:item, note:"", view:0}))
+                dispatch(ChangeHighlightColor({highlightRange:selectedCFI, color:item, note:"", view:selectedRendition}))
                 const cfiRangeClosure = selectedCFI
                 renditionInstance.annotations.highlight(selectedCFI,{}, (e:MouseEvent) => {
                   // This will prevent page turning when clicking on highlight
@@ -80,12 +76,8 @@ const NoteModal = () =>{
                   const {x, y} = CalculateBoxPosition(renditionInstance,cfiRangeClosure, 300, 250)
 
                   
-                  dispatch(SetModalCFI({
-                    view: 0,
-                    selectedCFI: cfiRangeClosure
-                  }))
+                  dispatch(SetModalCFI(cfiRangeClosure))
                   dispatch(MoveNoteModal({
-                    view: 0,
                     x,
                     y,
                     visible: true
@@ -101,12 +93,9 @@ const NoteModal = () =>{
           </div>
           <div className={styles.svgSelect}>
             <Check onClick={()=>{
-              dispatch(SetModalCFI({
-                view: 0,
-                selectedCFI: ''
-              }))
+              dispatch(SetModalCFI(''))
 
-              dispatch(HideNoteModal(0))
+              dispatch(HideNoteModal())
             }}/>
 
           </div>

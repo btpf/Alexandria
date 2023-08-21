@@ -13,31 +13,37 @@ import HomeIcon from '@resources/feathericons/home.svg'
 import { Rendition } from 'epubjs'
 import Sidebar from './SideBar/SideBar'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
-import { SelectSidebarMenu, ToggleBookmark, ToggleMenu, ToggleThemeMenu } from '@store/slices/bookState'
+import { ToggleBookmark } from '@store/slices/bookState'
 import SliderNavigator from './SliderNavigator/SliderNavigator'
 import SettingsBar from './SettingsBar/SettingsBar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Dictionary from './ReaderView/Dictionary/Dictionary'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import { Toaster } from 'react-hot-toast'
+import QuickbarModal from './ReaderView/functions/QuickbarModal'
+import NoteModal from './ReaderView/functions/NoteModal'
+import { SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
 
 
 
 const Home = () =>{
+  const selectedRendition:number = useAppSelector((state) => state.appState.state.selectedRendition)
+  const isDualReaderMode = useAppSelector((state) => state.appState.state.dualReaderMode)
 
-  const menuOpen = useAppSelector((state) => state.bookState[0]?.state?.menuToggled)
-  const ThemeMenuActive = useAppSelector((state) => state.bookState[0]?.state?.themeMenuActive)
-  const renditionInstance = useAppSelector((state) => state.bookState[0]?.instance)
-  const bookmarks = useAppSelector((state) => state.bookState[0]?.data.bookmarks)
-  const displayedCFI = useAppSelector((state) => state.bookState[0]?.data.cfi)
-
+  const menuOpen = useAppSelector((state) => state?.appState?.state?.menuToggled)
+  const ThemeMenuActive = useAppSelector((state) => state?.appState?.state?.themeMenuActive)
+  const renditionInstance = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
+  const bookmarks = useAppSelector((state) => state.bookState[selectedRendition]?.data.bookmarks)
+  const displayedCFI = useAppSelector((state) => state.bookState[selectedRendition]?.data.cfi)
+  
   const [isPageBookmarked, setPageBookmarked] = useState(false)
   const [mouseOverMenu, setMouseOverMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
-  const sidebarOpen = useAppSelector((state) => state?.bookState[0]?.state?.sidebarMenuSelected)
+  const params = useParams()
+  const sidebarOpen = useAppSelector((state) => state?.appState?.state?.sidebarMenuSelected)
 
-  // const ThemeName = useAppSelector((state)=> state.bookState[0]?.data?.theme?.themeName)
+
   const ReaderBackgroundColor = useAppSelector((state) => {
 
     return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.background
@@ -48,7 +54,6 @@ const Home = () =>{
     return state.appState.themes[state.appState.selectedTheme]?.reader?.body?.color
 
   })
-  // const UIColor = useAppSelector((state) => state.appState.themes[state.bookState[0]?.data?.theme?.themeName].body.color)
 
   const navigate = useNavigate();
   
@@ -93,30 +98,31 @@ const Home = () =>{
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} data-tauri-drag-region style={{backgroundColor:showMenuUi? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainerLeft} ${!showMenuUi && styles.optionsToggled}`}>
           <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
-          <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu({view:0, state:false})):dispatch(SelectSidebarMenu({view:0, state:"Chapters"}))}}/>
-          <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:0, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
+          <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu(false)):dispatch(SelectSidebarMenu("Chapters"))}}/>
+          <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
 
         <div style={!showMenuUi?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
           {/* - {displayedCFI} */}
+          - {selectedRendition}
         </div>
         <div className={`${styles.menuButtonContainerRight} ${!showMenuUi && styles.optionsToggled}`}>
           <Search viewBox="0 0 24 24" onClick={()=>{
             if(sidebarOpen){
               if(sidebarOpen == "Search"){
-                dispatch(SelectSidebarMenu({view:0, state:false}))
+                dispatch(SelectSidebarMenu(false))
               }else{
-                dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+                dispatch(SelectSidebarMenu("Search"))
               }
             }else{
-              dispatch(SelectSidebarMenu({view:0, state:"Search"}))
+              dispatch(SelectSidebarMenu("Search"))
             }
             
           }}/>
           <Font viewBox="0 0 24 24" onClick={()=>{
-            dispatch(ToggleThemeMenu(0))
-            dispatch(ToggleMenu(0))
+            dispatch(ToggleThemeMenu())
+            dispatch(ToggleMenu())
           }}/>
           
 
@@ -129,8 +135,13 @@ const Home = () =>{
           for page flipping logic found in registerHandlers.tsx
       */}
       <div style={{backgroundColor:ReaderBackgroundColor}} tabIndex={0} id="reader-background" className={styles.readerBackgroundFallback}/>
-      <ReaderView/>
+      <div className={styles.readerViewsContainer} style={isDualReaderMode?{gridTemplateColumns:"1fr 1fr"}:{gridTemplateColumns:"1fr"}}>
+        <ReaderView view={0} bookHash={params.bookHash}/>
+        <ReaderView view={1} bookHash={params.bookHash}/>
+      </div>
 
+      <QuickbarModal/>
+      <NoteModal/>
       <Toaster
         position="top-right"
         reverseOrder={false}
@@ -158,12 +169,12 @@ const Home = () =>{
       <div onClick={()=>{
 
         if(sidebarOpen){
-          dispatch(SelectSidebarMenu({view:0, state:false}))
+          dispatch(SelectSidebarMenu(false))
         }else{
-          dispatch(SelectSidebarMenu({view:0, state:false}))
+          dispatch(SelectSidebarMenu(false))
         }
         if(ThemeMenuActive){
-          dispatch(ToggleThemeMenu(0))
+          dispatch(ToggleThemeMenu())
         }
       }} className={`${styles.opaqueScreen} ${(sidebarOpen) && styles.opaqueScreenActive}`}/>
 

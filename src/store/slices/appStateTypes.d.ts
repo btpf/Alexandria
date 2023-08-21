@@ -6,8 +6,20 @@ export interface defaultAppState {
       selectedTheme: string,
       sortDirection: string,
       sortBy: string,
+      readerMargins: number,
       state:{
-        fullscreen: bool
+        fullscreen: bool,
+        selectedRendition: number,
+        dualReaderMode: boolean,
+        dictionaryWord: string,
+        sidebarMenuSelected: boolean|string,
+        themeMenuActive: boolean,
+        menuToggled: boolean,
+        modals:{
+          selectedCFI: string,
+          quickbarModal: {visible: boolean, x:number, y:number},
+          noteModal: {visible: boolean, x:number, y:number}
+        },
       }
     
     }

@@ -181,10 +181,6 @@ export const setLineHeightThunk = createAsyncThunk(
   }
 )
 
-const setReaderMargins:epubjs_reducer = (state, action: PayloadAction<genericNumericDispatchType>) =>{
-  (state[action.payload.view] as bookStateStructure).data.theme.readerMargins = action.payload.value
-}
-
 
 // const SetTheme:epubjs_reducer = (state, action: PayloadAction<SetThemePayload>) =>{
 //   const themeName = action.payload.themeName
@@ -221,6 +217,5 @@ const setReaderMargins:epubjs_reducer = (state, action: PayloadAction<genericNum
 export const actions = {
   // SetFont,
   // SetTheme
-  setRenderMode,
-  setReaderMargins
+  setRenderMode
 }

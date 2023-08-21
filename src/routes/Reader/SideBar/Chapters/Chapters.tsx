@@ -5,8 +5,8 @@ import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'
 
-import { SelectSidebarMenu } from '@store/slices/bookState'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
+import { SelectSidebarMenu } from '@store/slices/appState';
 
 type SidebarTypes = {
     renditionInstance: Rendition
@@ -50,7 +50,7 @@ const Sidebar = (props:SidebarTypes)=>{
             e.stopPropagation()
             e.preventDefault()
             props.renditionInstance?.display(item.href)
-            dispatch(SelectSidebarMenu({view:0, state:false}))
+            dispatch(SelectSidebarMenu(false))
           }}
         >
           <div className={styles.rootChapterFlexContainer}>

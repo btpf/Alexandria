@@ -3,13 +3,7 @@ import React from 'react'; // we need this to make JSX compile
 
 import {
   AddHighlight, 
-  SetModalCFI,
-  MoveQuickbarModal,
   SkipMouseEvent,
-  ShowNoteModal,
-  MoveNoteModal,
-  SetDictionaryWord,
-  SelectSidebarMenu,
   
 } from '@store/slices/bookState'
 
@@ -24,18 +18,19 @@ import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MOD
 import { Rendition } from 'epubjs';
 import toast from 'react-hot-toast';
 import { writeText } from '@tauri-apps/api/clipboard';
+import { MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetModalCFI, ShowNoteModal } from '@store/slices/appState';
 
 
 const COLORS = ['#FFD600', 'red', 'orange','#00FF29', 'cyan']
 
 
 const QuickbarModal = () =>{
-
-  const quickbarModalVisible = useAppSelector((state) => state.bookState[0]?.state?.modals.quickbarModal.visible)
-  const modalX = useAppSelector((state) => state.bookState[0]?.state?.modals.quickbarModal.x)
-  const modalY = useAppSelector((state) => state.bookState[0]?.state?.modals.quickbarModal.y)
-  const selectedCFI = useAppSelector((state) => state.bookState[0]?.state?.modals.selectedCFI)
-  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[0]?.instance)
+  const selectedRendition = useAppSelector((state) => state.appState.state.selectedRendition)
+  const quickbarModalVisible = useAppSelector((state) => state?.appState?.state?.modals.quickbarModal.visible)
+  const modalX = useAppSelector((state) => state?.appState?.state?.modals.quickbarModal.x)
+  const modalY = useAppSelector((state) => state?.appState?.state?.modals.quickbarModal.y)
+  const selectedCFI = useAppSelector((state) => state?.appState?.state?.modals.selectedCFI)
+  const renditionInstance:Rendition = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
 
 
   function getEpubBounds(){
@@ -46,7 +41,6 @@ const QuickbarModal = () =>{
 
   const dispatch = useAppDispatch()
   if(quickbarModalVisible){
-
     let result:any = renditionInstance.getRange(selectedCFI)
     type EpubJSContainer = Node & {data: string}
     result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset).trim()
@@ -58,7 +52,6 @@ const QuickbarModal = () =>{
             <div onClick={async ()=>{
               renditionInstance.annotations.remove(selectedCFI, "highlight")
               dispatch(MoveQuickbarModal({
-                view: 0,
                 x:0,
                 y:0,
                 visible: false
@@ -71,8 +64,8 @@ const QuickbarModal = () =>{
                           
             }}><Copy/></div>
             <div style={!showDict?{display:"none"}:{}}><Book onClick={()=>{
-              
-              dispatch(SetDictionaryWord({view:0, word:result}))
+              console.log("About to set word", result)
+              dispatch(SetDictionaryWord(result))
               renditionInstance.annotations.remove(selectedCFI, "highlight")
               dispatch(MoveQuickbarModal({
                 view: 0,
@@ -83,7 +76,7 @@ const QuickbarModal = () =>{
 
             }}/></div>
             <div onClick={()=>{
-              dispatch(SelectSidebarMenu({view:0, state:"Search#" + result}))
+              dispatch(SelectSidebarMenu("Search#" + result))
               renditionInstance.annotations.remove(selectedCFI, "highlight")
               dispatch(MoveQuickbarModal({
                 view: 0,
@@ -111,9 +104,8 @@ const QuickbarModal = () =>{
 
                   const {x, y} = CalculateBoxPosition(renditionInstance, cfiRangeClosure, NOTE_MODAL_WIDTH, NOTE_MODAL_HEIGHT)
 
-                  dispatch(SetModalCFI({view:0,selectedCFI:cfiRangeClosure}))
+                  dispatch(SetModalCFI(cfiRangeClosure))
                   dispatch(MoveNoteModal({
-                    view: 0,
                     x,
                     y,
                     visible: true
@@ -124,15 +116,14 @@ const QuickbarModal = () =>{
 
 
                 dispatch(MoveQuickbarModal({
-                  view: 0,
                   x:0,
                   y:0,
                   visible: false
                 }))
 
-                dispatch(ShowNoteModal(0))
+                dispatch(ShowNoteModal())
                 
-                dispatch(AddHighlight({highlightRange:selectedCFI, color:item, note:"", view:0}))
+                dispatch(AddHighlight({highlightRange:selectedCFI, color:item, note:"", view:selectedRendition}))
               }}/>
 
 
