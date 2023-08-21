@@ -55,7 +55,8 @@ const store =  configureStore({
         if(action.type.includes("bookState")){
 
           console.log("Synced bookState Action:", action)
-          const currentBook:bookStateStructure = currentState.bookState[currentState.appState.state.selectedRendition]
+          const renditionToHandle = action.payload.view
+          const currentBook:bookStateStructure = currentState.bookState[renditionToHandle]
           const bookUID = currentBook.hash
   
   

@@ -299,7 +299,7 @@ class Reader extends React.Component<ReaderProps>{
     let firstLoad = false;
     if(window.__TAURI__){
       try {
-        result = await invoke("load_book_data", {checksum: params.bookHash})
+        result = await invoke("load_book_data", {checksum: this.props.bookHash})
       } catch (error) {
         if(error == "First Read"){
           console.log("First Read, Populating with default data")
