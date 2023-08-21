@@ -338,7 +338,7 @@ class Reader extends React.Component<ReaderProps>{
     payload = {
       instance: this.rendition,
       UID:this.props.view,
-      hash: params.bookHash || "hashPlaceholder",
+      hash: this.props.bookHash || "hashPlaceholder",
       saveData: result || {},
       initialLoadState: forceLoadState,
       firstLoad: firstLoad
