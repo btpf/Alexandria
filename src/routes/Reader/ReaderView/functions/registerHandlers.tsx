@@ -58,6 +58,14 @@ export default (renditionInstance:Rendition, view:number)=>{
     loadState = bookState?.loadState
     sidebarOpen = newState?.appState?.state?.sidebarMenuSelected
     viewMode = bookState?.data?.theme?.renderMode
+
+    if(selectedRendition != newState.appState.state.selectedRendition && QuickbarModalVisible){
+      // If anything is highlighted, remove it.
+      // This handles the case when changing to another rendition while something is highlighted
+      // in dual reader mode.
+      // Text must be unhighlighted before the rendition switches
+      renditionInstance.annotations.remove(selectedCFI, "highlight")
+    }
     selectedRendition = newState.appState.state.selectedRendition
     isDualReaderMode = newState.appState.state.dualReaderMode
 

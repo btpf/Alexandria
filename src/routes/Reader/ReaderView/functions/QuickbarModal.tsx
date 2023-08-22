@@ -42,6 +42,15 @@ const QuickbarModal = () =>{
   const dispatch = useAppDispatch()
   if(quickbarModalVisible){
     let result:any = renditionInstance.getRange(selectedCFI)
+    if(!result){
+      // This code was explicitely written to handle a crash related to the dual reader
+      // the selectedCFI Seems to update before the selectedRendition & renditionInstance does
+      // Because of this, in the event that the getRange returns null, We assume
+      // that is because it is trying to get the selectedCFI Range of the wrong rendition
+      
+      console.log("Quickbar Crash prevented")
+      return (<></>)
+    }
     type EpubJSContainer = Node & {data: string}
     result = (result.endContainer as EpubJSContainer).data.substring(result.startOffset, result.endOffset).trim()
     const showDict = !result.includes(" ")
