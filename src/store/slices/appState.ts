@@ -25,7 +25,8 @@ const initialState: defaultAppState = {
   state:{
     fullscreen: false,
     selectedRendition: 0,
-    dualReaderMode: true,
+    dualReaderMode: false,
+    dualReaderReversed: false,
     dictionaryWord: "",
     sidebarMenuSelected: false,
     menuToggled: true, 
@@ -37,6 +38,8 @@ const initialState: defaultAppState = {
     }
   }
 }
+
+export const initialAppState = initialState
 
 type SortPayload = {
   sortDirection:string,
@@ -91,6 +94,9 @@ export const {
   ToggleMenu, 
   SetDictionaryWord,
   ToggleThemeMenu,
+  SetDualReaderMode,
+  resetBookAppState,
+  SetDualReaderReversed,
 
   /* Modals */
   MoveQuickbarModal,

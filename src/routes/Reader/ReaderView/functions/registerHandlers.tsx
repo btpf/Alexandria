@@ -84,6 +84,10 @@ export default (renditionInstance:Rendition, view:number)=>{
   const scrollEventsHandler = (event) =>{
     // Prevent flipping pages when scrolling on valid elements
     if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord || (viewMode == "continuous")) return
+
+    if(selectedRendition != view) return
+
+    
     if(checkScrollDirectionIsUp(event)){
       renditionInstance.prev()
     }else{
@@ -126,19 +130,26 @@ export default (renditionInstance:Rendition, view:number)=>{
     backgroundElement?.removeEventListener("click", clickHandler)
     window.removeEventListener("keydown", keyboardEventsHandler)
     window.removeEventListener("wheel", scrollEventsHandler);
+    renditionInstance.off("keydown", keyboardEventsHandler)
+    renditionInstance.off("dblclick", doubleClickHandler)
+    renditionInstance.off("click", clickHandler);
+    renditionInstance.off("selected", selectionHandler);
+    renditionInstance.off('rendered', redrawAnnotations)
+    renditionInstance.off("attached", renditionAttachmentHandler)
+    renditionInstance.off("locationChanged", pageTurnHandler)
   }
 
 
-
-  renditionInstance.on("dblclick", (event:any, contents:any) =>{
+  const doubleClickHandler = (event:any, contents:any) =>{
     console.log("Double click event")
     // If the mousedown timer has been set
     if (timer != null){
-      // Clear the timer
+    // Clear the timer
       clearTimeout(timer)
       timer = null
     }
-  })
+  }
+
   console.log("REGISTERING HANDLER FOR HANDLER")
 
   
@@ -351,12 +362,10 @@ export default (renditionInstance:Rendition, view:number)=>{
     clearSelection()
 
   }
-  renditionInstance.on("click", clickHandler);
 
 
 
-
-  renditionInstance.on("selected", (cfiRange:any, contents:Contents)=>{
+  const selectionHandler = (cfiRange:any, contents:Contents)=>{
 
     // This code will check whether or not there are any img inside of the cfi range.
     // We prevent this because the underlying library will crash in the event that an image is selected
@@ -413,33 +422,13 @@ export default (renditionInstance:Rendition, view:number)=>{
       visible: false
     }))
         
-  });
-  
+  }
+
 
   const redrawAnnotations = () => renditionInstance.views().forEach((view:View) => view.pane ? view.pane.render() : null)
     
-  renditionInstance.on('rendered', redrawAnnotations)
-
-  const flexClickHandler = (e:any)=>{
-    if(e.target == flexContainer){
-      clickHandler(e)
-    }
-  }
-  renditionInstance.on("attached",()=>{
-    backgroundElement = window.document.getElementById("reader-background")
-    if(backgroundElement){
-      // Simply remove the click listener, which will fix issue in case of 
-      // backgroundElement.removeEventListener("click", clickHandler)
-      console.log("Background element found")
-      backgroundElement.addEventListener("click", clickHandler)
-    }else{
-      console.log("Error: Background container not found")
-    }
-    
 
 
-      
-  })
 
   // Handle case where epubJS dispatches it's own event (Like if the user scrolled onto a new page)
   const pageTurnHandler = (e:any)=>{
@@ -459,7 +448,7 @@ export default (renditionInstance:Rendition, view:number)=>{
   }
 
 
-  renditionInstance.on("locationChanged", pageTurnHandler)
+  
 
 
   renditionInstance.on("started", ()=>{
@@ -467,12 +456,40 @@ export default (renditionInstance:Rendition, view:number)=>{
   })
 
   
+
+  // const flexClickHandler = (e:any)=>{
+  //   if(e.target == flexContainer){
+  //     clickHandler(e)
+  //   }
+  // }
+
+  const renditionAttachmentHandler = ()=>{
+    backgroundElement = window.document.getElementById("reader-background")
+    if(backgroundElement){
+      // Simply remove the click listener, which will fix issue in case of 
+      // backgroundElement.removeEventListener("click", clickHandler)
+      console.log("Background element found")
+      backgroundElement.addEventListener("click", clickHandler)
+    }else{
+      console.log("Error: Background container not found")
+    }
+    
+      
+  }
   
-
-
+  
+  renditionInstance.on("attached", renditionAttachmentHandler)
+  renditionInstance.on("locationChanged", pageTurnHandler)
   renditionInstance.on("keydown", keyboardEventsHandler)
+  renditionInstance.on("dblclick", doubleClickHandler)
+  renditionInstance.on("click", clickHandler);
+  renditionInstance.on("selected", selectionHandler);
+  renditionInstance.on('rendered', redrawAnnotations)
   window.addEventListener('keydown', keyboardEventsHandler)
   window.addEventListener("wheel", scrollEventsHandler);
+
+
+
   // renditionInstance.on("displayed", ()=>{
 
   // })

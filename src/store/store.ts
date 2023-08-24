@@ -56,6 +56,11 @@ const store =  configureStore({
 
           console.log("Synced bookState Action:", action)
           const renditionToHandle = action.payload.view
+          if(renditionToHandle === undefined){
+            console.log("Error: Could not save information for following payload")
+            console.log(action.payload)
+            return
+          }
           const currentBook:bookStateStructure = currentState.bookState[renditionToHandle]
           const bookUID = currentBook.hash
   

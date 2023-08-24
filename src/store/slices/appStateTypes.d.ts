@@ -11,6 +11,7 @@ export interface defaultAppState {
         fullscreen: bool,
         selectedRendition: number,
         dualReaderMode: boolean,
+        dualReaderReversed: boolean,
         dictionaryWord: string,
         sidebarMenuSelected: boolean|string,
         themeMenuActive: boolean,

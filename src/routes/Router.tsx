@@ -13,7 +13,8 @@ export default (
       <Route path="/settings/*" element={<Settings />} />
       <Route path="/reader" element={<Reader />} />
       <Route path="/info/:bookHash" element={<Info />} />
-      <Route path="/reader/:bookHash/" element={<Reader />}/>
+      <Route path="/reader/:bookHash1/" element={<Reader />}/>
+      <Route path="/reader/:bookHash1/:bookHash2/" element={<Reader />}/>
     </>
   )
 );

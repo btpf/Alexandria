@@ -1,5 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit"
-import { appStateReducer, appStateReducerSingle } from "../../appState"
+import { appStateReducer, appStateReducerSingle, initialAppState } from "../../appState"
 
 
 const SetFullScreen:appStateReducer = (state, action: PayloadAction<boolean>) =>{
@@ -10,6 +10,17 @@ const SetSelectedRendition:appStateReducer = (state, action: PayloadAction<numbe
   state.state.selectedRendition = action.payload
 }
 
+const SetDualReaderMode:appStateReducer = (state, action: PayloadAction<boolean>) =>{
+  state.state.dualReaderMode = action.payload
+}
+
+const SetDualReaderReversed:appStateReducer = (state, action: PayloadAction<boolean>) =>{
+  state.state.dualReaderReversed = action.payload
+}
+
+const resetBookAppState:appStateReducerSingle = (state) =>{
+  state.state = initialAppState.state
+}
 
 const SelectSidebarMenu:appStateReducer = (state, action: PayloadAction<string|boolean>) =>{
   state.state.sidebarMenuSelected = action.payload
@@ -43,6 +54,9 @@ export const actions = {
   ToggleMenu,
   SetDictionaryWord,
   ToggleThemeMenu,
-  setReaderMargins
+  setReaderMargins,
+  SetDualReaderMode,
+  resetBookAppState,
+  SetDualReaderReversed
 }
   

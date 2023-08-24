@@ -32,7 +32,7 @@ import { ToggleMenu } from '@store/slices/appState';
 
 
 const mapState = (state: RootState, ownProps:inheritedProps) => {
-  if(Object.keys(state.bookState).includes("0")){
+  if(Object.keys(state.bookState).includes("0") || Object.keys(state.bookState).includes("1")){
     return {
       LoadState: state.bookState[ownProps.view].loadState,
       UIBackgroundColor: state.appState.themes[state.appState.selectedTheme].ui.primaryBackground,
@@ -55,7 +55,8 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 
 type inheritedProps = {
   view: number,
-  bookHash: string | undefined
+  bookHash: string | undefined,
+  contributesMountPoint: number
 }
 
 type ReaderProps = PropsFromRedux & inheritedProps &  {
@@ -168,7 +169,9 @@ class Reader extends React.Component<ReaderProps>{
     return(
       <>
         {/* This will help prevent flashbang */}
-        <div style={{backgroundColor:this.props.UIBackgroundColor, width: `${this.props.readerMargins}%`, marginLeft:"auto", marginRight:"auto"}} className={styles.epubContainer} id={"BookArea" + this.UID} ref={this.renderWindow}/>
+        <div style={{backgroundColor:this.props.UIBackgroundColor, width: `${this.props.readerMargins}%`, marginLeft:"auto", marginRight:"auto"}}
+          className={styles.epubContainer} id={"BookArea-" + this.props.contributesMountPoint}
+          ref={this.renderWindow}/>
         {/* <DialogPopup resetMouse={()=>this.instanceVariables.mouseUp = false}/> */}
       </>
     )
@@ -190,24 +193,30 @@ class Reader extends React.Component<ReaderProps>{
 
 
   componentDidUpdate(prevProps: any, prevState: any) {
-    if(this.props.LoadState != prevProps.LoadState && this.props.LoadState == LOADSTATE.COMPLETE){
+    // Do nothing if the bookstate is not complete
+    if(this.props.LoadState != LOADSTATE.COMPLETE) return
+
+
+    if(this.props.LoadState != prevProps.LoadState){
       this.rendition.display(store.getState().bookState[this.props.view].data.cfi).then(()=>{
         this.rendition.display(store.getState().bookState[this.props.view].data.cfi)
       })
     }
-    console.log(this.props.renderMode, prevProps.renderMode)
-    if(this.props.renderMode != prevProps.renderMode && prevProps.renderMode && this.props.LoadState == LOADSTATE.COMPLETE){
-      const bookInstance = this.book
+   
+    if(
+      (this.props.renderMode != prevProps.renderMode && prevProps.renderMode)
+      || (this.props.view != prevProps.view)
+    ){
       this.rendition.destroy();
       this.unsubscribeHandlers()
+
+      // In the case of the dual reader mode, this will work as the two renditions will cross remove eachother
       this.props.RemoveRendition(this.props.view)
       
       this.initializeRendition(this.props.renderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
-    }else{
-      console.log(this.props.renderMode, prevProps.renderMode )
     }
-    if(this.props.readerMargins != prevProps.readerMargins && this.props.LoadState == LOADSTATE.COMPLETE){
-      console.log("DID I CRASH HERE?", this.rendition)
+
+    if(this.props.readerMargins != prevProps.readerMargins){
       // This will be undefined on the first load.
       // Undefined -> Initial default value -> Value from data
       if(prevProps.readerMargins && this.rendition && this.rendition.currentLocation){
@@ -327,8 +336,8 @@ class Reader extends React.Component<ReaderProps>{
     }
 
 
-
-    this.rendition = this.book.renderTo(this.renderWindow.current?.id || "", mySettings);
+    const mountPoint = "BookArea-" + this.props.view
+    this.rendition = this.book.renderTo(mountPoint || "", mySettings);
 
     this.rendition.themes.default({
       body: { "padding-top": "10px !important" },
@@ -349,7 +358,7 @@ class Reader extends React.Component<ReaderProps>{
 
 
       
-    const displayed = this.rendition.display();
+    // const displayed = this.rendition.display();
 
 
     await this.props.SyncedAddRendition(payload)

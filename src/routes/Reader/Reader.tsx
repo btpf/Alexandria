@@ -23,8 +23,7 @@ import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import { Toaster } from 'react-hot-toast'
 import QuickbarModal from './ReaderView/functions/QuickbarModal'
 import NoteModal from './ReaderView/functions/NoteModal'
-import { SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
-
+import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
 
 
 const Home = () =>{
@@ -42,6 +41,7 @@ const Home = () =>{
   const [currentPage, setCurrentPage] = useState('')
   const params = useParams()
   const sidebarOpen = useAppSelector((state) => state?.appState?.state?.sidebarMenuSelected)
+  const dualReaderReversed = useAppSelector((state) => state?.appState?.state?.dualReaderReversed)
 
 
   const ReaderBackgroundColor = useAppSelector((state) => {
@@ -81,7 +81,7 @@ const Home = () =>{
     }else{
       setPageBookmarked(false)
     }
-  },[bookmarks, currentPage])
+  },[bookmarks, currentPage])  
 
 
 
@@ -97,7 +97,10 @@ const Home = () =>{
 
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} data-tauri-drag-region style={{backgroundColor:showMenuUi? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainerLeft} ${!showMenuUi && styles.optionsToggled}`}>
-          <HomeIcon viewBox="0 0 24 24" onClick={()=>navigate('/')}/>
+          <HomeIcon viewBox="0 0 24 24" onClick={()=>{
+            navigate('/')
+            dispatch(resetBookAppState())
+          }}/>
           <List viewBox="0 0 24 24" onClick={()=>{sidebarOpen?dispatch(SelectSidebarMenu(false)):dispatch(SelectSidebarMenu("Chapters"))}}/>
           <Bookmark viewBox="0 0 24 24" style={{fill:isPageBookmarked? "gold":'none', strokeWidth: 1}} onClick={()=>{dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))}}/>
         </div>
@@ -136,8 +139,8 @@ const Home = () =>{
       */}
       <div style={{backgroundColor:ReaderBackgroundColor}} tabIndex={0} id="reader-background" className={styles.readerBackgroundFallback}/>
       <div className={styles.readerViewsContainer} style={isDualReaderMode?{gridTemplateColumns:"1fr 1fr"}:{gridTemplateColumns:"1fr"}}>
-        <ReaderView view={0} bookHash={params.bookHash}/>
-        <ReaderView view={1} bookHash={params.bookHash}/>
+        <ReaderView view={!dualReaderReversed?0:1} contributesMountPoint={0} bookHash={params.bookHash1}/>
+        {isDualReaderMode?<ReaderView view={!dualReaderReversed?1:0} contributesMountPoint={1} bookHash={params.bookHash2}/>:<></>}
       </div>
 
       <QuickbarModal/>

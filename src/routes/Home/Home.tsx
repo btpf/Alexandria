@@ -30,10 +30,9 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'
 
 
-
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import FakeCover from './FakeCover/FakeCover';
-import { SetSortSettings } from '@store/slices/appState';
+import { SetDualReaderMode, SetSortSettings } from '@store/slices/appState';
 
 import AddFiles from "@resources/feathericons/folder-plus.svg"
 import toast, { Toaster } from 'react-hot-toast';
@@ -148,7 +147,9 @@ const Shelf = () =>{
   const [isDragActive, setDragActive] = useState(false)
   let mouseDownTime = new Date();
   const [mouseWasHeld, setMouseWasHeld] = useState(false)
-  const holdClickTimeout = useRef(null);
+  const holdClickTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const titleBarHotTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // This is used to handle a bug where double clicking on the titlebar to maximize it will cause
   // a book to be selected/opened
@@ -158,8 +159,12 @@ const Shelf = () =>{
     <>
       <div onMouseDown={()=>{
         setHotTitlebar(true)
-        setTimeout(()=>{
+        if(titleBarHotTimeout.current){
+          clearTimeout(titleBarHotTimeout.current)
+        }
+        titleBarHotTimeout.current = setTimeout(()=>{
           setHotTitlebar(false)
+          titleBarHotTimeout.current = null
         }, 1000)
 
       }} data-tauri-drag-region className={styles.titleBar}>
@@ -200,7 +205,24 @@ const Shelf = () =>{
       </div>
 
       <div style={(selectedBooks.size > 1)?{}:{display:"none"}} className={styles.multiSelectMenuContainer}>
-        <div onClick={()=>setSelectedBooks(new Set([]))} style={{height:18, width:18, border:"1px solid var(--text-secondary)", borderRadius:2, marginRight:5, cursor:"pointer"}}></div>
+        
+        
+        {
+          selectedBooks.size == 2? 
+       
+            <div style={{marginLeft:15, cursor:"pointer"}} onClick={()=>{
+              const booksArray = Array.from(selectedBooks)
+              const navPath = "/reader/" + booksArray[0] + "/" + booksArray[1]
+              dispatch(SetDualReaderMode(true))
+              navigate(navPath)
+            }}>Dual Reader (Experimental)</div>
+
+            :
+            <></>}
+
+
+        <div onClick={()=>setSelectedBooks(new Set([]))} 
+          style={{marginLeft:"auto", height:18, width:18, border:"1px solid var(--text-secondary)", borderRadius:2, marginRight:5, cursor:"pointer"}}></div>
         <Trash
           className={styles.multiSelectDelete} style={{color:"red", cursor:"pointer"}}
           onClick={()=>{
@@ -256,7 +278,7 @@ const Shelf = () =>{
               <div key={book.hash} className={styles.boxPlaceholder}
                 onMouseDown={()=>{
                   if(isTitlebarHot) return
-                  clearTimeout(holdClickTimeout.current)
+                  clearTimeout((holdClickTimeout.current as NodeJS.Timeout))
                   mouseDownTime = new Date();
                   const timeMs = mouseDownTime.getTime();
                   holdClickTimeout.current = setTimeout(()=>{
@@ -270,7 +292,7 @@ const Shelf = () =>{
                   if(isTitlebarHot) return
 
 
-                  clearTimeout(holdClickTimeout.current)
+                  clearTimeout((holdClickTimeout.current as NodeJS.Timeout))
                   
                   
 
@@ -302,7 +324,7 @@ const Shelf = () =>{
                       e.preventDefault()
                       e.stopPropagation()
                     }} onMouseUp={(e: React.MouseEvent<HTMLElement>)=>{
-                      clearTimeout(holdClickTimeout.current)
+                      clearTimeout((holdClickTimeout.current as NodeJS.Timeout))
                       e.preventDefault()
                       e.stopPropagation()
                       setSelectedBooks(new Set([...selectedBooks, book.hash]))
