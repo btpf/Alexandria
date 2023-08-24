@@ -1,5 +1,5 @@
 <h1 align="center">Alexandria</h1>
-<div align="center">A minimalistic Cross Platform eBook reader, built with Tauri ❤️ Epub.js</div>
+<div align="center">A minimalistic cross platform eBook reader, built with Tauri ❤️ Epub.js</div>
 <div align="center"><a href="https://github.com/btpf/Alexandria/releases">Download</a> | <a href="/">Website</a></div>
 <br>
 
@@ -12,21 +12,24 @@
 <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  = Work in Progress (For 1.0)
 <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  = Planned (After 1.0)
 
+- Supported Systems:
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Windows 8+ (.exe, .msi)
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Linux (.AppImage, .deb)
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Android
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  IOS & OSx
 - Supported Formats:
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> EPUB (.epub, .epub3)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Kindle (.azw, .azw3) and Mobipocket (.mobi)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  FictionBook (.fb2, .fb2.zip)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Comic book archive (.cbr, .cbz, .cbt, .cb7)
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Desktop Support: Windows, MacOS, Linux
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Mobile Support (Android + IOS)
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Custom Theme Support + Editor
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Custom Font + Font Downloader
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Highlights, Notes, and Bookmarks
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Reading progress slider with chapter marks
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Single-column, two-column, or continuous scrolling layouts
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Adjust Word Spacing, Line Height, and Reader Margins
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Highlight Exports
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Yellow circle/Flat/yellow_circle_flat.svg">  Split Screen Layout
+- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Highlight Exports
+- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Split Screen Layout
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Offline Dictionary Support
 
 ## Screenshots:
@@ -44,6 +47,8 @@
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/f2ce3aba-0785-472a-965e-0e2d59a36140"> </div>
 
 ---
-Node Version: v16.16.0
-
-Thanks to Epub.JS and Foliate for making this project possible. 
+Built With Node Version: v16.16.0
+## Credits
+[johnfactotum/foliate](https://github.com/johnfactotum/foliate) - Inspiration for building project, code snippets, and FictionBook + Comicbook Support  
+[futurepress/epub.js](https://github.com/futurepress/epub.js) - Providing foundation for project  
+[bfabiszewski/libmobi](https://github.com/bfabiszewski/libmobi) - Providing Kindle Format Support  
