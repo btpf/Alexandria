@@ -59,7 +59,6 @@ const FontManager = (props:any)=>{
           // // this means if the name has an extension like .ttf
           // if(item.includes(".")){
           const fontName = item.split(".")[0].replaceAll(" ", "_")
-          console.log("LOADING", fontName, "With path", newPath)
           const font = new FontFace(fontName, `url(${convertFileSrc(newPath)})`);
           //   // wait for font to be loaded
           font.load().then(()=>{
@@ -103,7 +102,6 @@ const FontManager = (props:any)=>{
             step={null}
             onChange={(e)=>{
               if(typeof e === "number"){
-              // dispatch(SetProgress({view: 0, progress: e/1000}))
                 setSelectedWeight(e)
               }
 
@@ -140,7 +138,7 @@ const FontManager = (props:any)=>{
                     console.log("Font deleted")
                   })
                 }} className={styles.trash}/>     
-                <input className={styles.selector} checked={fontList[mappedFontName]} type="radio" onChange={()=>{/*Removes error from console */}} onClick={()=>{
+                <input style={{display:"none"}} className={styles.selector} checked={fontList[mappedFontName]} type="radio" onChange={()=>{/*Removes error from console */}} onClick={()=>{
                   const newObj = {} as {[key: string]: boolean}
                   newObj[mappedFontName] = !fontList[mappedFontName]
                   const newList = {...fontList, ...newObj}
