@@ -19,7 +19,10 @@ const SetDualReaderReversed:appStateReducer = (state, action: PayloadAction<bool
 }
 
 const resetBookAppState:appStateReducerSingle = (state) =>{
-  state.state = initialAppState.state
+  const myState = {...initialAppState.state}
+  myState["fullscreen"] = state.state.fullscreen
+
+  state.state = myState
 }
 
 const SelectSidebarMenu:appStateReducer = (state, action: PayloadAction<string|boolean>) =>{
