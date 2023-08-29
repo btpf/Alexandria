@@ -198,9 +198,15 @@ class Reader extends React.Component<ReaderProps>{
 
 
     if(this.props.LoadState != prevProps.LoadState){
-      this.rendition.display(store.getState().bookState[this.props.view].data.cfi).then(()=>{
-        this.rendition.display(store.getState().bookState[this.props.view].data.cfi)
-      })
+      const loadedCFI = store.getState().bookState[this.props.view].data.cfi
+      // Handle case where book is opened for first time
+      if(!loadedCFI){
+        this.rendition.display()
+      }else{
+        this.rendition.display(loadedCFI).then(()=>{
+          this.rendition.display(loadedCFI)
+        })
+      }
     }
    
     if(
