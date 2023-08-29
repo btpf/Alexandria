@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 import { invoke } from '@tauri-apps/api'
 import {Rendition} from 'epubjs/types'
-import { convertFileSrc } from '@tauri-apps/api/tauri'
 import { setLineHeightThunk, setWordSpacingThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager'
 import {  setRenderMode } from '@store/slices/bookState'
 import ScriptIcon from '@resources/iconmonstr/iconmonstr-script-2.svg'

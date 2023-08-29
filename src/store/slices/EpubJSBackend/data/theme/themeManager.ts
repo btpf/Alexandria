@@ -5,6 +5,9 @@ import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { bookStateStructure, epubjs_reducer } from "../../epubjsManager.d"
 import {SetFontPayload, SetThemePayload} from './themeManager.d'
+import { platform } from '@tauri-apps/api/os';
+
+let IS_LINUX:boolean|undefined = undefined
 
 type renderModeDispatchType = {
   view: number,
@@ -25,6 +28,12 @@ type fontDispatchType = {
 export const setFontThunk = createAsyncThunk(
   'bookState/setFontV2',
   async (fontPayload: fontDispatchType, thunkAPI) => {
+
+    if(IS_LINUX == undefined){
+      IS_LINUX = await platform() == "linux"
+    }
+
+
     const state = (thunkAPI.getState() as RootState)
     console.log("PRINTING SETFONT STATE")
     console.log(state)
@@ -75,7 +84,7 @@ export const setFontThunk = createAsyncThunk(
         fontsCache += 
           `@font-face {
             font-family: "${fontPayload.font}";
-            src: url("${convertFileSrc(path)}") format("truetype");
+            src: url("${IS_LINUX?"http://127.0.0.1:16780/" + path.split('/').slice(-4).join("/"):convertFileSrc(path)}") format("truetype");
             font-weight: ${myWeight};
             font-style: normal;
           }

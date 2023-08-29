@@ -37,8 +37,9 @@ import { SetDualReaderMode, SetSortSettings } from '@store/slices/appState';
 import AddFiles from "@resources/feathericons/folder-plus.svg"
 import toast, { Toaster } from 'react-hot-toast';
 
-
+import { platform } from '@tauri-apps/api/os';
 const SUPPORTED_FORMATS = ['epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc']
+let IS_LINUX = false
 interface BookData {
   author: string;
   title:string,
@@ -131,10 +132,16 @@ const Shelf = () =>{
   useEffect(()=>{
     console.log("Home Page Loaded")
     if(window.__TAURI__){
-
-      invoke("get_books").then((data)=>{
-        setBooks((data as BookData[]))
+      platform().then((result)=>{
+        if(result == "linux"){
+          IS_LINUX = true
+        }
+        invoke("get_books").then((data)=>{
+          setBooks((data as BookData[]))
+        })
       })
+
+
       
     }
     
@@ -260,7 +267,7 @@ const Shelf = () =>{
           
           
         </div>}
-        
+
         {myBooks
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
           .sort((a, b) =>{ 
@@ -361,7 +368,7 @@ const Shelf = () =>{
                   </div>
 
                   {book.cover_url?
-                    <img className={styles.bookImage} style={{backgroundColor:"white"}} src={book.cover_url.startsWith("blob:")? book.cover_url: convertFileSrc(book.cover_url)}/>
+                    <img className={styles.bookImage} style={{backgroundColor:"white"}} src={IS_LINUX? "http://127.0.0.1:16780/" + book.cover_url.split('/').slice(-4).join("/"): convertFileSrc(book.cover_url)}/>
                     :
                     <FakeCover title={book.title} author={book.author}/>
                   }

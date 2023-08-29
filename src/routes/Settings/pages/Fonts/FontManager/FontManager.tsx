@@ -10,6 +10,7 @@ import SaveIcon from '@resources/iconmonstr/iconmonstr-save-14.svg'
 import TashIcon from '@resources/feathericons/trash-2.svg'
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { platform } from '@tauri-apps/api/os';
 
 
 
@@ -41,37 +42,51 @@ const FontManager = (props:any)=>{
   const [currentDataList, setCurrentDataList] = useState(myStyle)
 
   useEffect(()=>{
-    invoke("list_fonts").then((response)=>{
-      const typedResponse = response as ListFontsType
-      // console.log(response.fontMap)
-      setFontList(typedResponse.fontMap)
-      Object.keys(typedResponse.fontMap).forEach((item)=>{
-        // console.log(item)
-        invoke("get_font_urls", {name: item}).then((paths)=>{
-          const typedPaths = paths as [string]
-          const newPath = typedPaths.find((path)=> path.includes("400.ttf"))
-          if(newPath == undefined){
-            console.log("font was not found")
-            return
-          }
-          console.log(newPath)
-          // if(!path) return
-          // // this means if the name has an extension like .ttf
-          // if(item.includes(".")){
-          const fontName = item.split(".")[0].replaceAll(" ", "_")
-          const font = new FontFace(fontName, `url(${convertFileSrc(newPath)})`);
-          //   // wait for font to be loaded
-          font.load().then(()=>{
-            document.fonts.add(font);
-          });
-          // }
-
+    platform().then((result)=>{
+      let IS_LINUX = false
+      if(result == "linux"){
+        IS_LINUX = true
+      }
+      invoke("list_fonts").then((response)=>{
+        const typedResponse = response as ListFontsType
+        // console.log(response.fontMap)
+        setFontList(typedResponse.fontMap)
+        Object.keys(typedResponse.fontMap).forEach((item)=>{
+          // console.log(item)
+          invoke("get_font_urls", {name: item}).then((paths)=>{
+            const typedPaths = paths as [string]
+            const newPath = typedPaths.find((path)=> path.includes("400.ttf"))
+            if(newPath == undefined){
+              console.log("font was not found")
+              return
+            }
+            console.log(newPath)
+            // if(!path) return
+            // // this means if the name has an extension like .ttf
+            // if(item.includes(".")){
+            const fontName = item.split(".")[0].replaceAll(" ", "_")
+            let fontSource = convertFileSrc(newPath)
+            if(IS_LINUX){
+              fontSource = encodeURI("http://127.0.0.1:16780/" + newPath.split('/').slice(-4).join("/"))
+            }
+            const font = new FontFace(fontName, `url(${fontSource}) format('truetype')`);
+            //   // wait for font to be loaded
+            font.load().then(()=>{
+              document.fonts.add(font);
+            }).catch((e)=>{
+              console.log("Caught font load error")
+              console.log(e)
+            });
+            // }
+  
+          })
         })
+  
+        
+  
       })
-
-      
-
     })
+
   }, [])
   return (
     <>

@@ -26,7 +26,7 @@ const defaultMarks = [100,200,300,400,500,600,700,800].reduce((a, v)=>{
 },{})
 
 type ListFontsType = { fontMap: {[key: string]: boolean} };
-
+import { platform } from '@tauri-apps/api/os';
 
 const Fonts = ()=>{
   // const dispatch = useAppDispatch()
@@ -35,30 +35,37 @@ const Fonts = ()=>{
   const [fontList, setFontList] = useState<{[key: string]: boolean}>({})
 
   useEffect(()=>{
-    invoke("list_fonts").then((response)=>{
-      const response2 = response as ListFontsType
-      // console.log(response.fontMap)
-      setFontList(response2.fontMap)
-      Object.keys(response2.fontMap).forEach((item)=>{
-        // console.log(item)
-        invoke("get_font_url", {name: item}).then((path:any)=>{
-          if(!path) return
-          // this means if the name has an extension like .ttf
-          if(item.includes(".")){
-            const fontName = item.split(".")[0].replaceAll(" ", "_")
-            const font = new FontFace(fontName, `url(${convertFileSrc(path)})`);
-            // wait for font to be loaded
-            font.load().then(()=>{
-              document.fonts.add(font);
-            });
-          }
-
+    platform().then((result)=>{
+      let IS_LINUX = false
+      if(result == "linux"){
+        IS_LINUX = true
+      }
+      invoke("list_fonts").then((response)=>{
+        const response2 = response as ListFontsType
+        // console.log(response.fontMap)
+        setFontList(response2.fontMap)
+        Object.keys(response2.fontMap).forEach((item)=>{
+          // console.log(item)
+          invoke("get_font_url", {name: item}).then((path:any)=>{
+            if(!path) return
+            // this means if the name has an extension like .ttf
+            if(item.includes(".")){
+              const fontName = item.split(".")[0].replaceAll(" ", "_")
+              const font = new FontFace(fontName, `url(${IS_LINUX?encodeURI("http://127.0.0.1:16780/" + path.split('/').slice(-4).join("/")):convertFileSrc(path)})`);
+              // wait for font to be loaded
+              font.load().then(()=>{
+                document.fonts.add(font);
+              });
+            }
+  
+          })
         })
+  
+        
+  
       })
-
-      
-
     })
+
   }, [])
   return (
     <div className={styles.themeContainer}>

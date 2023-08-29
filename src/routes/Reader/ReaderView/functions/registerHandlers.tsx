@@ -3,8 +3,6 @@ import { AllowMouseEvent, SetLoadState, setProgrammaticProgressUpdate, SetProgre
 import { LOADSTATE } from "@store/slices/constants";
 import { bookStateStructure } from "@store/slices/EpubJSBackend/epubjsManager.d";
 import store from "@store/store";
-import { invoke } from "@tauri-apps/api";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
 import { Contents, EpubCFI, Rendition } from "epubjs";
 import View from "epubjs/types/managers/view";
 import { 

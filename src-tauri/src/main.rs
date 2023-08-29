@@ -73,6 +73,7 @@ async fn main() {
             // https://github.com/tauri-apps/tauri/issues/3725#issuecomment-1552804332
             #[cfg(target_os = "linux")]
             tokio::spawn(async move {
+                println!("Serving {}", app_data_platform_dir.get().unwrap().display());
                 let serve_dir = ServeDir::new(app_data_platform_dir.get().unwrap());
 
                 let axum_app = Router::new().nest_service("/", serve_dir).layer(
