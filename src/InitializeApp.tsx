@@ -8,6 +8,8 @@ import { appWindow } from "@tauri-apps/api/window"
 import React, { useEffect, useLayoutEffect } from "react"
 import { useDispatch } from "react-redux"
 import styles from './InitializeStyles.module.scss'
+import { Toaster } from 'react-hot-toast'
+
 const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   const themes = useAppSelector((state)=> state.appState.themes)
   const selectedTheme = useAppSelector((state)=> state.appState.selectedTheme)
@@ -52,6 +54,11 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
       "--rounded-corners":isFullscreen?"0px":"10px",
       "height":"100%", "backgroundColor":themes[selectedTheme].ui.tertiaryBackground, color: themes[selectedTheme].ui.primaryText}}>
       {/* <div style={{"height":"100%"}}> */}
+      <Toaster
+        containerStyle={{top:60}}
+        position="top-right"
+        reverseOrder={false}
+      />
       {children}
     </div>
   )

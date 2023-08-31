@@ -35,7 +35,7 @@ import FakeCover from './FakeCover/FakeCover';
 import { SetDualReaderMode, SetSortSettings } from '@store/slices/appState';
 
 import AddFiles from "@resources/feathericons/folder-plus.svg"
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import { platform } from '@tauri-apps/api/os';
 const SUPPORTED_FORMATS = ['epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc']
@@ -419,10 +419,6 @@ const Shelf = () =>{
 
 
       </div>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-      />
     </>
 
   )

@@ -20,7 +20,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Dictionary from './ReaderView/Dictionary/Dictionary'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
-import { Toaster } from 'react-hot-toast'
+
 import QuickbarModal from './ReaderView/functions/QuickbarModal'
 import NoteModal from './ReaderView/functions/NoteModal'
 import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
@@ -145,10 +145,6 @@ const Home = () =>{
 
       <QuickbarModal/>
       <NoteModal/>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-      />
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} className={`${styles.readerFooterBar}  ${!showMenuUi && styles.optionsToggled}`}>
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.arrowButtonContainer}`}>
           <ArrowLeft viewBox={"0 0 24 24"} />

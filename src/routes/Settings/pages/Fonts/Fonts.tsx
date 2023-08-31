@@ -9,7 +9,6 @@ import SaveIcon from '@resources/iconmonstr/iconmonstr-save-14.svg'
 import TashIcon from '@resources/feathericons/trash-2.svg'
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import toast, { Toaster } from 'react-hot-toast';
 import FontManager from "./FontManager/FontManager";
 
 
@@ -83,11 +82,6 @@ const Fonts = ()=>{
       </div> */}
       <FontManager/>
       {/* {(selectedPage=="Downloaded")? <Downloader  changePage={()=>setSelectedPage("installed")}/>:<Installed changePage={()=>setSelectedPage("Downloaded")}/>} */}
-      <Toaster
-        containerStyle={{top:60}}
-        position="top-right"
-        reverseOrder={false}
-      />
     </div>
 
     
