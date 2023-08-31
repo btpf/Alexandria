@@ -5,7 +5,6 @@
   //   width: 100px;
 
   aspect-ratio: 170/250;
-  height:100%;
   display: flex;
   flex-direction:column;
   justify-content:center;
@@ -15,6 +14,9 @@
   align-self: flex-end;
   grid-row: 1/3;
   grid-column: 1;
+
+  width: var(--book-width);
+  height: var(--book-height);
 }
 .title{
   padding:5px 0 5px 5px;
