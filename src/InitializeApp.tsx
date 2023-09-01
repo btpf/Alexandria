@@ -57,6 +57,7 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
       <Toaster
         containerStyle={{top:60}}
         position="top-right"
+        style={{PointerEvent:"none"}}
         reverseOrder={false}
       />
       {children}
