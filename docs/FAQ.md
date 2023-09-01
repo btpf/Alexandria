@@ -1,13 +1,14 @@
 # FAQ
 
 ### Will there be pdf support?
-At the moment, there are no plans to support PDF, or formats other than the ones already planned.
+Currently, there are no plans to support PDF, or formats other than the ones already planned.
+The app is built around EpubJS and is designed for responsive book formats. Including PDF support would mean incorporating something like pdf.js and would require tons of effort and rewrite which is completely off course at this moment.
 
 ### When will mobile support be released?
 Currently my objective is to finish up all 1.0 features and deliver a completed stable and reliable desktop application. Afterwards my focus will shift to mobile support
 
 ### Where is the MacOS Build?
-Currently there is no ETA on MacOS builds. While the app is ready for desktop, I would need access to a apple machine in order to produce builds.
+Currently there is no ETA on MacOS builds. While the app is ready for desktop, I would need access to an Apple machine in order to produce builds.
 
 ### How will syncing work
 I am aiming to have ALL books, data, and app settings sync so everything is as you left off.
