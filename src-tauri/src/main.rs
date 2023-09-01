@@ -49,19 +49,24 @@ async fn main() {
     tauri::Builder::default()
         .setup(|app| {
             println!("Loading Config Directory");
-            
+            let appDataDir = app_data_dir( app.config().as_ref()).unwrap();
 
             if cfg!(target_os = "windows") || cfg!(dev) {
-                app_data_platform_dir.set(env::current_dir().unwrap());
+                let currentDir = env::current_dir().unwrap();
+                
+                let program_files_path = Path::new("C:\\Program Files");
+                // If the parent directory is Program Files, The file was installed
+                // Otherwise, Run in portable
+                if(currentDir.parent().unwrap() == program_files_path){
+                    app_data_platform_dir.set(appDataDir);
+                }else{
+                    app_data_platform_dir.set(currentDir);
+                }
             } else {
-                // env::current_dir().unwrap().join("TESTING")
-                // generate_context!()
-                let t = app_data_dir( app.config().as_ref()).unwrap();
-                // env::current_dir().unwrap()
-                app_data_platform_dir.set(t);
+                app_data_platform_dir.set(appDataDir);
             }
 
-            config_path.set(app_data_platform_dir.get().unwrap().join("data"));
+            config_path.set(app_data_platform_dir.get().unwrap().join("Alexandria_Data"));
             font_folder.set(get_config_path().join("fonts"));
             
 
@@ -182,7 +187,6 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
 
     println!("Printing location {}", docLocation);
 
-    use epub::doc::EpubDoc;
     let doc = EpubDoc::new(&docLocation);
     let mut doc = doc.unwrap();
     let title = doc.mdata("title").unwrap();
