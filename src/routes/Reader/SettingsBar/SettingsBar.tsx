@@ -27,7 +27,7 @@ const SettingsBar = ()=>{
   return (
     // This serves the dual purpose of preventing a flashbang
     <div className={styles.overflowContainer}>
-      <div style={{transform:!ThemeMenuActive?`translateY(100%)`:''}} className={styles.settingsBarContainer}>
+      <div style={{transform:!ThemeMenuActive?`translateY(105%)`:''}} className={styles.settingsBarContainer}>
         {/* <div className={styles.settingsIcon}><SettingsIcon/></div> */}
 
         <div className={styles.settingsContainer}>
