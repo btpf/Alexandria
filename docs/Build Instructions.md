@@ -1,4 +1,4 @@
-## Build Instructions
+# Build Instructions
 
 I really do not want the barrier for contribution to be high. So I have tried to simplify the process as much as possible. 
 Follow the instructions below in order to get a dev environment started. 
