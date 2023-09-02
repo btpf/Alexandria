@@ -48,8 +48,10 @@
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/f2ce3aba-0785-472a-965e-0e2d59a36140"> </div>
 
 ---
-Built With Node Version: v16.16.0
+
 ## Credits
 [johnfactotum/foliate](https://github.com/johnfactotum/foliate) - Inspiration for building project, code snippets, and FictionBook + Comicbook Support  
 [futurepress/epub.js](https://github.com/futurepress/epub.js) - Providing foundation for project  
 [bfabiszewski/libmobi](https://github.com/bfabiszewski/libmobi) - Providing Kindle Format Support  
+
+<h3><a href="/docs/Build%20Instructions.md">Build Instructions</a></h3>
