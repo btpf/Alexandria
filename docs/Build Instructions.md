@@ -13,7 +13,9 @@ Also please open an issue if the instructions do not work or require tinkering. 
 2. Install Node Version: v16. For this I recommend something like nvm.
 3. Clone the repository with submodules through the following command
 ```
-git clone --recurse-submodules --remote-submodules https://github.com/btpf/Alexandria.git 
+git clone --recurse-submodules --remote-submodules https://github.com/btpf/Alexandria.git
+
+cd Alexandria
 ```
 ### 1. Assets Extraction
 
