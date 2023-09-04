@@ -376,7 +376,7 @@ const Shelf = () =>{
                 </div>
               
                 <div className={styles.boxBottomBar} >
-                  <div>{book.title}</div>
+                  <div className={styles.bookTitle}>{book.title}</div>
 
                 </div>
               </div>

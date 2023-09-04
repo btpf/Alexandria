@@ -109,7 +109,7 @@ $bookmarkHeight: 23px;
     --book-height: 150px;
     $base-color: salmon;
   }
-  .boxBottomBar > div{
+  .bookTitle{
     font-size:8px;
   }
 }
@@ -129,7 +129,7 @@ $bookmarkHeight: 23px;
     --book-width: calc(100px * #{$ScaleFactor});
     --book-height: calc(150px * #{$ScaleFactor});
   }
-  .boxBottomBar > div{
+  .bookTitle{
     font-size:14px;
   }
 }
@@ -541,4 +541,15 @@ $bottom-bar-width-standard: 650px;
     width: 30px;
     height: 30px;
   }
+}
+
+// https://stackoverflow.com/a/30940678
+// Attempt at line-clamping. Needs testing on chrome
+.bookTitle{
+  display: -webkit-box;
+  // max-width: 400px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
