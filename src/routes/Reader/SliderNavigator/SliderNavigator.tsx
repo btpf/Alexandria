@@ -136,7 +136,7 @@ const SliderNavigator = ()=>{
 
     setMarkers(markerObject)
 
-  }, [renditionState])
+  }, [renditionState, selectedRendition])
 
   return (
     <Slider
