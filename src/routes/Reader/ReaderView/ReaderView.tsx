@@ -1,7 +1,7 @@
 import React, { createRef, ReactPropTypes, RefObject, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
 import styles from './ReaderView.module.scss'
 import epubjs, { Book, Rendition } from 'epubjs'
-import bookImport from '@resources/placeholder/childrens-literature.epub'
+// import bookImport from '@resources/placeholder/childrens-literature.epub'
 
 import {
   Location,
@@ -99,8 +99,6 @@ class Reader extends React.Component<ReaderProps>{
       }else{
         bookValue = convertFileSrc(bookValue)
       }
-    }else{
-      bookValue = bookImport
     }
 
     this.book = epubjs((bookValue as any))
