@@ -177,10 +177,45 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
 
     // let docLocation = ;
     let docLocation = if (bookFileName.contains(".azw") || bookFileName.contains(".azw3") || bookFileName.contains(".mobi")){
-        convertToEpubWrapper(bookLocation.to_str().unwrap(),
-         hashed_book_folder.to_str().unwrap());
-          format!("{}/{}.epub", hashed_book_folder.to_str().unwrap(), path.file_stem().unwrap().to_str().unwrap())
-        //  docLocation = &epub_filename;
+        // I cannot get the windows compiled version of libmobi to support unicode file paths.
+        // Instead we will work around that issue.
+
+        // An example of an offending character is ’ in "book’s name.azw3"
+        // This results in:
+        // Error opening file: .\bookΓÇÖs name.azw3 (No such file or directory)
+
+        //  Here are some links I referenced in my efforts.
+        // https://superuser.com/a/1451686
+        // https://stackoverflow.com/a/30831401
+        // https://github.com/bfabiszewski/libmobi/issues/45 - Libmobi seems to work here?
+        // https://stackoverflow.com/a/53241054
+        // https://learn.microsoft.com/en-us/windows/apps/design/globalizing/use-utf8-code-page
+        // https://stackoverflow.com/a/822032
+        // https://stackoverflow.com/a/59656245
+        // Possible workaround? https://stackoverflow.com/a/2951808
+        // https://stackoverflow.com/a/23287508
+        // wfopen https://stackoverflow.com/a/35065142
+        
+        let hashed_book_folder_unwrapped = hashed_book_folder.to_str().unwrap();
+        let file_extension_unwrapped = path.extension().unwrap().to_str().unwrap();
+        let file_stem_unwrapped = path.file_stem().unwrap().to_str().unwrap();
+        // Workaround for library not supporting windows utf-16 unicode file paths & names
+        // First we make a copy of the original into the directory, renaming it to simply "convert.<ext>"
+        std::fs::copy(&bookLocation, format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped));
+        
+        // Convert the convert.<ext> to convert.epub
+        convertToEpubWrapper(format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped).as_str(),
+        hashed_book_folder_unwrapped);
+         // rename convert.<ext> original back to original name
+         std::fs::rename(format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped),
+         format!("{}/{}.{}", hashed_book_folder_unwrapped, file_stem_unwrapped, file_extension_unwrapped));
+          
+          // Rename the converted to the original name
+          std::fs::rename(format!("{}/convert.epub", hashed_book_folder_unwrapped),
+          format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped));
+
+          // return the path to the new epub
+          format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped)
     }else{
         payload
     };
