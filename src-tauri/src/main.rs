@@ -172,11 +172,13 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
     };
     let bookFileName = path.file_name().unwrap().to_str().unwrap();
     let bookLocation = hashed_book_folder.join(&bookFileName);
+    let hashed_book_folder_unwrapped = hashed_book_folder.to_str().unwrap();
+    let file_extension_unwrapped = path.extension().unwrap().to_str().unwrap();
+    let file_stem_unwrapped = path.file_stem().unwrap().to_str().unwrap();
 
     std::fs::write(&bookLocation, &buffer).unwrap();
 
-    // let docLocation = ;
-    let docLocation = if (bookFileName.contains(".azw") || bookFileName.contains(".azw3") || bookFileName.contains(".mobi")){
+    if (bookFileName.contains(".azw") || bookFileName.contains(".azw3") || bookFileName.contains(".mobi")){
         // I cannot get the windows compiled version of libmobi to support unicode file paths.
         // Instead we will work around that issue.
 
@@ -196,12 +198,9 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
         // https://stackoverflow.com/a/23287508
         // wfopen https://stackoverflow.com/a/35065142
         
-        let hashed_book_folder_unwrapped = hashed_book_folder.to_str().unwrap();
-        let file_extension_unwrapped = path.extension().unwrap().to_str().unwrap();
-        let file_stem_unwrapped = path.file_stem().unwrap().to_str().unwrap();
         // Workaround for library not supporting windows utf-16 unicode file paths & names
-        // First we make a copy of the original into the directory, renaming it to simply "convert.<ext>"
-        std::fs::copy(&bookLocation, format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped));
+        // First we rename the original in the directory to simply "convert.<ext>"
+        std::fs::rename(&bookLocation, format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped));
         
         // Convert the convert.<ext> to convert.epub
         convertToEpubWrapper(format!("{}/convert.{}", hashed_book_folder_unwrapped, file_extension_unwrapped).as_str(),
@@ -214,16 +213,22 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
           std::fs::rename(format!("{}/convert.epub", hashed_book_folder_unwrapped),
           format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped));
 
-          // return the path to the new epub
-          format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped)
-    }else{
-        payload
-    };
+    }
+
+    let docLocation = format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped);
 
     println!("Printing location {}", docLocation);
 
-    let doc = EpubDoc::new(&docLocation);
-    let mut doc = doc.unwrap();
+
+     let mut doc = match EpubDoc::new(&docLocation) {
+        Ok(v) => v,
+        Err(_error) => {
+            delete_book(checksum.as_str());
+            return Err(format!("Error: Import of {} Failed", &file_stem_unwrapped));
+        }
+    };
+
+    // let mut doc = doc.unwrap();
     let title = doc.mdata("title").unwrap();
     let author = doc.mdata("creator").unwrap_or("unknown".to_string());
 
