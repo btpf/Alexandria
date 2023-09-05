@@ -279,7 +279,7 @@ $bookmarkHeight: 23px;
 }
 
 .boxBottomBar{
-  width:100%;
+  width: var(--book-width);
   height: 40px;
   display:flex;
   flex-direction: row;
