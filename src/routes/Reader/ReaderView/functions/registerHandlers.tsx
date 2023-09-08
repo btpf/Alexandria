@@ -441,7 +441,7 @@ export default (renditionInstance:Rendition, view:number)=>{
 
     // This may be preventing a race condition with setEpubNavigate
     setTimeout(()=>{
-      store.dispatch(SetProgress({view: view, cfi: e.start,  progress: renditionInstance.book.locations.percentageFromCfi(e.start)}))
+      store.dispatch(SetProgress({view: view, cfi: e.start,  progress: renditionInstance.book.locations.percentageFromCfi(e.start, e.index)}))
     }, 1)
   }
 

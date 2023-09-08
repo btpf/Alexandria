@@ -38,7 +38,11 @@ import AddFiles from "@resources/feathericons/folder-plus.svg"
 import toast from 'react-hot-toast';
 
 import { platform } from '@tauri-apps/api/os';
-const SUPPORTED_FORMATS = ['epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc']
+const SUPPORTED_FORMATS = [
+  'epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc',
+  "fb2",
+  "txt"
+]
 let IS_LINUX = false
 interface BookData {
   author: string;

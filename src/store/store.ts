@@ -72,6 +72,10 @@ const store =  configureStore({
             if(!currentBook.data){
               return
             }
+            if(currentBook.data.progress == null){
+              console.log("Current progress null, returning")
+              return
+            }
             const saveData = {
               title: currentBook.title,
               author: currentBook.author,

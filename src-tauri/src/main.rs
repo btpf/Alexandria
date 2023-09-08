@@ -426,8 +426,11 @@ fn get_book_by_hash(bookHash: String) -> String {
     for book_file in hashed_book_folder {
         let book_file = book_file.unwrap().path().display().to_string();
         let is_epub = book_file.contains(".epub");
-
+        let is_text = book_file.contains(".txt") || book_file.contains(".fb2")  || book_file.contains(".fbz") || book_file.contains(".cbz");
         if is_epub {
+            return book_file;
+        }
+        if(is_text){
             return book_file;
         }
     }

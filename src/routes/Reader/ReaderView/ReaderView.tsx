@@ -29,6 +29,8 @@ import { SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsMan
 import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
 import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsManager.d';
 import { ToggleMenu } from '@store/slices/appState';
+import Epub from 'epubjs';
+import parser from './Parser/parser';
 
 
 const mapState = (state: RootState, ownProps:inheritedProps) => {
@@ -100,9 +102,23 @@ class Reader extends React.Component<ReaderProps>{
         bookValue = convertFileSrc(bookValue)
       }
     }
+    if(bookValue.endsWith("epub3") || bookValue.endsWith("epub")){
+      this.book = epubjs((bookValue as any))
 
-    this.book = epubjs((bookValue as any))
+    }else{
 
+      this.book = epubjs()
+      const convertedValue = await parser(bookValue, "", "")
+      if(convertedValue == "error"){
+        console.log("Book loading cancelled")
+        return
+      }
+      console.log(convertedValue)
+      // @ts-expect-error need to add typings
+      this.book.openJSON(convertedValue)
+
+    }
+    
 
     this.book.ready.then(async ()=>{
 
@@ -128,7 +144,9 @@ class Reader extends React.Component<ReaderProps>{
           this.props.RemoveRendition(this.props.view)
         }
       })
-      await this.book.locations.generate(1000)
+      const myLocations = await this.book.locations.generate(1000)
+      console.log("LOGGING LOCATIONS")
+      console.log(myLocations)
       unsubscribe()
 
       // This will destroy the rendition only once the generations have been generated.
