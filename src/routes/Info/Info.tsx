@@ -20,6 +20,7 @@ import { platform } from '@tauri-apps/api/os';
 
 import Spine from 'epubjs/types/spine';
 import html from './generator/html';
+import parser from '../Reader/ReaderView/Parser/parser';
 
 interface AnnotationData{
   title?: string,
@@ -141,7 +142,26 @@ const Info = (props:any) =>{
       }else{
         bookValue = convertFileSrc(bookValue)
       }
-      const book = epubjs((bookValue as any))
+
+
+      let book:any;
+
+      if(bookValue.endsWith("epub3") || bookValue.endsWith("epub")){
+        book = epubjs((bookValue as any))
+  
+      }else{
+  
+        book = epubjs()
+        const convertedValue = await parser(bookValue, "", "")
+        if(convertedValue == "error"){
+          console.log("Book loading cancelled")
+          return
+        }
+        console.log(convertedValue)
+        // @ts-expect-error need to add typings
+        book.openJSON(convertedValue)
+  
+      }
 
       let result = null 
 
@@ -197,9 +217,10 @@ const Info = (props:any) =>{
             <h3>Metadata</h3>
             <div className={styles.metaContainer}>
               {Object.keys(metaData).filter((item)=> item != "title" && item != "creator" && item != "description" && metaData[item] != "").map((key)=>{
+                // if typeof {}
                 return(
                   <div key={key}>
-                    {key} : {metaData[key]}
+                    {key} : {JSON.stringify(metaData[key])}
                   </div>
                 )
               })}
