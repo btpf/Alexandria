@@ -26,7 +26,7 @@ use tower_http::services::{ServeDir, ServeFile};
 
 extern crate reqwest;
 use std::io;
-use tauri::api::path::app_data_dir;
+use tauri::{api::path::app_data_dir, Manager};
 
 use std::sync::OnceLock;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -67,6 +67,9 @@ async fn main() {
             }
 
             config_path.set(app_data_platform_dir.get().unwrap().join("Alexandria_Data"));
+
+            // Required to allow client side to access the config path
+            app.fs_scope().allow_directory(get_config_path(), true);
             font_folder.set(get_config_path().join("fonts"));
             
 
@@ -110,7 +113,8 @@ async fn main() {
             get_global_themes,
             set_settings,
             get_settings,
-            delete_book
+            delete_book,
+            get_config_path_js
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -178,6 +182,9 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
 
     std::fs::write(&bookLocation, &buffer).unwrap();
 
+    // This variable will hold whether or not file processing can be done on the back end
+    let mut is_parsable = bookFileName.contains(".epub") || bookFileName.contains(".epub");
+
     if (bookFileName.contains(".azw") || bookFileName.contains(".azw3") || bookFileName.contains(".mobi")){
         // I cannot get the windows compiled version of libmobi to support unicode file paths.
         // Instead we will work around that issue.
@@ -212,14 +219,17 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
           // Rename the converted to the original name
           std::fs::rename(format!("{}/convert.epub", hashed_book_folder_unwrapped),
           format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped));
-
+          is_parsable = true
     }
 
     let docLocation = format!("{}/{}.epub", hashed_book_folder_unwrapped, file_stem_unwrapped);
 
     println!("Printing location {}", docLocation);
 
-
+    let mut title = bookFileName.to_string();
+    let mut author = "".to_string();
+    let mut coverExists = false;
+    if(is_parsable){
      let mut doc = match EpubDoc::new(&docLocation) {
         Ok(v) => v,
         Err(_error) => {
@@ -229,13 +239,12 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
     };
 
     // let mut doc = doc.unwrap();
-    let title = doc.mdata("title").unwrap();
-    let author = doc.mdata("creator").unwrap_or("unknown".to_string());
+    title = doc.mdata("title").unwrap_or(bookFileName.to_string());
+    author = doc.mdata("creator").unwrap_or("".to_string());
 
 
 
-    let mut coverExists = true;
-    // if(EPUBHASCOVER){
+    coverExists = true;
 
     match doc.get_cover() {
         Ok(cover_data) => {
@@ -248,6 +257,7 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
             println!("Error: Book does not have cover");
         }
     }
+}
 
     // }
 
@@ -423,16 +433,22 @@ fn get_book_by_hash(bookHash: String) -> String {
     // println!("{}", format!("{current_dir}/data/books/{bookHash}"));
     let hashed_book_folder = fs::read_dir(get_config_path().join("books").join(format!("{bookHash}"))).unwrap();
 
+    let mut bookFile = "".to_string();
     for book_file in hashed_book_folder {
         let book_file = book_file.unwrap().path().display().to_string();
-        let is_epub = book_file.contains(".epub");
-        let is_text = book_file.contains(".txt") || book_file.contains(".fb2")  || book_file.contains(".fbz") || book_file.contains(".cbz");
-        if is_epub {
-            return book_file;
+        let is_book = !(book_file.contains(".json") || book_file.contains(".jpg"));
+        let is_epub = (book_file.contains(".epub") || book_file.contains(".epub3"));
+        if is_book {
+            // Return immediately if the book format is epub, as this is the most compatible format
+            if(is_epub){
+                return book_file
+            }
+            bookFile = book_file;
         }
-        if(is_text){
-            return book_file;
-        }
+    }
+    // Return a book path if one exists
+    if(bookFile.len() > 0){
+        return bookFile
     }
 
     return "".to_string();
@@ -791,4 +807,10 @@ fn get_settings() -> SettingsConfig {
     let mut payload: SettingsConfig = serde_json::from_value(json).unwrap();
 
     return payload;
+}
+
+#[tauri::command]
+fn get_config_path_js() -> String {
+
+    return get_config_path().display().to_string();
 }

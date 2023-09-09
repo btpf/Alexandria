@@ -20,6 +20,6 @@ export default async (uri:string, checksum:string, filename:string) =>{
   case "fbz":
     return await webpubFromFB2Zip(uri, filename, checksum)
   case "cbz":
-    return await webpubFromComicBookArchive(uri, fileExtension, "single-column", "epubtest", checksum)
+    return await webpubFromComicBookArchive(uri, fileExtension, "single-column", filename, checksum)
   }
 }
