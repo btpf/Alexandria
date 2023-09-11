@@ -259,7 +259,6 @@ export default (renditionInstance:Rendition, view:number)=>{
           // for the second view, it will be 50% of the width. So this x
           // Should be the pixels = 50%
           const dualReaderOffset = wrapper.parentElement.getBoundingClientRect().x
-
           // Here, the X is how far away from the left side of the screen the wrapper is.
           // This will be affected by the reader margins in settings.
           // Since our margins are calculated by how far from the left side of the screen
@@ -268,10 +267,36 @@ export default (renditionInstance:Rendition, view:number)=>{
           totalMargins = ((wrapper.getBoundingClientRect().x - dualReaderOffset) * 2)
 
           third = (wrapper.clientWidth + totalMargins) / 3;
-          // event.pageX is where the mouse was on the page
+          
+          
+          // Edge case where theres more than one iframe displaying the book
+          // This happens when reading CBZ files
+          const readerViews = renditionInstance.views()
+          let currentIframeOffset = 0
+          if(readerViews.length > 1){
+            let correctView = null
+            // List out all of the iframe views in the current rendition
+            for(const view of readerViews._views){
+              // If this iframe view's document is equal to the target document
+              if(view.window.document == event.target.ownerDocument){
+                correctView = view
+                break
+              }
+            }
+            // Get the element of corresponding IframeView, and calculate how far from the left it is 
+            currentIframeOffset = correctView.element.getBoundingClientRect().x
+
+            // Subtract the totalMargins section since we should cancel them out
+            // in the case where we are using iframe based calculations
+            // We subtract the amount of space offset to cancel out readermargins
+            currentIframeOffset -= wrapper.getBoundingClientRect().x
+          }
+          
+          
+          // event.pageX is where the mouse was on the iframe page
           // wrapper.scrollLeft is how far from the left the wrapper is
           // wrapper here refers to the css epub.js uses to hide loaded, but not visible pages.
-          x = (event.pageX + totalMargins/2) - wrapper.scrollLeft ;
+          x = currentIframeOffset + (event.pageX + totalMargins/2) - wrapper.scrollLeft ;
         }else{
           console.log("Handling whitespace logic")
           // get the width of the background whitespace element

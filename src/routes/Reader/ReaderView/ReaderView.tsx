@@ -31,7 +31,9 @@ import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsM
 import { ToggleMenu } from '@store/slices/appState';
 import Epub from 'epubjs';
 import parser from './Parser/parser';
+import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
 
+const COMIC_BOOK_FORMATS = ["cbz", "cbr", "cb7", "cbt"]
 
 const mapState = (state: RootState, ownProps:inheritedProps) => {
   if(Object.keys(state.bookState).includes("0") || Object.keys(state.bookState).includes("1")){
@@ -76,6 +78,7 @@ class Reader extends React.Component<ReaderProps>{
   private book!:Book;
   private rendition!: Rendition;
   private UID!:string;
+  private IS_COMIC_BOOK = false
 
   private unsubscribeHandlers!:Unsubscribe;
 
@@ -91,34 +94,17 @@ class Reader extends React.Component<ReaderProps>{
     type bookData = string
     let bookValue: bookData = ""
 
-    // const {params} = this.props.router
     if(window.__TAURI__ && this.props.bookHash){
-      bookValue = await invoke("get_book_by_hash",{bookHash: this.props.bookHash})
-      if(await platform() == "linux"){
-        const splitPath = bookValue.split('/').slice(-4)
-        // Main Issue:https://github.com/tauri-apps/tauri/issues/3725
-        bookValue = "http://127.0.0.1:16780/" + splitPath.join("/")
-      }else{
-        bookValue = convertFileSrc(bookValue)
-      }
+      bookValue = await getBookUrlByHash(this.props.bookHash);
+      // Needed for special handling where book needs to be regenerated for comics when view style changes
+      this.IS_COMIC_BOOK = COMIC_BOOK_FORMATS.includes(bookValue.split(".").slice(-1)[0])
+      this.book = (await createBookInstance(bookValue, this.props.bookHash)) as Book
     }
-    if(bookValue.endsWith("epub3") || bookValue.endsWith("epub")){
-      this.book = epubjs((bookValue as any))
 
-    }else{
-
-      this.book = epubjs()
-      const convertedValue = await parser(bookValue, "", "")
-      if(convertedValue == "error"){
-        console.log("Book loading cancelled")
-        return
-      }
-      console.log(convertedValue)
-      // @ts-expect-error need to add typings
-      this.book.openJSON(convertedValue)
-
+    if(this.book == undefined){
+      console.log("Book could not be loaded")
+      return
     }
-    
 
     this.book.ready.then(async ()=>{
 
@@ -144,7 +130,7 @@ class Reader extends React.Component<ReaderProps>{
           this.props.RemoveRendition(this.props.view)
         }
       })
-      const myLocations = await this.book.locations.generate(1000)
+      const myLocations = await (this.book as Book).locations.generate(1000)
       console.log("LOGGING LOCATIONS")
       console.log(myLocations)
       unsubscribe()
@@ -208,7 +194,7 @@ class Reader extends React.Component<ReaderProps>{
   }
 
 
-  componentDidUpdate(prevProps: any, prevState: any) {
+  async componentDidUpdate(prevProps: any, prevState: any) {
     // Do nothing if the bookstate is not complete
     if(this.props.LoadState != LOADSTATE.COMPLETE) return
 
@@ -229,13 +215,16 @@ class Reader extends React.Component<ReaderProps>{
       (this.props.renderMode != prevProps.renderMode && prevProps.renderMode)
       || (this.props.view != prevProps.view)
     ){
+      // Get the renderMode before removing the rendition
+      const newRenderMode = this.props.renderMode
       this.rendition.destroy();
       this.unsubscribeHandlers()
 
       // In the case of the dual reader mode, this will work as the two renditions will cross remove eachother
       this.props.RemoveRendition(this.props.view)
+
       
-      this.initializeRendition(this.props.renderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
+      this.initializeRendition(newRenderMode, LOADSTATE.BOOK_PARSING_COMPLETE);
     }
 
     if(this.props.readerMargins != prevProps.readerMargins){
@@ -353,6 +342,19 @@ class Reader extends React.Component<ReaderProps>{
 
     const renderMode:layoutTypes = forceRenderMode || (result?.data?.theme?.renderMode as layoutTypes) || "single";
 
+    if(this.IS_COMIC_BOOK){
+      this.book.destroy()
+      const bookValue = await getBookUrlByHash((this.props.bookHash as string));
+      const layouts = {
+        'auto': 'automatic',
+        'single': "single-column",
+        'scrolled': "scrolled",
+        'continuous': 'automatic',  
+      }
+
+      this.book = (await createBookInstance(bookValue, (this.props.bookHash as string), layouts[renderMode as keyof typeof layouts])) as Book
+    }
+    
     mySettings = {...mySettings, 
       ...layouts[renderMode]
     }

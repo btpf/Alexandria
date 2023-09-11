@@ -22,6 +22,8 @@ import Spine from 'epubjs/types/spine';
 import html from './generator/html';
 import parser from '../Reader/ReaderView/Parser/parser';
 
+import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
+
 interface AnnotationData{
   title?: string,
   href?: string,
@@ -134,33 +136,18 @@ const Info = (props:any) =>{
   useEffect(()=>{
     const myFun = async ()=>{
 
-      let bookValue:string = await invoke("get_book_by_hash",{bookHash: params.bookHash})
-      if(await platform() == "linux"){
-        const splitPath = bookValue.split('/').slice(-4)
-        // Main Issue:https://github.com/tauri-apps/tauri/issues/3725
-        bookValue = "http://127.0.0.1:16780/" + splitPath.join("/")
-      }else{
-        bookValue = convertFileSrc(bookValue)
+
+      if(!params.bookHash){
+        console.log("Info page opened and bookhash not found")
+        return
       }
 
+      const bookValue = await getBookUrlByHash(params.bookHash)
+      const book = await createBookInstance(bookValue, params.bookHash)
 
-      let book:any;
-
-      if(bookValue.endsWith("epub3") || bookValue.endsWith("epub")){
-        book = epubjs((bookValue as any))
-  
-      }else{
-  
-        book = epubjs()
-        const convertedValue = await parser(bookValue, "", "")
-        if(convertedValue == "error"){
-          console.log("Book loading cancelled")
-          return
-        }
-        console.log(convertedValue)
-        // @ts-expect-error need to add typings
-        book.openJSON(convertedValue)
-  
+      if(!book){
+        console.log("Info page opened and book failed to load")
+        return
       }
 
       let result = null 

@@ -3,7 +3,7 @@ import { webpubFromComicBookArchive } from "./formats/comicbook"
 import { webpubFromFB2, webpubFromFB2Zip } from "./formats/fb2"
 import { webpubFromText } from "./formats/plaintext";
 
-export default async (uri:string, checksum:string, filename:string) =>{
+export default async (uri:string, checksum:string, filename:string, cbzLayout?:string ) =>{
   const filestem = uri.split('/').pop();
   if(!filestem){
     console.log("filestem parsing error", filestem)
@@ -20,6 +20,6 @@ export default async (uri:string, checksum:string, filename:string) =>{
   case "fbz":
     return await webpubFromFB2Zip(uri, filename, checksum)
   case "cbz":
-    return await webpubFromComicBookArchive(uri, fileExtension, "single-column", filename, checksum)
+    return await webpubFromComicBookArchive(uri, fileExtension, cbzLayout, filename, checksum)
   }
 }

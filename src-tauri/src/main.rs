@@ -374,8 +374,10 @@ fn get_books() -> Vec<BookHydrate> {
 
                 let json: serde_json::Value =
                     serde_json::from_reader(reader).expect("JSON was not well-formatted");
-                title.push_str(json.get("title").unwrap().as_str().unwrap());
-
+                match json.get("title") {
+                    Some(value) => title.push_str(value.as_str().unwrap_or("unknown")),
+                    None => title.push_str("unknown"),
+                };
                 match json.get("author") {
                     Some(value) => author.push_str(value.as_str().unwrap_or("unknown")),
                     None => author.push_str("unknown"),
@@ -394,17 +396,6 @@ fn get_books() -> Vec<BookHydrate> {
 
                 modified = json.get("modified").and_then(serde_json::Value::as_u64).unwrap_or(milliseconds_u64);
 
-                println!(
-                    "{}",
-                    format!(
-                        "title: {}, author: {}, progress: {}",
-                        json.get("title").unwrap(),
-                        json.get("author")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or("default_author"),
-                        progress
-                    )
-                )
             } else if is_cover {
                 cover_path.push_str(&book_file);
             }
