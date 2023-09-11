@@ -19,6 +19,9 @@ export default async (uri:string, checksum:string, filename:string, cbzLayout?:s
   case "fb2.zip":
   case "fbz":
     return await webpubFromFB2Zip(uri, filename, checksum)
+  case "cbr":
+  case "cbt":
+  case "cb7":
   case "cbz":
     return await webpubFromComicBookArchive(uri, fileExtension, cbzLayout, filename, checksum)
   }
