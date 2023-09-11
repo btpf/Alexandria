@@ -362,7 +362,7 @@ fn get_books() -> Vec<BookHydrate> {
         for book_file in book_folder {
             let book_file = book_file.unwrap().path().display().to_string();
             let is_epub = book_file.contains(".epub");
-            let is_data = book_file.contains(".json");
+            let is_data = book_file.contains(".json") && !book_file.contains("locations_cache.json");
             let is_cover = book_file.contains(".jpg");
 
             if is_epub {

@@ -32,6 +32,7 @@ import { ToggleMenu } from '@store/slices/appState';
 import Epub from 'epubjs';
 import parser from './Parser/parser';
 import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
+import { fs } from '@tauri-apps/api';
 
 const COMIC_BOOK_FORMATS = ["cbz", "cbr", "cb7", "cbt"]
 
@@ -130,9 +131,18 @@ class Reader extends React.Component<ReaderProps>{
           this.props.RemoveRendition(this.props.view)
         }
       })
-      const myLocations = await (this.book as Book).locations.generate(1000)
-      console.log("LOGGING LOCATIONS")
-      console.log(myLocations)
+      let myLocations = null
+
+      const config_path = await invoke("get_config_path_js")
+      const locations_path = config_path + "/books/" + this.props.bookHash + "/" + "locations_cache.json"
+      if (true && await fs.exists(locations_path)){
+        myLocations = JSON.parse(await fs.readTextFile(locations_path))
+        this.book.locations.load(myLocations)
+      }else{
+        myLocations = await (this.book as Book).locations.generate(1000)
+        fs.writeTextFile(locations_path, JSON.stringify(myLocations))
+      }
+
       unsubscribe()
 
       // This will destroy the rendition only once the generations have been generated.

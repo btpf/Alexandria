@@ -3,7 +3,7 @@ import { BookInstances } from "@store/slices/bookStateTypes";
 import { AppDispatch, RootState } from "@store/store";
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-import { bookStateStructure, epubjs_reducer } from "../../epubjsManager.d"
+import { bookStateStructure, dataInterface, epubjs_reducer } from "../../epubjsManager.d"
 import {SetFontPayload, SetThemePayload} from './themeManager.d'
 import { platform } from '@tauri-apps/api/os';
 
@@ -14,7 +14,7 @@ type renderModeDispatchType = {
   renderMode: string
 }
 const setRenderMode:epubjs_reducer = (state, action: PayloadAction<renderModeDispatchType>) =>{
-  (state[action.payload.view] as bookStateStructure).data.theme.renderMode = action.payload.renderMode
+  ((state[action.payload.view] as bookStateStructure).data as dataInterface).theme.renderMode = action.payload.renderMode
 }
 
 
