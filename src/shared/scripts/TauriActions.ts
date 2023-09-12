@@ -24,7 +24,14 @@ export const createBookInstance = async (bookUrl:string, bookHash:string, cbzLay
   }else{
   
     const book = epubjs()
-    const fileName = decodeURI((new URL(bookUrl.startsWith("http")? bookUrl:"file://" + bookUrl).pathname.split("/").pop() as string));
+
+    // Decodes in the case that the convertFileSrc was used
+    // But also works otherwise
+    const fileName = (decodeURI((new URL(bookUrl.startsWith("http")? bookUrl:"file://" + bookUrl).pathname))
+      .replaceAll("\\","/") // make windows paths work
+      .split("/").pop() as string) // Pop the file stem
+      .split(".")[0] // Get the file name without the extension
+    
     const convertedValue = await parser(bookUrl, bookHash, fileName, cbzLayout)
     if(convertedValue == "error"){
       console.log("Book loading cancelled")
