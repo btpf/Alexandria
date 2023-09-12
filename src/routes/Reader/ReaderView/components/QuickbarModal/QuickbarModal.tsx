@@ -8,13 +8,13 @@ import {
 } from '@store/slices/bookState'
 
 // Transferred Imports
-import styles from './DialogPopup.module.scss'
+import styles from './QuickbarModal.module.scss'
 import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
 import Book from '@resources/iconmonstr/iconmonstr-book-26.svg'
 import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
 import { useAppSelector, useAppDispatch } from '@store/hooks';
-import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from './ModalUtility';
+import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from '../../functions/ModalUtility';
 import { Rendition } from 'epubjs';
 import toast from 'react-hot-toast';
 import { writeText } from '@tauri-apps/api/clipboard';
@@ -32,10 +32,6 @@ const QuickbarModal = () =>{
   const selectedCFI = useAppSelector((state) => state?.appState?.state?.modals.selectedCFI)
   const renditionInstance:Rendition = useAppSelector((state) => state.bookState[selectedRendition]?.instance)
 
-
-  function getEpubBounds(){
-    return renditionInstance?.manager?.container?.getBoundingClientRect();
-  }
 
 
 

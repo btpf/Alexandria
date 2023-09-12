@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api"
 import { platform } from "@tauri-apps/api/os"
 import { convertFileSrc } from "@tauri-apps/api/tauri"
-import parser from "src/routes/Reader/ReaderView/Parser/parser"
+import parser from "@shared/scripts/Parser/parser"
 import epubjs, { Book, Rendition } from 'epubjs'
 
 export const getBookUrlByHash = async (bookHash:string)=>{

@@ -17,12 +17,12 @@ import { ToggleBookmark } from '@store/slices/bookState'
 import SliderNavigator from './SliderNavigator/SliderNavigator'
 import SettingsBar from './SettingsBar/SettingsBar'
 import { useNavigate, useParams } from 'react-router-dom'
-import Dictionary from './ReaderView/Dictionary/Dictionary'
+import Dictionary from './ReaderView/components/Dictionary/Dictionary'
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 
-import QuickbarModal from './ReaderView/functions/QuickbarModal'
-import NoteModal from './ReaderView/functions/NoteModal'
+import QuickbarModal from './ReaderView/components/QuickbarModal/QuickbarModal'
+import NoteModal from './ReaderView/components/NoteModal/NoteModal'
 import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
 
 

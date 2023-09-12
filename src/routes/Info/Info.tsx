@@ -20,7 +20,6 @@ import { platform } from '@tauri-apps/api/os';
 
 import Spine from 'epubjs/types/spine';
 import html from './generator/html';
-import parser from '../Reader/ReaderView/Parser/parser';
 
 import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
 

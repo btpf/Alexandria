@@ -9,13 +9,13 @@ import {
 } from '@store/slices/bookState'
 
 // Transferred Imports
-import styles from './DialogPopup.module.scss'
+import styles from './NoteModal.module.scss'
 
 
 import Check from '@resources/feathericons/check.svg'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { useAppSelector, useAppDispatch } from '@store/hooks';
-import { CalculateBoxPosition } from './ModalUtility';
+import { CalculateBoxPosition } from '../../functions/ModalUtility';
 import { HideNoteModal, MoveNoteModal, SetModalCFI } from '@store/slices/appState';
 
 
@@ -33,13 +33,6 @@ const NoteModal = () =>{
   const annotations = useAppSelector((state) => state.bookState[selectedRendition]?.data.highlights)
   
 
-  
-
-  function getEpubBounds(){
-    return renditionInstance?.manager?.container?.getBoundingClientRect();
-  }
-
-
 
   const dispatch = useAppDispatch()
   if(noteModalVisible){
@@ -47,7 +40,6 @@ const NoteModal = () =>{
       <div className={styles.noteContainer} style={{left:modalX, top:modalY}}>
         <textarea placeholder="Add Note" value={annotations? annotations[selectedCFI]?.note:""} 
           onChange={(event)=>{
-            console.log("Changehighlightnotepayload", {highlightRange:selectedCFI, color:"any", note:event.target.value, view:selectedRendition})
             dispatch(ChangeHighlightNote({highlightRange:selectedCFI, color:"any", note:event.target.value, view:selectedRendition}))
           }}
           className={styles.noteContentContainer}>
@@ -85,8 +77,6 @@ const NoteModal = () =>{
   
                 }, '', {fill:item});
 
-                console.log("Making note visible")
-                console.log(item)
               }}/>
 
             })}

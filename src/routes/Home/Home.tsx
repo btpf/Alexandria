@@ -38,7 +38,6 @@ import AddFiles from "@resources/feathericons/folder-plus.svg"
 import toast from 'react-hot-toast';
 
 import { platform } from '@tauri-apps/api/os';
-import parser from '../Reader/ReaderView/Parser/parser';
 import { fs } from '@tauri-apps/api';
 import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
 

@@ -22,15 +22,14 @@ import store, {RootState} from '@store/store'
 import {RemoveRendition, SetLoadState, SyncedAddRendition} from '@store/slices/bookState'
 import registerHandlers from './functions/registerHandlers';
 import { Unsubscribe } from '@reduxjs/toolkit';
-import QuickbarModal from './functions/QuickbarModal';
-import NoteModal from './functions/NoteModal';
+import QuickbarModal from './components/QuickbarModal/QuickbarModal';
+import NoteModal from './components/NoteModal/NoteModal';
 import { LOADSTATE } from '@store/slices/constants';
 import { SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
 import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
 import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsManager.d';
 import { ToggleMenu } from '@store/slices/appState';
 import Epub from 'epubjs';
-import parser from './Parser/parser';
 import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
 import { fs } from '@tauri-apps/api';
 
