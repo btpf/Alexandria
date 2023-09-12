@@ -20,11 +20,17 @@ module.exports = {
   },
   "plugins": [
     "react",
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "unused-imports"
   ],
   "rules": {
     "@typescript-eslint/no-var-requires": "off",
     "indent": ["error", 2],
-    "no-constant-condition": "off"
+    "no-constant-condition": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ]
   }
 }
