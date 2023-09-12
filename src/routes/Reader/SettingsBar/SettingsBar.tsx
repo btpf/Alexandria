@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './SettingsBar.module.scss'
 
 
-import { NavItem, Rendition } from 'epubjs'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import FontsContainer from './FontsContainerV2/FontsContainer'
 import ThemesContainer from './ThemesContainer/ThemesContainer'

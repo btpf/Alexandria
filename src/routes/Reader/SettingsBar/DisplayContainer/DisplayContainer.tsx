@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import styles from './DisplayContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
-import { invoke } from '@tauri-apps/api'
-import {Rendition} from 'epubjs/types'
-import { setLineHeightThunk, setWordSpacingThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager'
 import {  setRenderMode } from '@store/slices/bookState'
 import ScriptIcon from '@resources/iconmonstr/iconmonstr-script-2.svg'
 import SinglePageIcon from '@resources/material/article_black_24dp.svg'

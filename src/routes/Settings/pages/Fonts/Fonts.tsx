@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { Virtuoso } from 'react-virtuoso'
 
-import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
 import styles from './FontsTheme.module.scss'
-import SaveIcon from '@resources/iconmonstr/iconmonstr-save-14.svg'
-import TashIcon from '@resources/feathericons/trash-2.svg'
 import { invoke } from "@tauri-apps/api";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import FontManager from "./FontManager/FontManager";

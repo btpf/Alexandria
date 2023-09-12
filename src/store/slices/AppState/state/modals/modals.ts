@@ -1,9 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { appStateReducer, appStateReducerSingle } from "@store/slices/appState"
-import { WritableDraft } from "immer/dist/internal"
 
-import { BookInstances } from "../../../bookStateTypes"
-import { MoveModalAction, MoveModalCFIAction } from "./modalsTypes"
+import { MoveModalAction } from "./modalsTypes"
 
 
 

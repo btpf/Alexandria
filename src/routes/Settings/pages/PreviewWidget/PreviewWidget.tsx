@@ -1,27 +1,16 @@
-import React, { useEffect, useRef, useState } from "react"
-import { HexColorInput, HexColorPicker } from "react-colorful";
+import React from "react"
 
 import styles from './PreviewWidget.module.scss'
 
-import UndoButton from '@resources/iconmonstr/iconmonstr-undo-7.svg'
-import TrashIcon from '@resources/feathericons/trash-2.svg'
 import { useAppSelector } from "@store/hooks";
-import {  AddTheme, DeleteTheme, RenameTheme, setSelectedTheme, UpdateTheme } from "@store/slices/appState";
-import { useDispatch } from "react-redux";
-import { invoke } from "@tauri-apps/api";
 
-import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
+import { ThemeType } from "@store/slices/AppState/globalThemes";
 import { GetAllKeys } from "@store/utlity";
 
-import ExitIcon from '@resources/figma/Exit.svg'
-import MaximizeIcon from '@resources/figma/Maximize.svg'
-import MinimizeIcon from '@resources/figma/Minimize.svg'
 import Bookmark from '@resources/feathericons/bookmark.svg'
 import List from '@resources/feathericons/list.svg'
 import Search from '@resources/feathericons/search.svg'
 import Font from '@resources/iconmonstr/text-3.svg'
-import ArrowLeft from '@resources/feathericons/arrow-left.svg'
-import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import HomeIcon from '@resources/feathericons/home.svg'
 
 

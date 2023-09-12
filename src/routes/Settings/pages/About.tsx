@@ -1,18 +1,8 @@
-import React, { useEffect, useRef, useState } from "react"
-import { HexColorInput, HexColorPicker } from "react-colorful";
+import React from "react"
 
-import styles from './PreviewWidget.module.scss'
 
-import UndoButton from '@resources/iconmonstr/iconmonstr-undo-7.svg'
-import TrashIcon from '@resources/feathericons/trash-2.svg'
-import { useAppSelector } from "@store/hooks";
-import {  AddTheme, DeleteTheme, RenameTheme, setSelectedTheme, UpdateTheme } from "@store/slices/appState";
-import { useDispatch } from "react-redux";
-import { invoke } from "@tauri-apps/api";
 import { open } from '@tauri-apps/api/shell'
 
-import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
-import { GetAllKeys } from "@store/utlity";
 import packageInfo from '../../../../package.json';
 import Logo from '@resources/logo.svg'
 

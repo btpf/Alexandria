@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from './SideBar.module.scss'
 
 
-import { NavItem, Rendition } from 'epubjs'
+import { Rendition } from 'epubjs'
 import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Annotations from './Annotations/Annotations'

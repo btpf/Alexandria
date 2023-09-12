@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Trash from '@resources/feathericons/trash-2.svg'
 import { NavItem, Rendition } from 'epubjs'
 import Spine from 'epubjs/types/spine'
-import { DeleteHighlight, ToggleBookmark } from '@store/slices/bookState'
+import { ToggleBookmark } from '@store/slices/bookState'
 
 import styles from './Bookmarks.module.scss'
 import { CloseSidebarMenu } from '@store/slices/appState'

@@ -1,6 +1,6 @@
-import React, { createRef, ReactPropTypes, RefObject, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
+import React, { createRef } from 'react'; // we need this to make JSX compile
 import styles from './ReaderView.module.scss'
-import epubjs, { Book, Rendition } from 'epubjs'
+import { Book, Rendition } from 'epubjs'
 // import bookImport from '@resources/placeholder/childrens-literature.epub'
 
 import {
@@ -11,25 +11,20 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { convertFileSrc, invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/tauri';
 
 
 import { connect, ConnectedProps } from 'react-redux'
 
-import { platform } from '@tauri-apps/api/os';
 
 import store, {RootState} from '@store/store'
 import {RemoveRendition, SetLoadState, SyncedAddRendition} from '@store/slices/bookState'
 import registerHandlers from './functions/registerHandlers';
 import { Unsubscribe } from '@reduxjs/toolkit';
-import QuickbarModal from './components/QuickbarModal/QuickbarModal';
-import NoteModal from './components/NoteModal/NoteModal';
 import { LOADSTATE } from '@store/slices/constants';
 import { SyncedAddRenditionPayload } from '@store/slices/EpubJSBackend/epubjsManager';
-import { setThemeThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager';
 import { bookStateHydrationStructure } from '@store/slices/EpubJSBackend/epubjsManager.d';
 import { ToggleMenu } from '@store/slices/appState';
-import Epub from 'epubjs';
 import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
 import { fs } from '@tauri-apps/api';
 

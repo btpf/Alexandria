@@ -12,21 +12,9 @@ import { useDispatch } from "react-redux";
 
 import { ThemeType, uiTheme } from "@store/slices/AppState/globalThemes";
 import { GetAllKeys } from "@store/utlity";
-import TitleBarButtons from "@shared/components/TitleBarButtons";
 
 
-import ExitIcon from '@resources/figma/Exit.svg'
-import MaximizeIcon from '@resources/figma/Maximize.svg'
-import MinimizeIcon from '@resources/figma/Minimize.svg'
-import Bookmark from '@resources/feathericons/bookmark.svg'
-import List from '@resources/feathericons/list.svg'
-import Search from '@resources/feathericons/search.svg'
-import Font from '@resources/iconmonstr/text-3.svg'
-import ArrowLeft from '@resources/feathericons/arrow-left.svg'
-import ArrowRight from '@resources/feathericons/arrow-right.svg'
-import HomeIcon from '@resources/feathericons/home.svg'
 import PreviewWidget from "./PreviewWidget/PreviewWidget";
-import Copy from '@resources/iconmonstr/iconmonstr-copy-9.svg'
 import SquareAdd from '@resources/feathericons/file-plus.svg'
 
 // import styles from './Settings.module.scss'

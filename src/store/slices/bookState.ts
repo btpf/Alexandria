@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createSlice, current, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { ActionReducerMapBuilder, createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {BookInstances} from './bookStateTypes'
 
 import {actions as stateActions} from './EpubJSBackend/state/stateManager';

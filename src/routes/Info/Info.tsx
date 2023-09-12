@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react'; // we need this to make JSX compile
+import { useNavigate, useParams } from "react-router-dom";
 
 import styles from './Info.module.scss'
 
@@ -10,13 +10,12 @@ import { writeTextFile } from '@tauri-apps/api/fs';
 
 
 
-import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
-import epubjs, { EpubCFI, NavItem, Book } from 'epubjs';
+import { invoke } from '@tauri-apps/api/tauri'
+import { EpubCFI, NavItem, Book } from 'epubjs';
 
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';
 
-import { platform } from '@tauri-apps/api/os';
 
 import Spine from 'epubjs/types/spine';
 import html from './generator/html';

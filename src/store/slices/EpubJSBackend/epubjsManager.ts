@@ -1,15 +1,14 @@
 import { ActionReducerMapBuilder, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
-import { invoke } from "@tauri-apps/api"
 import { castDraft } from "immer"
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH } from "src/routes/Reader/ReaderView/functions/ModalUtility"
 // import { bookState } from "../bookStateSlice"
-import { bookState, setRenderMode } from "../bookState"
+import { bookState } from "../bookState"
 
 
 // import { bookState } from "../bookStateSlice"
 import { BackendInstance, BookInstances } from "../bookStateTypes"
 import { LOADSTATE } from "../constants"
-import { bookStateHydrationStructure, bookStateStructure, dataInterface, loadProgressUpdate } from "./epubjsManager.d"
+import { bookStateHydrationStructure, bookStateStructure, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
 import { setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import styles from './SpacingContainer.module.scss'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
-import { invoke } from '@tauri-apps/api'
 import { setLineHeightThunk, setWordSpacingThunk } from '@store/slices/EpubJSBackend/data/theme/themeManager'
-import {  setRenderMode } from '@store/slices/bookState'
 import { setReaderMargins } from '@store/slices/appState'
 const SpacingContainer = ()=>{
   const dispatch = useAppDispatch()

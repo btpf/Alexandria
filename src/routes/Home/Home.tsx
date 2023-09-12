@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
+import React, { useEffect, useRef, useState } from 'react'; // we need this to make JSX compile
 import { Link, useNavigate } from "react-router-dom";
 
 import styles from './Home.module.scss'
@@ -9,8 +9,6 @@ import Settings from '@resources/feathericons/settings.svg'
 
 import Logo from '@resources/logo.svg'
 
-import Font from '@resources/iconmonstr/text-3.svg'
-import Article from '@resources/material/article_black_24dp.svg'
 import RightArrow from "@resources/feathericons/arrow-right.svg"
 import Boomark from '@resources/figma/Bookmark.svg'
 import Trash from '@resources/feathericons/trash-2.svg'
@@ -23,8 +21,6 @@ import { open } from '@tauri-apps/api/dialog';
 
 
 import { convertFileSrc, invoke } from '@tauri-apps/api/tauri'
-import Epub from 'epubjs';
-import { BookOptions } from 'epubjs/types/book';
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 
 import SortIcon from '@resources/iconmonstr/iconmonstr-sort-25.svg'

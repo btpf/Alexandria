@@ -8,7 +8,8 @@
     "start": "webpack",
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "lint": "eslint --fix --ext .ts,.tsx ."
   },
   "repository": {
     "type": "git",

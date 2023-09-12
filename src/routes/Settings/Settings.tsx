@@ -1,12 +1,11 @@
-import React, { useRef, useState } from "react"
+import React from "react"
 import styles from './Settings.module.scss'
 
 import BackArrow from '@resources/feathericons/arrow-left.svg'
-import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
 // import ReaderTheme from "./pages/ReaderTheme"
 import GlobalTheme from "./pages/GlobalTheme"
 import Fonts from "./pages/Fonts/Fonts"
-import { useAppSelector } from "@store/hooks"
 import TitleBarButtons from "@shared/components/TitleBarButtons"
 import About from "./pages/About"
 

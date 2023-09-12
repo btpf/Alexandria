@@ -1,5 +1,5 @@
 import styles from './TitleBarButtons.module.scss'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React from 'react'
 
 import ExitIcon from '@resources/figma/Exit.svg'
 import MaximizeIcon from '@resources/figma/Maximize.svg'

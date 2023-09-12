@@ -1,6 +1,5 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { WritableDraft } from 'immer/dist/internal';
-import {Theme} from './EpubJSBackend/data/theme/themeManager.d'
 import {actions as globalThemeActions} from './AppState/globalThemes'
 import {actions as stateActions} from './AppState/state/stateManager'
 import { defaultAppState } from './appStateTypes';

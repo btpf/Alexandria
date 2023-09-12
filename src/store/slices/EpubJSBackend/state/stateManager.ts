@@ -1,6 +1,5 @@
 import { PayloadAction } from "@reduxjs/toolkit"
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
-import { SetDictionaryWordPayload, sideBarUpdate } from "./stateManager.d";
 
 
 type ProgrammaticProgressUpdatePayload = {
