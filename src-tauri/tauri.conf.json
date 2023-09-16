@@ -35,7 +35,8 @@
       "category": "DeveloperTool",
       "copyright": "",
       "deb": {
-        "depends": []
+        "depends": [],
+        "desktopTemplate":"desktopTemplate.hbs"
       },
       "externalBin": [],
       "icon": [
