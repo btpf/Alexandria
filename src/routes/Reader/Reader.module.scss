@@ -86,16 +86,21 @@
   flex-basis: 75px;
   min-width: 280px;
   padding-left:20px;
-  gap:0px;
+  gap:10px;
   
-  & > svg:first-of-type{
-    margin-right:10px;
+  & > svg:last-of-type{
+    margin-left:20px;
+    margin-right:-20px;
   }
   @include lt-sm{
     padding-right:20px;
     min-width: 50px;
     & > div:last-of-type{
       display: none;
+    }
+    & > svg:last-of-type{
+      margin-left:10px;
+      margin-right:0px;
     }
   }
 

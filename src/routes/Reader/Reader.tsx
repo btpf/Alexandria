@@ -5,7 +5,9 @@ import styles from './Reader.module.scss'
 import Bookmark from '@resources/feathericons/bookmark.svg'
 import List from '@resources/feathericons/list.svg'
 import Search from '@resources/feathericons/search.svg'
-import Font from '@resources/iconmonstr/text-3.svg'
+import Settings from '@resources/feathericons/settings.svg'
+import Maximize from '@resources/feathericons/maximize-2.svg'
+import UnMaximize from '@resources/feathericons/minimize-2.svg'
 import ArrowLeft from '@resources/feathericons/arrow-left.svg'
 import ArrowRight from '@resources/feathericons/arrow-right.svg'
 import HomeIcon from '@resources/feathericons/home.svg'
@@ -23,6 +25,7 @@ import TitleBarButtons  from '@shared/components/TitleBarButtons';
 import QuickbarModal from './ReaderView/components/QuickbarModal/QuickbarModal'
 import NoteModal from './ReaderView/components/NoteModal/NoteModal'
 import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
+import { appWindow } from '@tauri-apps/api/window'
 
 
 const Home = () =>{
@@ -36,6 +39,7 @@ const Home = () =>{
   const displayedCFI = useAppSelector((state) => state.bookState[selectedRendition]?.data.cfi)
   
   const [isPageBookmarked, setPageBookmarked] = useState(false)
+  const [isFullScreen, setIsFullScreen] = useState(false)
   const [mouseOverMenu, setMouseOverMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
   const params = useParams()
@@ -83,7 +87,12 @@ const Home = () =>{
   },[bookmarks, currentPage])  
 
 
-
+  const setFullScreenCaller = async (isFullScreen:boolean) =>{
+    await appWindow.setFullscreen(isFullScreen);
+    setIsFullScreen(isFullScreen);
+    // Bug prevention: mouseOff event not detected when fullscreen is set. Menu state becomes glitched.
+    setMouseOverMenu(false);
+  };
 
   const dispatch = useAppDispatch()
 
@@ -97,6 +106,9 @@ const Home = () =>{
       <div onMouseLeave={()=>setMouseOverMenu(false)} onMouseOver={()=>setMouseOverMenu(true)} data-tauri-drag-region style={{backgroundColor:showMenuUi? "":ReaderBackgroundColor}} className={`${styles.readerTitleBar}`}>
         <div className={`${styles.menuButtonContainerLeft} ${!showMenuUi && styles.optionsToggled}`}>
           <HomeIcon viewBox="0 0 24 24" onClick={()=>{
+            if(isFullScreen){
+              setFullScreenCaller(false)
+            }
             navigate('/')
             dispatch(resetBookAppState())
           }}/>
@@ -107,7 +119,7 @@ const Home = () =>{
         <div style={!showMenuUi?{color:ReaderColor, opacity:0.35}:{}} className={styles.title}>
           {renditionInstance?.book?.packaging?.metadata?.title}
           {/* - {displayedCFI} */}
-          - {selectedRendition}
+          {/* - {selectedRendition} */}
         </div>
         <div className={`${styles.menuButtonContainerRight} ${!showMenuUi && styles.optionsToggled}`}>
           <Search viewBox="0 0 24 24" onClick={()=>{
@@ -122,13 +134,22 @@ const Home = () =>{
             }
             
           }}/>
-          <Font viewBox="0 0 24 24" onClick={()=>{
+          <Settings viewBox="0 0 24 24" onClick={()=>{
             dispatch(ToggleThemeMenu())
             dispatch(ToggleMenu())
           }}/>
+          {!isFullScreen?
+            <Maximize viewBox="0 0 24 24" onClick={async ()=>{
+              setFullScreenCaller(true)
+            }}/>
+            :
+            <UnMaximize viewBox="0 0 24 24" style={isFullScreen && {marginRight:20}} onClick={async ()=>{
+              setFullScreenCaller(false)
+            }}/>}
+          
           
 
-          <TitleBarButtons disabled={!showMenuUi}/>
+          <TitleBarButtons disabled={!showMenuUi} remove={isFullScreen} />
         </div>
       </div>
 

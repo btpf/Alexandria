@@ -4,7 +4,7 @@ import { useAppSelector } from "@store/hooks"
 import { LoadThemes, SetFullScreen, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
 import { invoke } from "@tauri-apps/api"
 import { appWindow } from "@tauri-apps/api/window"
-import React, { useEffect, useLayoutEffect } from "react"
+import React, { useEffect, useLayoutEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import styles from './InitializeStyles.module.scss'
 import toast, { Toaster } from 'react-hot-toast'
@@ -14,7 +14,8 @@ import { importBook} from '@shared/scripts/TauriActions'
 const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   const themes = useAppSelector((state)=> state.appState.themes)
   const selectedTheme = useAppSelector((state)=> state.appState.selectedTheme)
-  const isFullscreen = useAppSelector((state)=> state.appState.state.fullscreen)
+  const isMaximized = useAppSelector((state)=> state.appState.state.fullscreen)
+  const [isFullScreen, setIsFullScreen] = useState(false)
   const dispatch = useDispatch()
   useEffect(()=>{
     // Handles case where application gets launch parameters 
@@ -67,14 +68,18 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
 
   useLayoutEffect(() => {
     async function updateSize() {
-      const result = await appWindow.isMaximized()
-      if(result !== isFullscreen){
-        dispatch(SetFullScreen(result))
+      const currentlyMaximized = await appWindow.isMaximized()
+      if(currentlyMaximized !== isMaximized){
+        dispatch(SetFullScreen(currentlyMaximized))
+      }
+      const currentlyFullscreen = await appWindow.isFullscreen()
+      if(currentlyFullscreen != isFullScreen){
+        setIsFullScreen(currentlyFullscreen)
       }
     }
     window.addEventListener('resize', updateSize);
     return () => window.removeEventListener('resize', updateSize);
-  }, [isFullscreen]);
+  }, [isMaximized, isFullScreen]);
 
 
   return (
@@ -84,7 +89,7 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
       "--text-primary":themes[selectedTheme].ui.primaryText,
       "--text-secondary":themes[selectedTheme].ui.secondaryText,
       "--link":themes[selectedTheme].reader.body.link,
-      "--rounded-corners":isFullscreen?"0px":"10px",
+      "--rounded-corners":(isMaximized || isFullScreen)?"0px":"10px",
       "height":"100%", "backgroundColor":themes[selectedTheme].ui.tertiaryBackground, color: themes[selectedTheme].ui.primaryText}}>
       {/* <div style={{"height":"100%"}}> */}
       <Toaster

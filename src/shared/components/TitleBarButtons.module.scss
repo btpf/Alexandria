@@ -11,6 +11,10 @@
   }
 }
 
+.remove{
+  display:none;
+}
+
 .disabled{
   > svg{
     pointer-events:none;

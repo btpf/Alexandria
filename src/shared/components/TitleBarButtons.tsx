@@ -11,10 +11,12 @@ import { useAppSelector } from '@store/hooks'
 
 interface TitleBarButtonsProps {
   disabled: boolean,
+  remove: boolean
 }
 
 const defaultProps: TitleBarButtonsProps = {
-  disabled: false
+  disabled: false,
+  remove: false
 }
 
 const TitleBarButtons = (props:TitleBarButtonsProps)=>{
@@ -22,7 +24,7 @@ const TitleBarButtons = (props:TitleBarButtonsProps)=>{
   const maximized = useAppSelector((state)=> state.appState.state.fullscreen)
 
   return (
-    <div className={`${styles.titleBarButtonsContainer} ${props.disabled?styles.disabled:""}`}>
+    <div className={`${styles.titleBarButtonsContainer} ${props.remove?styles.remove:""} ${props.disabled?styles.disabled:""}`}>
       <MinimizeIcon onClick={async ()=>{
         await appWindow.minimize();
       }} viewBox="10 10 20 20"className={styles.titleBarButton} color="white"/>
