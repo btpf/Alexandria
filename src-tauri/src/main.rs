@@ -170,8 +170,8 @@ fn import_book(payload: String) -> Result<BookHydrate, String> {
     match std::fs::create_dir(&hashed_book_folder) {
         Ok(_file) => println!("Book is Unique, Creating Directory"),
         Err(_error) => {
-            println!("Error: Book is duplicate");
-            return Err("Error: Book is duplicate".to_string());
+            println!("{}", format!("Error: Book is duplicate - {checksum}"));
+            return Err(format!("Error: Book is duplicate - {checksum}").to_string());
         }
     };
     let bookFileName = path.file_name().unwrap().to_str().unwrap();

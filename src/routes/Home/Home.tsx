@@ -34,18 +34,8 @@ import AddFiles from "@resources/feathericons/folder-plus.svg"
 import toast from 'react-hot-toast';
 
 import { platform } from '@tauri-apps/api/os';
-import { fs } from '@tauri-apps/api';
-import {getBookUrlByHash, createBookInstance} from '@shared/scripts/TauriActions'
+import { importBook, SUPPORTED_FORMATS} from '@shared/scripts/TauriActions'
 
-const SUPPORTED_FORMATS = [
-  'epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc',
-  "fb2", "fbz",
-  "cbz", "cbr", "cb7", "cbt",
-  "txt"
-]
-const BACKEND_MANAGED = [
-  'epub','epub3', 'azw3', "azw", "mobi", 'pdb', 'prc'
-]
 let IS_LINUX = false
 interface BookData {
   author: string;
@@ -84,74 +74,21 @@ const Shelf = () =>{
 
   const importBooks = (files: any) =>{
     let myBooksState = myBooks;
-    files.forEach((file:string)=>{
-      const filetype = file.split(".").slice(-1)[0]
-      if(!SUPPORTED_FORMATS.includes(filetype)){
-        toast.error("Unsupported Filetype: " + file.split("/").slice(-1)[0])
-        return
+    files.forEach(async (file:string)=>{
+      
+      try {
+        const response = await importBook(file)
+        if(!response){
+          return
+        }
+        myBooksState = [...myBooksState, response]
+        setBooks(myBooksState)
+      } catch (error:any) {
+        toast.error(error)
       }
 
-      invoke('import_book', {payload:file}).then(async (response:any)=>{
-        
-        if(response){
-          // If the file is not converted to an epub, we will need to do parsing on the client side
-          // Here we will extract any metadata and create the cover if one exists
-          if(!BACKEND_MANAGED.includes(filetype) ){
 
 
-
-            const bookValue = await getBookUrlByHash(response.hash);
-            const book = await createBookInstance(bookValue, response.hash)
-            if(book == undefined){
-              console.log("Book load cancelled during import")
-              return
-            }
-            book.ready.then((bookData)=>{
-              book.coverUrl().then(async (cover)=>{
-                const config_path = await invoke("get_config_path_js")
-                const book_path = config_path + "/books/" + response.hash + "/"
-                const coverpath =  book_path + "cover.jpg";
-                let author = (book.packaging.metadata.creator as unknown as string)
-                author = author? author: "unknown author"
-                // console.log( book.packaging.manifest.metadata)
-                const newData = {
-                  "author": author,
-                  "data": {
-                    "cfi": "",
-                    "progress": 0
-                  },
-                  "modified": Date.now(),
-                  "title": book.packaging.metadata.title
-                }
-                await fs.writeTextFile({ path:book_path + response.hash + ".json", contents:JSON.stringify(newData) });
-  
-  
-                if(cover != null){
-                  const blob = await fetch(cover).then(r => r.blob());
-                  const contents = await blob.arrayBuffer();
-                  console.log("printing cover path", coverpath)
-                  await fs.writeBinaryFile({ path:coverpath, contents });
-                }
-  
-  
-                // Update library before destroying book instance
-                myBooksState = [...myBooksState.filter((item)=> item.hash != response.hash), {title: response.title, modified: response.modified, author: response.author, cover_url: coverpath || "", progress: 0, hash:response.hash}]
-                setBooks(myBooksState)
-                book.destroy()
-              })
-            })
-
-
-          }
-
-          myBooksState = [...myBooksState, {title: response.title, modified: response.modified, author: response.author, cover_url: response.cover_url || "", progress: 0, hash:response.hash}]
-          setBooks(myBooksState)
-    
-        }
-      }).catch((err)=>{
-        console.log(err)
-        toast.error(err)
-      })
     })
   }
 

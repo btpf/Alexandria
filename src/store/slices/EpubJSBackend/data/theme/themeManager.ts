@@ -72,8 +72,6 @@ export const setFontThunk = createAsyncThunk(
       // return all of the font urls inside the folder with the given font name
       const paths = await invoke("get_font_urls", {name: newObj["font"]})
       const typedPaths = (paths as [string])
-      console.log("Dispatch recieved the following paths")
-      console.log(paths)
       let fontsCache = ''
       typedPaths.forEach((path)=>{
         const pathDissect = path.split(" - ")

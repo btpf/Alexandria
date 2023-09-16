@@ -11,6 +11,13 @@
     "version": "../package.json"
   },
   "tauri": {
+    "cli": {
+      "args": [{
+        "name": "source",
+        "index": 1,
+        "takesValue": true
+      }]
+    },
     "allowlist": {
       "protocol":{
         "asset": true,
