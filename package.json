@@ -57,12 +57,12 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
+    "@btpf/epubjs": "^0.3.94",
     "@github/mini-throttle": "^2.1.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@tauri-apps/api": "^1.4.0",
     "@types/css-font-loading-module": "^0.0.8",
     "@types/node": "^18.0.5",
-    "epubjs": "github:btpf/epub.js",
     "immer": "^9.0.15",
     "jszip": "^3.10.1",
     "rc-slider": "^10.1.0",
