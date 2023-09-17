@@ -1,3 +1,6 @@
 [submodule "libmobi-rs"]
 	path = libmobi-rs
 	url = https://github.com/btpf/libmobi-rs.git
+[submodule "public/resources/Alexandria-Assets"]
+	path = public/resources/Alexandria-Assets
+	url = https://github.com/btpf/Alexandria-Assets.git
