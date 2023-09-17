@@ -3,7 +3,7 @@ import { AllowMouseEvent, setProgrammaticProgressUpdate, SetProgress, SkipMouseE
 import { LOADSTATE } from "@store/slices/constants";
 import { bookStateStructure } from "@store/slices/EpubJSBackend/epubjsManager.d";
 import store from "@store/store";
-import { Contents, Rendition } from "epubjs";
+import { Contents, Rendition } from '@btpf/epubjs';
 import View from "epubjs/types/managers/view";
 import { 
   CalculateBoxPosition, 

@@ -1,4 +1,4 @@
-import { EpubCFI, Rendition } from "epubjs";
+import { EpubCFI, Rendition } from '@btpf/epubjs';
 
 
 export const QUICKBAR_MODAL_WIDTH = 200

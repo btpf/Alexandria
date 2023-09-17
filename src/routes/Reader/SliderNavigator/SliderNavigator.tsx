@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { NavItem, Rendition } from 'epubjs'
+import { NavItem, Rendition } from '@btpf/epubjs'
 import Spine from 'epubjs/types/spine'
 import { setProgrammaticProgressUpdate, SetProgress } from '@store/slices/bookState';
 import { LOADSTATE } from '@store/slices/constants';

@@ -15,7 +15,7 @@ import Search from '@resources/iconmonstr/iconmonstr-magnifier-2.svg'
 
 import { useAppSelector, useAppDispatch } from '@store/hooks';
 import { CalculateBoxPosition, NOTE_MODAL_HEIGHT, NOTE_MODAL_WIDTH, QUICKBAR_MODAL_HEIGHT, QUICKBAR_MODAL_WIDTH } from '../../functions/ModalUtility';
-import { Rendition } from 'epubjs';
+import { Rendition } from '@btpf/epubjs';
 import toast from 'react-hot-toast';
 import { writeText } from '@tauri-apps/api/clipboard';
 import { MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetModalCFI, ShowNoteModal } from '@store/slices/appState';

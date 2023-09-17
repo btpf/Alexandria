@@ -1,6 +1,6 @@
 import React, { createRef } from 'react'; // we need this to make JSX compile
 import styles from './ReaderView.module.scss'
-import { Book, Rendition } from 'epubjs'
+import { Book, Rendition } from '@btpf/epubjs'
 // import bookImport from '@resources/placeholder/childrens-literature.epub'
 
 import {

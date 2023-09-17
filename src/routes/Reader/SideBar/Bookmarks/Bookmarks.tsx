@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Trash from '@resources/feathericons/trash-2.svg'
-import { NavItem, Rendition } from 'epubjs'
+import { NavItem, Rendition } from '@btpf/epubjs'
 import Spine from 'epubjs/types/spine'
 import { ToggleBookmark } from '@store/slices/bookState'
 

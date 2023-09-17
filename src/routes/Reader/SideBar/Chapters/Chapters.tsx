@@ -1,6 +1,6 @@
 import styles from './Chapters.module.scss'
 import React, { useState } from 'react'
-import { NavItem, Rendition } from 'epubjs';
+import { NavItem, Rendition } from '@btpf/epubjs';
 import produce from 'immer';
 import ChevronRight from '@resources/feathericons/chevron-right.svg'
 import ChevronDown from '@resources/feathericons/chevron-down.svg'

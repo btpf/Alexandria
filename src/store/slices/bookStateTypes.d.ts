@@ -1,4 +1,4 @@
-import { Rendition } from 'epubjs'
+import { Rendition } from '@btpf/epubjs'
 import { LOADSTATE } from './constants'
 import { bookStateStructure } from "./EpubJSBackend/epubjsManager.d.ts"
 

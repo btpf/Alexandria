@@ -11,7 +11,7 @@ import { writeTextFile } from '@tauri-apps/api/fs';
 
 
 import { invoke } from '@tauri-apps/api/tauri'
-import { EpubCFI, NavItem, Book } from 'epubjs';
+import { EpubCFI, NavItem, Book } from '@btpf/epubjs';
 
 
 import TitleBarButtons  from '@shared/components/TitleBarButtons';

@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './SideBar.module.scss'
 
 
-import { Rendition } from 'epubjs'
+import { Rendition } from '@btpf/epubjs'
 import Chapters from './Chapters/Chapters'
 import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Annotations from './Annotations/Annotations'
