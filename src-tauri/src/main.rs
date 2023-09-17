@@ -2,7 +2,11 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
-
+// Added feature gate, needed to compile flatpaks
+// #![feature(once_cell)]
+// https://users.rust-lang.org/t/conditional-compilation-of-feature-gates/4765
+// https://users.rust-lang.org/t/add-unstable-feature-only-if-compiled-on-nightly/27886
+#![cfg_attr(feature = "opt_once_cell", feature(once_cell))]
 use std::{
     collections::HashMap,
     env::{self, current_dir},
