@@ -14,7 +14,7 @@ import { platform } from '@tauri-apps/api/os';
 
 
 
-import webfonts from '@resources/webfonts.json'
+import webfonts from '@resources/Alexandria-Assets/webfonts.json'
 import toast from "react-hot-toast";
 const myStyle = webfonts.items.map((item) => { return {name:item.family, link:item.files.regular,menu:item.menu, files: item.files}})
 
