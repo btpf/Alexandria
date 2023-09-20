@@ -158,7 +158,7 @@ fn create_or_load_data() -> Option<DataExists> {
 #[tauri::command]
 fn import_book(payload: String) -> Result<BookHydrate, String> {
     let path = Path::new(&payload);
-    let mut f = File::open(&path).unwrap();
+    let mut f = File::open(&path).map_err(|e| format!("Error: Could not Access File \"{}\" : {}",path.file_name().unwrap().to_str().unwrap(),  e))?;
     let mut buffer = Vec::new();
     // read the whole file
     f.read_to_end(&mut buffer).unwrap();
