@@ -265,11 +265,12 @@ const Shelf = () =>{
 
         {myBooks
           .filter((bookObj)=> bookObj.title.toLowerCase().includes(searchValue.toLowerCase()))
-          .sort((a, b) =>{ 
+          .sort((a, b) =>{
+            const typedSortBy = sortBy as keyof typeof a
             if(sortDirection =="ASC"){
-              return (a[sortBy] > b[sortBy]) ? 1 : -1
+              return (a[typedSortBy] > b[typedSortBy]) ? 1 : -1
             }else{
-              return (a[sortBy] < b[sortBy]) ? 1 : -1
+              return (a[typedSortBy] < b[typedSortBy]) ? 1 : -1
             }
             
           })
@@ -322,7 +323,7 @@ const Shelf = () =>{
                   <div className={styles.boxTopBar}>
                     <Boomark/>
                     <div>{Math.round(book.progress*100)}%</div>
-                    <Test onMouseDown={(e)=>{
+                    <Test onMouseDown={(e:React.MouseEvent<HTMLElement>)=>{
                       e.preventDefault()
                       e.stopPropagation()
                     }} onMouseUp={(e: React.MouseEvent<HTMLElement>)=>{
@@ -399,12 +400,12 @@ const Shelf = () =>{
                 "Progress": "progress",
                 "Recently Opened": "modified"
               }
-
+              const typedItem = item as keyof typeof updateMapping
               return (<div onClick={()=>
               {
-                dispatch(SetSortSettings({sortDirection, sortBy: updateMapping[item]}))
+                dispatch(SetSortSettings({sortDirection, sortBy: updateMapping[typedItem]}))
               }
-              } className={styles.sortOption} style={(updateMapping[item] == sortBy)?{fontWeight:"bold"}:{}} key={item}>{item}</div>)
+              } className={styles.sortOption} style={(updateMapping[typedItem] == sortBy)?{fontWeight:"bold"}:{}} key={item}>{item}</div>)
             })}
           </div>
 
