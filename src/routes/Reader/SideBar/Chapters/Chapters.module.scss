@@ -40,4 +40,12 @@ $ChapterArrow: 24px;
   padding-top:10px;
   padding-bottom:10px;
   cursor: pointer;
+  transition: 0.15s;
+}
+
+.TocMapContainer:hover{
+
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  
 }
