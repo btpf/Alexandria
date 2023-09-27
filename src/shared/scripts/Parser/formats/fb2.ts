@@ -170,9 +170,10 @@ const processFB2 = async (fb2, blob, filename) => {
   const styleUrl = URL.createObjectURL(styleBlob)
 
   let i = 0
-  const itemFromElement = x => {
+  const itemFromElement = (x, parents = []) => {
+    if (parents.includes(x)) return
     if (fb2Sections.has(x)) return fb2Sections.get(x)
-    const section = fb2ToHtml(fb2, x, itemFromElement)
+    const section = fb2ToHtml(fb2, x, itemFromElement, false, parents)
 
     const titles = [
       ...section.querySelectorAll(':scope > section > header') || []]
@@ -222,7 +223,7 @@ const processFB2 = async (fb2, blob, filename) => {
   const toc = []
   bodies.forEach((body, i) => {
     const name = body.getAttribute('name')
-    const sections = [...body.children].map(itemFromElement)
+    const sections = [...body.children].map(x => itemFromElement(x))
     readingOrder.push(...sections)
 
     const titledSections = sections.filter(x => x.title)
@@ -265,7 +266,8 @@ const processFB2 = async (fb2, blob, filename) => {
 }
 
 
-const fb2ToHtml = (fb2, node, itemFromElement, isSection) => {
+const fb2ToHtml = (fb2, node, itemFromElement, isSection, parents = []) => {
+  parents.push(node)
   const walk = (fb2, node, f) => {
     const [output, childF, post = x => x] = f(fb2, node)
     node = node.firstChild
@@ -338,9 +340,8 @@ const fb2ToHtml = (fb2, node, itemFromElement, isSection) => {
         let note = fb2.getElementById(id)
         if (!note) return [el]
         while (!note.matches('body > *')) note = note.parentElement
-        let item = fb2Sections.get(note)
-        if (!item && itemFromElement) item = itemFromElement(note)
-        if (item) el.setAttribute('href', item.href + '#' + id)
+        const item = itemFromElement ? itemFromElement(note, parents) : null
+        if (item) el.setAttribute('href', (item?.href ?? '') + '#' + id)
       }
       return [el]
     }
