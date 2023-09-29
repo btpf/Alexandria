@@ -1,0 +1,43 @@
+.progressContainer{
+  display:flex;
+  height:100%;
+  width: 100%;
+  //   padding-left:20%;
+  align-items: center;
+  justify-content: center;
+  gap:15px;
+  flex-direction: column;
+  font-size:18px;
+
+  input {
+    border-radius: 10px;
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+    margin: 0 10px 0 10px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+.chapterBox{
+  width:50px;
+}
+
+.cfiBox{
+  width: 200px;
+}
+
+.heading{
+  display:inline;
+  opacity: 0.75;
+  margin-right:15px;
+}

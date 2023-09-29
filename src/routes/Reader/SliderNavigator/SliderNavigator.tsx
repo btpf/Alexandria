@@ -7,10 +7,10 @@ import { useAppDispatch, useAppSelector } from '@store/hooks'
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import { NavItem, Rendition } from '@btpf/epubjs'
-import Spine from 'epubjs/types/spine'
+import { Rendition } from '@btpf/epubjs'
 import { setProgrammaticProgressUpdate, SetProgress } from '@store/slices/bookState';
 import { LOADSTATE } from '@store/slices/constants';
+import { getChapterCFIMap } from '@shared/scripts/getChapterCfiMap';
 
 
 
@@ -51,44 +51,6 @@ const SliderNavigator = ()=>{
 
   // This is used to animate the mouse if scrolling
   const [placeholderProgress, setPlaceholderProgress] = useState(0)
-
-
-
-  // Gets the cfi for each chapter name and returns it. Used for finding chapter of annotation
-  const getChapterCFIMap = (renditionInstance: Rendition)=>{
-    let allChapters: any[] = []
-
-    // Recursive function which gets all the chapters and subchapters in order
-    function traverseTree(node: NavItem[]){
-      node.forEach((subNode)=>{
-      // href is saved for using spineByHref which returns the ID needed for getting the cfi of the chapter
-        allChapters.push({href: subNode.href, title:subNode.label})
-        if(subNode.subitems){
-          traverseTree(subNode.subitems)
-        }
-      })
-    }
-
-    traverseTree(renditionInstance.book.navigation.toc)
-    allChapters = allChapters.map((item)=>{
-    interface fixedSpine extends Spine{
-      spineByHref: [value:number],
-      items: [key:any]
-    }
-
-    let temp = item.href
-    if(temp.includes(".xhtml#") || temp.includes(".html#")){
-      temp = temp.split("#")
-      temp.pop()
-      item.href = temp.join()
-    }
-
-    // This fixes a bug where the spineByHref returns undefined
-    const id:number = (renditionInstance.book.spine as fixedSpine).spineByHref[item.href] || 0 
-    return {...item, cfi: `epubcfi(${(renditionInstance.book.spine as fixedSpine).items[id].cfiBase}!/0)` }
-    })
-    return allChapters
-  }
 
 
   useEffect(() => {

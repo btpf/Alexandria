@@ -206,3 +206,23 @@
   display:grid;
   grid-template-columns: 1fr;
 }
+
+.percentageContainer{
+  width: 50px;
+  height: 100%;
+  display:flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  // padding-right:15px;
+  cursor:pointer;
+  // border: 1px solid gray;
+  // padding-right:5px;
+  margin-right:15px;
+  // background-color:black;
+  // text-align: center;
+}
+.percentageContainer:hover{
+  background-color:rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}

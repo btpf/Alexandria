@@ -16,6 +16,7 @@ export interface defaultAppState {
         sidebarMenuSelected: boolean|string,
         themeMenuActive: boolean,
         menuToggled: boolean,
+        progressMenuActive:boolean,
         modals:{
           selectedCFI: string,
           quickbarModal: {visible: boolean, x:number, y:number},

@@ -24,8 +24,9 @@ import TitleBarButtons  from '@shared/components/TitleBarButtons';
 
 import QuickbarModal from './ReaderView/components/QuickbarModal/QuickbarModal'
 import NoteModal from './ReaderView/components/NoteModal/NoteModal'
-import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleThemeMenu } from '@store/slices/appState'
+import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleProgressMenu, ToggleThemeMenu } from '@store/slices/appState'
 import { appWindow } from '@tauri-apps/api/window'
+import ProgressMenu from './ProgressMenu/ProgressMenu'
 
 
 const Home = () =>{
@@ -45,6 +46,7 @@ const Home = () =>{
   const params = useParams()
   const sidebarOpen = useAppSelector((state) => state?.appState?.state?.sidebarMenuSelected)
   const dualReaderReversed = useAppSelector((state) => state?.appState?.state?.dualReaderReversed)
+  const progressMenuActive = useAppSelector((state) => state?.appState?.state?.progressMenuActive)
 
 
   const ReaderBackgroundColor = useAppSelector((state) => {
@@ -169,6 +171,11 @@ const Home = () =>{
         <div onClick={()=>renditionInstance?.prev()} className={`${styles.arrowButtonContainer}`}>
           <ArrowLeft viewBox={"0 0 24 24"} />
         </div>
+        <div onClick={()=>{
+          dispatch(ToggleProgressMenu())
+        }} className={styles.percentageContainer}>
+          {renditionInstance? Math.round(renditionInstance.book.locations.percentageFromCfi(displayedCFI)*100):"0"}%
+        </div>
         <div className={styles.sliderContainer}>
           <SliderNavigator/>
         </div>
@@ -182,6 +189,7 @@ const Home = () =>{
 
       <Sidebar/>
       <SettingsBar/>
+      <ProgressMenu/>
       <Dictionary/>
 
 
@@ -195,7 +203,10 @@ const Home = () =>{
         if(ThemeMenuActive){
           dispatch(ToggleThemeMenu())
         }
-      }} className={`${styles.opaqueScreen} ${(sidebarOpen) && styles.opaqueScreenActive}`}/>
+        if(progressMenuActive){
+          dispatch(ToggleProgressMenu())
+        }
+      }} className={`${styles.opaqueScreen} ${(sidebarOpen||progressMenuActive) && styles.opaqueScreenActive}`}/>
 
     </div>
   )

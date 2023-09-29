@@ -30,6 +30,7 @@ const initialState: defaultAppState = {
     sidebarMenuSelected: false,
     menuToggled: true, 
     themeMenuActive: false,
+    progressMenuActive: false,
     modals:{
       selectedCFI: "",
       quickbarModal: {visible: false, x:0, y:0},
@@ -96,6 +97,7 @@ export const {
   SetDualReaderMode,
   resetBookAppState,
   SetDualReaderReversed,
+  ToggleProgressMenu,
 
   /* Modals */
   MoveQuickbarModal,

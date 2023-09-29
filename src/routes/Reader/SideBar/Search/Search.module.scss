@@ -20,7 +20,6 @@
   align-self: center;
   display: flex;
   flex-direction: column;
-  row-gap:10px;
   margin-left: 50px;
 }
 
@@ -37,13 +36,18 @@
 
 
 .resultContainer{
-  //   display: flex;
   width: 100%;
   height: auto;
   flex-direction: row;
-  margin-top: 10px;
+  transition: 0.15s;
+  border-radius: 10px;
+  padding:15px;
+  cursor:pointer;
 }
     
+.resultContainer:hover{
+  background-color:rgba(0, 0, 0, 0.2);
+}
 
 .resultTextContainer{
   display: flex;

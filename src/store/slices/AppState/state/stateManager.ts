@@ -45,6 +45,10 @@ const ToggleThemeMenu:appStateReducerSingle =(state) =>{
   state.state.themeMenuActive = !state.state.themeMenuActive
 }
 
+const ToggleProgressMenu:appStateReducerSingle =(state) =>{
+  state.state.progressMenuActive = !state.state.progressMenuActive
+}
+
 const setReaderMargins:appStateReducer = (state, action: PayloadAction<number>) =>{
   state.readerMargins = action.payload
 }
@@ -60,6 +64,7 @@ export const actions = {
   setReaderMargins,
   SetDualReaderMode,
   resetBookAppState,
-  SetDualReaderReversed
+  SetDualReaderReversed,
+  ToggleProgressMenu
 }
   

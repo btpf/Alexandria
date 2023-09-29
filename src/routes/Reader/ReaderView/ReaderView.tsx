@@ -133,7 +133,7 @@ class Reader extends React.Component<ReaderProps>{
         myLocations = JSON.parse(await fs.readTextFile(locations_path))
         this.book.locations.load(myLocations)
       }else{
-        myLocations = await (this.book as Book).locations.generate(1000)
+        myLocations = await (this.book as Book).locations.generate(1024)
         fs.writeTextFile(locations_path, JSON.stringify(myLocations))
       }
 

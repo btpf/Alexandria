@@ -4,6 +4,12 @@
   height: auto;
   flex-direction: row;
   margin-top: 20px;
+  transition: 0.15s;
+  border-radius: 10px;
+}
+
+.annotationContainer:hover{
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .AnnotationLeftSubContainer{
@@ -23,6 +29,8 @@
   width: 100%;
   cursor: pointer;
   user-select: none;
+  padding:10px 0 10px;
+
 }
 
 .AnnotationChapter{

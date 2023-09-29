@@ -10,6 +10,7 @@ import DisplayContainer from './DisplayContainer/DisplayContainer'
 
 import SettingsIcon from '@resources/feathericons/settings.svg'
 import { useNavigate } from 'react-router-dom'
+import BottomMenuContainer from '../Components/BottomMenuContainer/BottomMenuContainer'
 
 const menuExpanded = {
   transform: `translateY(100%)`,
@@ -24,34 +25,30 @@ const SettingsBar = ()=>{
 
   const showQuickSettingsIcon = menu == "Fonts" || menu == "Themes" 
   return (
-    // This serves the dual purpose of preventing a flashbang
-    <div className={styles.overflowContainer}>
-      <div style={{transform:!ThemeMenuActive?`translateY(105%)`:''}} className={styles.settingsBarContainer}>
-        {/* <div className={styles.settingsIcon}><SettingsIcon/></div> */}
-
-        <div className={styles.settingsContainer}>
-          {DisplaySubpage(menu)}
-        </div>
-
-        <div className={styles.currentMenuContainer}>
-          <SettingsIcon 
-            className={styles.settingsIconBottomBar} 
-            style={{marginRight:"auto", marginLeft:15, opacity: showQuickSettingsIcon? 1:0}}
-            onClick={()=>{
-              console.log(window.location.pathname)
-              navigate("/settings/" + menu, {state:{backPath:window.location.pathname}})
-            }}
-          />
-          {['Fonts', 'Themes', "Spacing", "Display"].map((item,i)=>{
-            return (
-              // <div key={i} style={{color:item==menu?"#008DDD":"black"}} onClick={()=>setMenu(item)}> {item}</div>
-              <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
-            )
-          })}
-          <SettingsIcon style={{marginLeft:"auto", marginRight:15, opacity:0}}/>
-        </div>
+    <BottomMenuContainer active={ThemeMenuActive}>
+      <div className={styles.settingsContainer}>
+        {DisplaySubpage(menu)}
       </div>
-    </div>
+
+      <div className={styles.currentMenuContainer}>
+        <SettingsIcon 
+          className={styles.settingsIconBottomBar} 
+          style={{marginRight:"auto", marginLeft:15, opacity: showQuickSettingsIcon? 1:0}}
+          onClick={()=>{
+            console.log(window.location.pathname)
+            navigate("/settings/" + menu, {state:{backPath:window.location.pathname}})
+          }}
+        />
+        {['Fonts', 'Themes', "Spacing", "Display"].map((item,i)=>{
+          return (
+          // <div key={i} style={{color:item==menu?"#008DDD":"black"}} onClick={()=>setMenu(item)}> {item}</div>
+            <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
+          )
+        })}
+        <SettingsIcon style={{marginLeft:"auto", marginRight:15, opacity:0}}/>
+      </div>
+    </BottomMenuContainer>
+
   )
 }
 
