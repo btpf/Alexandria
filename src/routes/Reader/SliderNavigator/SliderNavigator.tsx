@@ -82,7 +82,7 @@ const SliderNavigator = ()=>{
     }
 
 
-    const chapterCFIMap = getChapterCFIMap(renditionInstance)
+    const chapterCFIMap = getChapterCFIMap(renditionInstance.book)
 
     const markerObject: MarkType = {}
 

@@ -42,7 +42,7 @@ const ProgressInfoBar = ()=>{
       return
     }
 
-    const result = getChapterCFIMap(renditionInstance)
+    const result = getChapterCFIMap(renditionInstance.book)
     setChapterCfiMap(result)
 
     setNumberOfChapters(result.length)

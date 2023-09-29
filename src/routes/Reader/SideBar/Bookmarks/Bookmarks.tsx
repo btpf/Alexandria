@@ -33,7 +33,7 @@ const Bookmarks = ()=>{
   
   
   
-    const allChapters = getChapterCFIMap(renditionInstance)
+    const allChapters = getChapterCFIMap(renditionInstance.book)
 
     
     const newOrderedBookmarks = workingBookmarks.map((cfi)=>{

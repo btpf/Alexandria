@@ -49,7 +49,7 @@ const Annotations = ()=>{
 
 
     const finalState:Array<AnnotationData> = []
-    const allChapters = getChapterCFIMap(renditionInstance)
+    const allChapters = getChapterCFIMap(renditionInstance.book)
     Promise.all(promiseArray).then((values) => {
       for (const value of values){
         let titlename;
