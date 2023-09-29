@@ -53,7 +53,9 @@ const ProgressInfoBar = ()=>{
     if(renditionState != LOADSTATE.COMPLETE || !chapterCfiMap){
       return
     }
-
+    if(!displayedCFI){
+      return
+    }
     let nextCFI = {cfi: displayedCFI}
 
     let chapterCount = 0
