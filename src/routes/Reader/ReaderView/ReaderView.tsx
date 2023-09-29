@@ -353,7 +353,7 @@ class Reader extends React.Component<ReaderProps>{
         'auto': 'automatic',
         'single': "single-column",
         'scrolled': "scrolled",
-        'continuous': 'automatic',  
+        'continuous': 'continuous',  
       }
 
       this.book = (await createBookInstance(bookValue, (this.props.bookHash as string), layouts[renderMode as keyof typeof layouts])) as Book

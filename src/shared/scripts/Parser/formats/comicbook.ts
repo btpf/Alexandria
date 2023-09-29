@@ -149,7 +149,10 @@ export const webpubFromComicBookArchive = async (uri, inputType, layout, filenam
                 text-align: center;
                 margin-bottom: 20px !important;
             }
-
+            .image-wrapper{
+              display: flex;
+              justify-content: center;
+            }
             .image-wrapper img {
                 display: block;
                 width: 100%;
