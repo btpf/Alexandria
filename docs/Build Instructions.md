@@ -9,7 +9,7 @@ Please open an issue if the instructions do not work or require tinkering. Thank
 ### 0. Prerequisites
 
 1. Install Tauri Prerequisites https://tauri.app/v1/guides/getting-started/prerequisites/#setting-up-linux
-2. Install Node Version: v16. For this I recommend something like nvm.
+2. Install Node Version: v18
 3. Clone the repository with submodules through the following command
 ```
 git clone --recurse-submodules --remote-submodules https://github.com/btpf/Alexandria.git
