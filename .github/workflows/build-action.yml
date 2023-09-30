@@ -35,4 +35,7 @@ jobs:
           with:
             name: Upload Binaries
             path: |
-              src-tauri/target/release/bundle
+              src-tauri/target/release/**/*.exe
+              src-tauri/target/release/**/*.msi
+              src-tauri/target/release/**/*.deb
+              src-tauri/target/release/**/*.appimage
