@@ -367,10 +367,6 @@ class Reader extends React.Component<ReaderProps>{
     const mountPoint = "BookArea-" + this.props.view
     this.rendition = this.book.renderTo(mountPoint || "", mySettings);
 
-    this.rendition.themes.default({
-      body: { "padding-top": "10px !important" },
-    })
-
     // eslint-disable-next-line prefer-const
     payload = {
       instance: this.rendition,
