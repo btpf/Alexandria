@@ -14,6 +14,7 @@ type completeBookStateActionNames = `bookState/${bookStateActionNames}`
 
 export default new Set<completeAppStateActionNames|completeBookStateActionNames>([
   "bookState/AddHighlight",
+  "bookState/ToggleBookmark",
   "bookState/ChangeHighlightColor",
   "bookState/ChangeHighlightNote",
   "bookState/DeleteHighlight",
