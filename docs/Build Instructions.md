@@ -19,8 +19,12 @@ cd Alexandria
 
 ### 1. Build libmobi (sometimes not required)
 
-Alexandria depends on a library called libmobi. This repository was modified to be a static library and only provide to Alexandria a single function which it supports book conversion. While pre-compiled static builds are provided, Sometimes they will need to be re-compiled in order to link successfully in your environment. This can be a challenging process.
-Fortunately I created a build script for Linux developers to make it easy.
+Alexandria depends on a library called libmobi. This repository was modified to be a static library and only provide to Alexandria a single function which it supports book conversion. While pre-compiled static builds are provided, Sometimes they will need to be re-compiled in order to link successfully in your environment. 
+
+First make sure dependencies are present:
+`sudo apt-get install autoconf libtool clang`
+
+Then run the install script
 
 1. `cd libmobi-rs`
 2. `sh ./build.sh`
