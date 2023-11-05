@@ -26,7 +26,7 @@ const defaultMarks = [100,200,300,400,500,600,700,800].reduce((a, v)=>{
   }}
   
 },{})
-type ListFontsType = { fontMap: {[key: string]: boolean} };
+type ListFontsType =  {[key: string]: boolean} ;
 const FontManager = (props:any)=>{
 
   const [textFiltered, setTextFilter] = useState("")
@@ -34,6 +34,7 @@ const FontManager = (props:any)=>{
 
   const [availableMarks, setAvailableMarks] = useState(defaultMarks)
   const [selectedFont, setSelectedFont] = useState("Roboto")
+  const [installedFontName, setInstalledFontName] = useState("")
   const [selectedWeight, setSelectedWeight] = useState(500)
   const [currentDataList, setCurrentDataList] = useState(myStyle)
 
@@ -45,10 +46,12 @@ const FontManager = (props:any)=>{
       }
       invoke("list_fonts").then((response)=>{
         const typedResponse = response as ListFontsType
-        // console.log(response.fontMap)
-        setFontList(typedResponse.fontMap)
-        Object.keys(typedResponse.fontMap).forEach((item)=>{
-          // console.log(item)
+        setFontList(typedResponse)
+        Object.keys(typedResponse).forEach((item)=>{
+          // If not true, meaning a system font, continue
+          if(!typedResponse[item]){
+            return
+          }
           invoke("get_font_urls", {name: item}).then((paths)=>{
             const typedPaths = paths as [string]
             const newPath = typedPaths.find((path)=> path.includes("400.ttf"))
@@ -136,34 +139,56 @@ const FontManager = (props:any)=>{
 
       {/* <div style={{backgroundColor:"white"}}>Installed & Enabled Fonts</div> */}
       <div className={styles.listContainer}>
-        <Virtuoso style={{ height: '100%' }} totalCount={Object.keys(fontList).length + currentDataList.length} itemContent={index => {
+        <Virtuoso style={{ height: '100%' }} totalCount={Object.keys(fontList).length + currentDataList.length + +!textFiltered} itemContent={index => {
 
-          const mappedFontName = Object.keys(fontList)[index]
-          if(index < Object.keys(fontList).length){
+          if(index == 0 && +!textFiltered){
+            return (
+              <div className={styles.localThemeContainer}>
+
+                <input onKeyDown={(e)=>{
+                  if(e.key == "Enter"){
+                    if(e.target.value.length == 0) return
+                    const cloned = {...fontList}
+                    cloned[e.target.value] = false
+                    setFontList(cloned)
+                    invoke("add_system_font",{name: e.target.value})
+                    setInstalledFontName("")
+                    toast.success("System Font Added")
+                  }
+                }} onChange={(e)=>{
+                  console.log(e.target.value,e.target.value.length)
+                  setInstalledFontName(e.target.value)
+                }} value={installedFontName} placeholder="Add Installed Font By Name" style={{display:"block", width:"100%", height:"100%", textAlign:"center", borderBottom:"2px solid var(--text-secondary)"}} className={styles.comboTextBox}/>
+              </div>
+            )
+          }
+          const installedFonts = Object.keys(fontList)
+          const installedFontsLength = installedFonts.length
+          const mappedFontName = installedFonts[index - +!textFiltered]
+          
+          if(index < installedFontsLength + +!textFiltered){
             return (<div className={styles.localThemeContainer}>
               <div className={styles.localButtonsContainer}>
                 <TashIcon onClick={()=>{
                   const filtered = Object.fromEntries(Object.entries(fontList).filter(([k,v]) => k != mappedFontName));
+                  const isDownloadedFont = fontList[mappedFontName]
                   setFontList(filtered)
+
+                  if(!isDownloadedFont) return
+
                   invoke("delete_font", {name: mappedFontName}).then(()=>{
                     console.log("Font deleted")
                   })
                 }} className={styles.trash}/>     
-                <input style={{display:"none"}} className={styles.selector} checked={fontList[mappedFontName]} type="radio" onChange={()=>{/*Removes error from console */}} onClick={()=>{
-                  const newObj = {} as {[key: string]: boolean}
-                  newObj[mappedFontName] = !fontList[mappedFontName]
-                  const newList = {...fontList, ...newObj}
-                  setFontList(newList)
-                  invoke("toggle_font", {name: mappedFontName})
-                }}/>
+
               </div>
-              <label className={`${styles.fontNameBox} ${styles.label}`} style={{fontFamily:mappedFontName.split(".")[0].replaceAll(" ", "_")}}>{Object.keys(fontList)[index]}</label>
+              <label className={`${styles.fontNameBox} ${styles.label}`} style={{fontFamily:mappedFontName.split(".")[0].replaceAll(" ", "_") + "," + mappedFontName}}>{mappedFontName}</label>
               <div className={styles.remoteButtonsContainer}> 
                 {/* <SaveIcon/> */}
               </div>
             </div>)
           }else{
-            const modifiedIndex = index - Object.keys(fontList).length
+            const modifiedIndex = index - (installedFontsLength + +!textFiltered)
             return (<div onClick={()=> {
               setSelectedFont(currentDataList[modifiedIndex].name)
               console.log(Object.keys(currentDataList[modifiedIndex].files))

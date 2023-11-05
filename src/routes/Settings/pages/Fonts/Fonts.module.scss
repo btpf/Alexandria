@@ -37,7 +37,9 @@
   color: var(--text-primary);
   // margin-right: calc(50px + (8px * 2));
 }
-
+.comboTextBox:focus{
+  outline: none;
+}
 .sliderContainer{
   width:400px;
   margin-bottom:25px;

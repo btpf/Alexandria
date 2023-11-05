@@ -66,30 +66,30 @@ export const setFontThunk = createAsyncThunk(
       }
 
       newObj["font"] = fontPayload.font
-
       // Update the fontCache Here
       // We will need a function called get_font_urls which will 
       // return all of the font urls inside the folder with the given font name
       const paths = await invoke("get_font_urls", {name: newObj["font"]})
       const typedPaths = (paths as [string])
       let fontsCache = ''
-      typedPaths.forEach((path)=>{
-        const pathDissect = path.split(" - ")
-        const myWeight = pathDissect[pathDissect.length - 1].replace(".ttf","")
-
-        fontsCache += 
-          `@font-face {
-            font-family: "${fontPayload.font}";
-            src: url("${IS_LINUX?"http://127.0.0.1:16780/" + path.split('/').slice(-4).join("/"):convertFileSrc(path)}") format("truetype");
-            font-weight: ${myWeight};
-            font-style: normal;
-          }
-          `
-      })
+      if(typedPaths){
+        typedPaths.forEach((path)=>{
+          const pathDissect = path.split(" - ")
+          const myWeight = pathDissect[pathDissect.length - 1].replace(".ttf","")
+  
+          fontsCache += 
+            `@font-face {
+              font-family: "${fontPayload.font}";
+              src: url("${IS_LINUX?"http://127.0.0.1:16780/" + path.split('/').slice(-4).join("/"):convertFileSrc(path)}") format("truetype");
+              font-weight: ${myWeight};
+              font-style: normal;
+            }
+            `
+        })
+      }
 
       newObj["fontCache"] = fontsCache
       const newTheme = {...currentBookInstance.data.theme, ...newObj}
-
       return {
         view,
         themeBase: themeSpecs,
