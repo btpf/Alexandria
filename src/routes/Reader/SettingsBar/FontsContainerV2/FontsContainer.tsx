@@ -41,7 +41,7 @@ const FontsContainer = ()=>{
               }
               // this means if the name has an extension like .ttf
               const fontName = item.replaceAll(" ", "_")
-              const font = new FontFace(fontName, `url(${IS_LINUX?encodeURI("http://127.0.0.1:16780/" + typedPath.split('/').slice(-4).join("/")):convertFileSrc(typedPath)})`);
+              const font = new FontFace(fontName, `url("${IS_LINUX?encodeURI("http://127.0.0.1:16780/" + typedPath.split('/').slice(-4).join("/")):convertFileSrc(typedPath)}")`);
               // wait for font to be loaded
               font.load().then(()=>{
                 document.fonts.add(font);

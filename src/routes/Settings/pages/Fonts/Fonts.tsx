@@ -65,7 +65,7 @@ const FontManager = (props:any)=>{
             if(IS_LINUX){
               fontSource = encodeURI("http://127.0.0.1:16780/" + newPath.split('/').slice(-4).join("/"))
             }
-            const font = new FontFace(fontName, `url(${fontSource}) format('truetype')`);
+            const font = new FontFace(fontName, `url("${fontSource}") format('truetype')`);
             //   // wait for font to be loaded
             font.load().then(()=>{
               document.fonts.add(font);
