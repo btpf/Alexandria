@@ -1,6 +1,6 @@
 <h1 align="center">Alexandria</h1>
 <div align="center">A minimalistic cross platform eBook reader, built with Tauri ❤️ Epub.js</div>
-<div align="center"><a href="/#Download">Download</a> | <a href="/">Website</a> |  <a href="/docs/FAQ.md">FAQ</a></div>
+<div align="center"><a href="/#Download">Download</a> | <a href="/">Website</a> |  <a href="/docs/FAQ.md">FAQ</a> |  <a href="/docs/Build%20Instructions.md">Build Instructions</a></div>
 <br>
 
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/6ff644fa-b4bf-4a8b-bc85-c1f44c21b2a3"> </div>
@@ -59,10 +59,6 @@ flatpak install io.github.btpf.alexandria
 ### Windows:
 
 Builds for windows are provided in <a href="https://github.com/btpf/Alexandria/releases">Releases</a>
-
----
-
-<h3><a href="/docs/Build%20Instructions.md">Build Instructions</a></h3>
 
 ---
 
