@@ -5,6 +5,7 @@
         "stylelint.vscode-stylelint",
         "mrmlnc.vscode-scss",
         "clinyong.vscode-css-modules",
-        "phoenisx.cssvar"
+        "phoenisx.cssvar",
+        "rust-lang.rust-analyzer"
     ]
 }
