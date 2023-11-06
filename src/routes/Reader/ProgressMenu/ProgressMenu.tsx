@@ -120,7 +120,7 @@ const ProgressInfoBar = ()=>{
         <div><div className={styles.heading}>Chapter </div><input className={styles.chapterBox} type="number" value={currentChapter} onKeyDown={(e)=>e.key == 'Enter' && navigateChapter()} onChange={(e) => setCurrentChapter(Number.parseInt(e.target.value))}/> of {numberOfChapters}</div>
         <div><div className={styles.heading}>CFI: </div><input className={styles.cfiBox} 
           onKeyDown={(e)=>e.key == 'Enter' && navigateCfi()} onChange={(e) => setControlledCfi(e.target.value)}
-          value={controlledCfi} 
+          value={controlledCfi || ""} 
           onFocus={e => e.target.select()}
           onMouseUp={e => e.preventDefault()}
         /> </div>
