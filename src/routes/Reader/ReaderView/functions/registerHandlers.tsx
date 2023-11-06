@@ -113,7 +113,12 @@ export default (renditionInstance:Rendition, view:number)=>{
       renditionInstance.prev()
     }
 
-    if(event.ctrlKey && event.keyCode == 70){
+    if(event.keyCode === 114 || (event.ctrlKey && event.keyCode === 70)){
+      // This will prevent the native browser searchbar from showing when
+      // the user presses ctrl + f
+      event.preventDefault();
+      event.stopPropagation()
+      
       if(sidebarOpen){
         if(sidebarOpen == "Search"){
           store.dispatch(SelectSidebarMenu(false))

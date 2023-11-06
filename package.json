@@ -57,7 +57,7 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
-    "@btpf/epubjs": "^0.3.94",
+    "@btpf/epubjs": "^0.3.95",
     "@github/mini-throttle": "^2.1.1",
     "@reduxjs/toolkit": "^1.8.3",
     "@tauri-apps/api": "^1.4.0",
