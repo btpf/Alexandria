@@ -22,7 +22,7 @@ const initialState: defaultAppState = {
   sortDirection:"ASC",
   readerMargins: 75,
   state:{
-    fullscreen: false,
+    maximized: false,
     selectedRendition: 0,
     dualReaderMode: false,
     dualReaderReversed: false,
@@ -88,7 +88,7 @@ export const {
   setSelectedTheme,
   LoadThemes,
 
-  SetFullScreen,
+  SetMaximized,
   SetSortSettings,
   SetSelectedRendition,
   setReaderMargins,

@@ -122,7 +122,6 @@ export default (renditionInstance:Rendition, view:number)=>{
         store.dispatch(SelectSidebarMenu("Bookmarks"))
       }else{
         store.dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))
-
       }
        
     }

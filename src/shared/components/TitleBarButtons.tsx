@@ -21,7 +21,7 @@ const defaultProps: TitleBarButtonsProps = {
 
 const TitleBarButtons = (props:TitleBarButtonsProps)=>{
   
-  const maximized = useAppSelector((state)=> state.appState.state.fullscreen)
+  const maximized = useAppSelector((state)=> state.appState.state.maximized)
 
   return (
     <div className={`${styles.titleBarButtonsContainer} ${props.remove?styles.remove:""} ${props.disabled?styles.disabled:""}`}>

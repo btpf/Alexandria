@@ -8,7 +8,7 @@ export interface defaultAppState {
       sortBy: string,
       readerMargins: number,
       state:{
-        fullscreen: bool,
+        maximized: bool,
         selectedRendition: number,
         dualReaderMode: boolean,
         dualReaderReversed: boolean,

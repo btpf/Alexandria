@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
 import { useAppSelector } from "@store/hooks"
-import { LoadThemes, SetFullScreen, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
+import { LoadThemes, SetMaximized, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
 import { invoke } from "@tauri-apps/api"
 import { appWindow } from "@tauri-apps/api/window"
 import React, { useEffect, useLayoutEffect, useState } from "react"
@@ -16,7 +16,7 @@ import performMigrations from './migrations.js'
 const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   const themes = useAppSelector((state)=> state.appState.themes)
   const selectedTheme = useAppSelector((state)=> state.appState.selectedTheme)
-  const isMaximized = useAppSelector((state)=> state.appState.state.fullscreen)
+  const isMaximized = useAppSelector((state)=> state.appState.state.maximized)
   const [isFullScreen, setIsFullScreen] = useState(false)
   const dispatch = useDispatch()
   useEffect(()=>{
@@ -76,10 +76,12 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
   useLayoutEffect(() => {
     async function updateSize() {
       const currentlyMaximized = await appWindow.isMaximized()
-      if(currentlyMaximized !== isMaximized){
-        dispatch(SetFullScreen(currentlyMaximized))
-      }
       const currentlyFullscreen = await appWindow.isFullscreen()
+
+      if(currentlyMaximized !== isMaximized){
+        dispatch(SetMaximized(currentlyMaximized))
+      }
+      
       if(currentlyFullscreen != isFullScreen){
         setIsFullScreen(currentlyFullscreen)
       }

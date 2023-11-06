@@ -2,8 +2,8 @@ import { PayloadAction } from "@reduxjs/toolkit"
 import { appStateReducer, appStateReducerSingle, initialAppState } from "../../appState"
 
 
-const SetFullScreen:appStateReducer = (state, action: PayloadAction<boolean>) =>{
-  state.state.fullscreen = action.payload
+const SetMaximized:appStateReducer = (state, action: PayloadAction<boolean>) =>{
+  state.state.maximized = action.payload
 }
 
 const SetSelectedRendition:appStateReducer = (state, action: PayloadAction<number>) =>{
@@ -20,7 +20,7 @@ const SetDualReaderReversed:appStateReducer = (state, action: PayloadAction<bool
 
 const resetBookAppState:appStateReducerSingle = (state) =>{
   const myState = {...initialAppState.state}
-  myState["fullscreen"] = state.state.fullscreen
+  myState["maximized"] = state.state.maximized
 
   state.state = myState
 }
@@ -68,7 +68,7 @@ const HideFootnote:appStateReducerSingle =(state) =>{
   state.state.footnote.active = false;
 }
 export const actions = {
-  SetFullScreen,
+  SetMaximized,
   SetSelectedRendition,
   SelectSidebarMenu,
   CloseSidebarMenu,

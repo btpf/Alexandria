@@ -28,7 +28,7 @@ import { HideFootnote, resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleP
 import { appWindow } from '@tauri-apps/api/window'
 import ProgressMenu from './ProgressMenu/ProgressMenu'
 import FooterBar from './FooterBar/FooterBar'
-
+import { platform } from '@tauri-apps/api/os';
 
 const Home = () =>{
   const selectedRendition:number = useAppSelector((state) => state.appState.state.selectedRendition)
@@ -44,6 +44,15 @@ const Home = () =>{
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [mouseOverMenu, setMouseOverMenu] = useState(false)
   const [currentPage, setCurrentPage] = useState('')
+
+
+  // Temporary Bug Fix: This is used as a fix for a Windows 11 tauri bug:
+  // If the window is maximized, and then the fullscreen button is pressed
+  // the window will not become fullscreen and the windows 11 UI will appear glitched.
+  const [wasMaximized, setWasMaximized] = useState(false)
+
+
+
   const params = useParams()
   const sidebarOpen = useAppSelector((state) => state?.appState?.state?.sidebarMenuSelected)
   const dualReaderReversed = useAppSelector((state) => state?.appState?.state?.dualReaderReversed)
@@ -91,7 +100,19 @@ const Home = () =>{
 
 
   const setFullScreenCaller = async (isFullScreen:boolean) =>{
+    const currentlyMaximized = await appWindow.isMaximized()
+    const OS = await platform()
+    const useWorkaround = OS == 'win32'
+    if(useWorkaround && isFullScreen == true && currentlyMaximized){
+      setWasMaximized(true)
+      appWindow.unmaximize();
+    }
+
     await appWindow.setFullscreen(isFullScreen);
+    if(useWorkaround && isFullScreen == false && wasMaximized){
+      setWasMaximized(false)
+      appWindow.maximize();
+    }
     setIsFullScreen(isFullScreen);
     // Bug prevention: mouseOff event not detected when fullscreen is set. Menu state becomes glitched.
     setMouseOverMenu(false);
