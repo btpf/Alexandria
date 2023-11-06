@@ -1,5 +1,5 @@
 import { HideNoteModal, HideQuickbarModal, MoveNoteModal, MoveQuickbarModal, SelectSidebarMenu, SetDictionaryWord, SetModalCFI, SetSelectedRendition, ToggleMenu, ToggleThemeMenu } from "@store/slices/appState";
-import { AllowMouseEvent, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent } from "@store/slices/bookState";
+import { AllowMouseEvent, setProgrammaticProgressUpdate, SetProgress, SkipMouseEvent, ToggleBookmark } from "@store/slices/bookState";
 import { LOADSTATE } from "@store/slices/constants";
 import { bookStateStructure } from "@store/slices/EpubJSBackend/epubjsManager.d";
 import store from "@store/store";
@@ -23,6 +23,7 @@ export default (renditionInstance:Rendition, view:number)=>{
   let QuickbarModalVisible!:boolean;
   let selectedCFI!:string;
   let ThemeMenuActive!:boolean;
+  let menuActive!:boolean;
   let skipMouseEvent!:boolean
   let fontName!:string
   let DictionaryWord!:string
@@ -51,6 +52,7 @@ export default (renditionInstance:Rendition, view:number)=>{
     QuickbarModalVisible = newState?.appState?.state?.modals?.quickbarModal?.visible
     selectedCFI = newState.appState.state?.modals?.selectedCFI;
     ThemeMenuActive = newState.appState.state?.themeMenuActive;
+    menuActive = newState.appState.state.menuToggled
     skipMouseEvent = bookState?.state?.skipMouseEvent
     DictionaryWord = newState.appState.state?.dictionaryWord
     fontName = bookState?.data?.theme?.font
@@ -112,7 +114,12 @@ export default (renditionInstance:Rendition, view:number)=>{
     if (event.keyCode == 37 || event.keyCode == 38) {
       renditionInstance.prev()
     }
-
+    if(event.ctrlKey && event.keyCode == 66){
+      if(!menuActive){
+        store.dispatch(ToggleMenu())
+      }
+      store.dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))
+    }
     if(event.keyCode === 114 || (event.ctrlKey && event.keyCode === 70)){
       // This will prevent the native browser searchbar from showing when
       // the user presses ctrl + f
