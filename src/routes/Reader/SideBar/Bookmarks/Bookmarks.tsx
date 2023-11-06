@@ -56,7 +56,7 @@ const Bookmarks = ()=>{
   
     // Sort annotations by location in book
     newOrderedBookmarks.sort((a, b)=>{
-      return renditionInstance.epubcfi.compare( a.cfi, b.cfi)
+      return renditionInstance.epubcfi.compare(b.cfi, a.cfi)
     }
     )
 

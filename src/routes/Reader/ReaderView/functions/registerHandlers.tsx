@@ -118,7 +118,13 @@ export default (renditionInstance:Rendition, view:number)=>{
       if(!menuActive){
         store.dispatch(ToggleMenu())
       }
-      store.dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))
+      if(sidebarOpen != "Bookmarks"){
+        store.dispatch(SelectSidebarMenu("Bookmarks"))
+      }else{
+        store.dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))
+
+      }
+       
     }
     if(event.keyCode === 114 || (event.ctrlKey && event.keyCode === 70)){
       // This will prevent the native browser searchbar from showing when
