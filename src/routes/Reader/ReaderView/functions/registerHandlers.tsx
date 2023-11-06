@@ -12,6 +12,7 @@ import {
   QUICKBAR_MODAL_HEIGHT, 
   QUICKBAR_MODAL_WIDTH 
 } from "./ModalUtility";
+import { handleLinkClick } from "@shared/scripts/handleLinkClick";
 
 // import {bookStateStructure} from 'src/store/slices/EpubJSBackend/epubjsManager.d'
 
@@ -29,6 +30,7 @@ export default (renditionInstance:Rendition, view:number)=>{
   let loadState!:LOADSTATE
   let selectedRendition!:number
   let isDualReaderMode!:boolean
+  let footnoteActive!:boolean
 
   let timer:any = null;
 
@@ -56,6 +58,7 @@ export default (renditionInstance:Rendition, view:number)=>{
     loadState = bookState?.loadState
     sidebarOpen = newState?.appState?.state?.sidebarMenuSelected
     viewMode = bookState?.data?.theme?.renderMode
+    footnoteActive = newState.appState.state.footnote.active
 
     if(selectedRendition != newState.appState.state.selectedRendition && QuickbarModalVisible){
       // If anything is highlighted, remove it.
@@ -81,7 +84,7 @@ export default (renditionInstance:Rendition, view:number)=>{
 
   const scrollEventsHandler = (event) =>{
     // Prevent flipping pages when scrolling on valid elements
-    if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord || (viewMode == "continuous")) return
+    if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord || (viewMode == "continuous") || footnoteActive) return
 
     if(selectedRendition != view) return
 
@@ -478,7 +481,41 @@ export default (renditionInstance:Rendition, view:number)=>{
     console.log("Book started")
   })
 
-  
+  renditionInstance.hooks.content.register((contents, /*view*/) => {
+
+
+
+    const links = contents.document.querySelectorAll('a:link')
+    // const links = []
+    Array.from(links).forEach(link => link.addEventListener('click', async e => {
+      e.stopPropagation()
+      e.preventDefault()
+
+
+      // console.log("CKLDSFS", contents.sectionIndex)
+      // console.log(renditionInstance.book.spine.spineItems)
+      const href = link.getAttribute('href')
+      handleLinkClick(renditionInstance, href)
+      // const resolveURL = (url, relativeTo) => {
+      //   // HACK-ish: abuse the URL API a little to resolve the path
+      //   // the base needs to be a valid URL, or it will throw a TypeError,
+      //   // so we just set a random base URI and remove it later
+      //   const base = 'https://example.invalid/'
+      //   return new URL(url, base + relativeTo).href.replace(base, '')
+      // }
+      // console.log(contents.sectionIndex, renditionInstance.location.start.index)
+      // console.log(href, resolveURL(href,
+      //   // From contents.sectionIndex -> id
+      //   renditionInstance.book.spine.spineItems[contents.sectionIndex].href))
+
+
+
+      
+    }, true))
+
+
+
+  })
 
   // const flexClickHandler = (e:any)=>{
   //   if(e.target == flexContainer){

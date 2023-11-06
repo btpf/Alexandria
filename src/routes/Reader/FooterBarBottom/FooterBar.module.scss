@@ -1,0 +1,79 @@
+@use 'breakpoints.scss' as *;
+
+.sideBarContainer{
+  background-color:var(--background-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.233);
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height:300px;
+  width: 100vw;
+  max-width: 500px;
+  z-index: 100;
+  transition:0.5s;
+  // Move the default position a few pixels down
+  // transform: translateY(-40px);
+  padding-top: 10px;
+  padding-right: 50px;
+
+  grid-area: 2/1/4/1;
+  overflow: hidden;
+  
+  align-self: flex-end;
+  justify-self: center;
+  pointer-events: all;
+}
+  
+.sideBarContainerInactive{
+  height:0px !important;
+  padding-top:0px !important;
+  border:0px;
+}
+.sideBar{
+  height:0px;
+  padding-top:0px ;
+  border:0px;
+}
+
+  
+.sideBarNav{
+  display:flex;
+  justify-content:space-between;
+  // background-color: var(--background-primary);
+  border-bottom: 1px solid black;
+  padding: 10px;
+}
+
+.navBack{
+  // background-color: var(--background-secondary);
+  cursor:pointer;
+  // height:30px;
+  width:auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-left:20px;
+  > div{
+    margin-left:5px;
+    font-size:18px;
+  }
+}
+
+.footnoteBody{
+  height:289px; // height - (border-top  + paddingtop)
+  width: calc(100vw - 10px);
+  max-width: 490px;
+  overflow-y:scroll;
+
+  padding:0 15px 50px 15px;
+  
+
+  transition: 1s;
+  padding-bottom: 100px;
+}
+
+.gotoFoot{
+  font-size:18px;
+  margin-right:20px;
+  cursor:pointer;
+}

@@ -31,6 +31,11 @@ const initialState: defaultAppState = {
     menuToggled: true, 
     themeMenuActive: false,
     progressMenuActive: false,
+    footnote:{
+      active: false,
+      text: "",
+      link: ""
+    },
     modals:{
       selectedCFI: "",
       quickbarModal: {visible: false, x:0, y:0},
@@ -98,6 +103,8 @@ export const {
   resetBookAppState,
   SetDualReaderReversed,
   ToggleProgressMenu,
+  SetFootnoteActive,
+  HideFootnote,
 
   /* Modals */
   MoveQuickbarModal,

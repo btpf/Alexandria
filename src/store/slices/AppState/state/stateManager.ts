@@ -53,6 +53,20 @@ const setReaderMargins:appStateReducer = (state, action: PayloadAction<number>) 
   state.readerMargins = action.payload
 }
 
+export interface footnoteUpdate{
+  link: string,
+  text:string
+}
+
+const SetFootnoteActive:appStateReducer = (state, action: PayloadAction<footnoteUpdate>) =>{
+  state.state.footnote.link = action.payload.link
+  state.state.footnote.text = action.payload.text
+  state.state.footnote.active = true;
+}
+
+const HideFootnote:appStateReducerSingle =(state) =>{
+  state.state.footnote.active = false;
+}
 export const actions = {
   SetFullScreen,
   SetSelectedRendition,
@@ -65,6 +79,8 @@ export const actions = {
   SetDualReaderMode,
   resetBookAppState,
   SetDualReaderReversed,
-  ToggleProgressMenu
+  ToggleProgressMenu,
+  SetFootnoteActive,
+  HideFootnote,
 }
   

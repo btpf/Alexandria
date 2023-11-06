@@ -17,6 +17,11 @@ export interface defaultAppState {
         themeMenuActive: boolean,
         menuToggled: boolean,
         progressMenuActive:boolean,
+        footnote:{
+          active: boolean,
+          text:string,
+          link: string
+        }
         modals:{
           selectedCFI: string,
           quickbarModal: {visible: boolean, x:number, y:number},

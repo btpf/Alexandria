@@ -24,9 +24,10 @@ import TitleBarButtons  from '@shared/components/TitleBarButtons';
 
 import QuickbarModal from './ReaderView/components/QuickbarModal/QuickbarModal'
 import NoteModal from './ReaderView/components/NoteModal/NoteModal'
-import { resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleProgressMenu, ToggleThemeMenu } from '@store/slices/appState'
+import { HideFootnote, resetBookAppState, SelectSidebarMenu, ToggleMenu, ToggleProgressMenu, ToggleThemeMenu } from '@store/slices/appState'
 import { appWindow } from '@tauri-apps/api/window'
 import ProgressMenu from './ProgressMenu/ProgressMenu'
+import FooterBar from './FooterBar/FooterBar'
 
 
 const Home = () =>{
@@ -47,7 +48,7 @@ const Home = () =>{
   const sidebarOpen = useAppSelector((state) => state?.appState?.state?.sidebarMenuSelected)
   const dualReaderReversed = useAppSelector((state) => state?.appState?.state?.dualReaderReversed)
   const progressMenuActive = useAppSelector((state) => state?.appState?.state?.progressMenuActive)
-
+  const footnoteActive = useAppSelector((state) => state?.appState?.state?.footnote.active)
 
   const ReaderBackgroundColor = useAppSelector((state) => {
 
@@ -189,6 +190,7 @@ const Home = () =>{
 
       <Sidebar/>
       <SettingsBar/>
+      <FooterBar/>
       <ProgressMenu/>
       <Dictionary/>
 
@@ -206,7 +208,10 @@ const Home = () =>{
         if(progressMenuActive){
           dispatch(ToggleProgressMenu())
         }
-      }} className={`${styles.opaqueScreen} ${(sidebarOpen||progressMenuActive) && styles.opaqueScreenActive}`}/>
+        if(footnoteActive){
+          dispatch(HideFootnote())
+        }
+      }} className={`${styles.opaqueScreen} ${(sidebarOpen||progressMenuActive|| footnoteActive) && styles.opaqueScreenActive}`}/>
 
     </div>
   )
