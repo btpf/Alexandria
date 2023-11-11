@@ -105,13 +105,13 @@ const Home = () =>{
     const useWorkaround = OS == 'win32'
     if(useWorkaround && isFullScreen == true && currentlyMaximized){
       setWasMaximized(true)
-      appWindow.unmaximize();
+      await appWindow.unmaximize();
     }
 
     await appWindow.setFullscreen(isFullScreen);
     if(useWorkaround && isFullScreen == false && wasMaximized){
       setWasMaximized(false)
-      appWindow.maximize();
+      await appWindow.maximize();
     }
     setIsFullScreen(isFullScreen);
     // Bug prevention: mouseOff event not detected when fullscreen is set. Menu state becomes glitched.
