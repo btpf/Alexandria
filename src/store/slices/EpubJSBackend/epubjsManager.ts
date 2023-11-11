@@ -11,7 +11,7 @@ import { LOADSTATE } from "../constants"
 import { bookStateHydrationStructure, bookStateStructure, loadProgressUpdate } from "./epubjsManager.d"
 
 import { epubjs_reducer } from "@store/slices/EpubJSBackend/epubjsManager.d"
-import { setFontThunk, setLineHeightThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"
+import { setFontThunk, setLineHeightThunk, setParagraphSpacingThunk, setTextAlignmentThunk, setThemeThunk, setWordSpacingThunk } from "./data/theme/themeManager"
 import { RootState } from "@store/store"
 import { MoveNoteModal, SetModalCFI } from "../appState"
 
@@ -95,6 +95,15 @@ export const SyncedAddRendition = createAsyncThunk(
         view:renditionData.UID,
         value: renditionData.saveData.data.theme.wordSpacing
       }))
+      await thunkAPI.dispatch(setParagraphSpacingThunk({
+        view:renditionData.UID,
+        value: renditionData.saveData.data.theme.paragraphSpacing
+      }))
+
+      await thunkAPI.dispatch(setTextAlignmentThunk({
+        view:renditionData.UID,
+        value: renditionData.saveData.data.theme.textAlign
+      }))
 
     }
           
@@ -128,6 +137,8 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontWeight: 400,
           wordSpacing: 0,
           lineHeight: 100,
+          paragraphSpacing: -1,
+          textAlign: "default",
           // readerMargins: readerMarginsToUse,
           renderMode: renderModeToUse
         }

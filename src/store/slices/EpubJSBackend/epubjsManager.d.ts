@@ -10,7 +10,9 @@ interface dataInterface{
     fontWeight: number,
     wordSpacing: number,
     lineHeight: number,
-    renderMode: string
+    renderMode: string,
+    paragraphSpacing: number,
+    textAlign: string
   }
 }
 

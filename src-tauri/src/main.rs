@@ -469,7 +469,11 @@ struct themePayload {
     #[serde(default)]
     lineHeight: i64,
     #[serde(default)]
-    renderMode: String
+    renderMode: String,
+    #[serde(default)]
+    paragraphSpacing: i64,
+    #[serde(default)]
+    textAlign: String,
 
 
 }

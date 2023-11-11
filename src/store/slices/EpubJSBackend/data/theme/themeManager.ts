@@ -166,6 +166,51 @@ export const setWordSpacingThunk = createAsyncThunk(
   }
 )
 
+export const setParagraphSpacingThunk = createAsyncThunk(
+  'bookState/setParagraphSpacing',
+  // if you type your function argument here
+  async (payload: genericNumericDispatchType, thunkAPI) => {
+    const state = (thunkAPI.getState() as RootState)
+
+    const currentBookInstance:bookStateStructure = state.bookState[payload.view]
+    const themeSpecs = state.appState.themes[state.appState.selectedTheme]
+
+
+    const newTheme = {...currentBookInstance.data.theme, paragraphSpacing:payload.value}
+
+    return {
+      view: payload.view,
+      themeBase: themeSpecs,
+      theme: newTheme
+    }
+  }
+)
+
+type genericStringDispatchType = {
+  value: string, 
+  view: number
+}
+
+export const setTextAlignmentThunk = createAsyncThunk(
+  'bookState/setTextAlignment',
+  // if you type your function argument here
+  async (payload: genericStringDispatchType, thunkAPI) => {
+    const state = (thunkAPI.getState() as RootState)
+
+    const currentBookInstance:bookStateStructure = state.bookState[payload.view]
+    const themeSpecs = state.appState.themes[state.appState.selectedTheme]
+
+
+    const newTheme = {...currentBookInstance.data.theme, textAlign:payload.value}
+
+    return {
+      view: payload.view,
+      themeBase: themeSpecs,
+      theme: newTheme
+    }
+  }
+)
+
 export const setLineHeightThunk = createAsyncThunk(
   'bookState/setLineHeight',
   // if you type your function argument here

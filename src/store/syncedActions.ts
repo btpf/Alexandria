@@ -4,14 +4,18 @@ import {appState} from './slices/appState'
 type AppStateActionNames = (keyof typeof appState.actions) 
 type completeAppStateActionNames = `appState/${AppStateActionNames}`
 
+// This line is to generate the valid types which simply populated autocomplete
 type bookStateActionNames = keyof typeof bookState.actions | 
 'setThemeV2/fulfilled' | 
 'setFontV2/fulfilled' |
 'setWordSpacing/fulfilled' |
-'setLineHeight/fulfilled'
+'setLineHeight/fulfilled' |
+'setParagraphSpacing/fulfilled'|
+'setTextAlignment/fulfilled'
 
 type completeBookStateActionNames = `bookState/${bookStateActionNames}`
 
+// All synced actions, including fulfilled thunks, should be added here
 export default new Set<completeAppStateActionNames|completeBookStateActionNames>([
   "bookState/AddHighlight",
   "bookState/ToggleBookmark",
@@ -28,6 +32,8 @@ export default new Set<completeAppStateActionNames|completeBookStateActionNames>
   "appState/setSelectedTheme",
   'bookState/setWordSpacing/fulfilled',
   'bookState/setLineHeight/fulfilled',
+  'bookState/setParagraphSpacing/fulfilled',
   "bookState/setRenderMode",
-  "appState/SetSortSettings"
+  "appState/SetSortSettings",
+  "bookState/setTextAlignment/fulfilled"
 ])

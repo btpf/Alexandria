@@ -98,6 +98,8 @@ const store =  configureStore({
         }
         
 
+      }else{
+        console.log("Warning: Action Unsaved: ", action.type)
       }
 
 

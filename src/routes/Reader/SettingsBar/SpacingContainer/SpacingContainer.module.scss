@@ -1,5 +1,12 @@
+@use 'breakpoints.scss' as *;
+
 .settingContainer{
   // border: 1px solid black;
+  // flex-direction: row;
+  // border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  margin-bottom:10px;
 }
 .settingLabel{
   font-weight: bold;
@@ -10,12 +17,16 @@
 }
 .settingButtonContainer{
   display: flex;
-  gap: 80px;
+  gap: 40px;
   align-items: center;
   font-weight: bold;
   // height: 52px;
   // padding: 15px 0px 15px 0px;
   overflow:hidden;
+
+  @include lt-md{
+    gap: 20px;
+  }
 }
 .settingButton{
   display:flex;
@@ -31,6 +42,27 @@
 }
 
 .resizeSize{
-  width: 50px;
+  width: 75px;
   text-align: center;
+}
+
+.scaleItems{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  // justify-content: space-around;
+  justify-content: center;
+  & > div{
+    flex-basis: 50%;
+  }
+}
+
+.alignmentContainer{
+  display:flex;
+  justify-content: center;
+  gap:20px;
+  width:100%;
+  & > svg{
+    cursor: pointer;
+  }
 }
