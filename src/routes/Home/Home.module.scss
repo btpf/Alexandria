@@ -564,7 +564,9 @@ $bottom-bar-width-standard: 650px;
 
 .iconButton{
   transition: 0.15s;
+  color: var(--text-secondary);
   &:hover{
+    color: var(--text-primary);
     opacity: 0.8;
   }
   &:active{
