@@ -194,8 +194,8 @@ const Shelf = () =>{
 
         </div>
         <div className={styles.rightContainer}>
-          <Filter style={{marginRight:10, strokeWidth: 1.5, cursor:"pointer"}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
-          <Link state={{ backPath: false }} className={styles.unstyleLink} to="/settings">
+          <Filter className={styles.iconButton} style={{marginRight:10, strokeWidth: 1.5, cursor:"pointer"}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
+          <Link className={`${styles.iconButton} ${styles.unstyleLink}`} state={{ backPath: false }} to="/settings">
             <Settings style={{strokeWidth: 1.5, marginBottom:1}}/>
           </Link>
           <TitleBarButtons/>

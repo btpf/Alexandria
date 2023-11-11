@@ -44,14 +44,19 @@
   pointer-events: none;
 
   & > svg{
+    transition: 0.2s;
     // default
     pointer-events:auto;
     // stroke-width: 1px;
     cursor:pointer;
     color: var(--text-secondary);
-  }
-  & > svg:hover{
-    color:var(--text-primary);
+
+    &:hover{
+      color:var(--text-primary);
+    }
+    &:active{
+      opacity: 0.5;
+    }
   }
 
 }
@@ -65,7 +70,7 @@
   
 
   & > svg:first-of-type{
-    transition: 0.25s;
+    
     margin-right:15px;
     // stroke-width: 1px;
   }
@@ -145,6 +150,13 @@
   justify-content: center;
   align-items: center;
   max-width: 50px;
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.8;
+  }
+  &:active{
+    opacity: 0.5;
+  }
 }
 
 .arrowButtonContainer:hover{
@@ -222,6 +234,14 @@
   // background-color:black;
   // text-align: center;
   color:var(--text-primary);
+
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.8;
+  }
+  &:active{
+    opacity: 0.5;
+  }
 }
 .percentageContainer:hover{
   background-color:rgba(0, 0, 0, 0.2);

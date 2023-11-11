@@ -68,6 +68,7 @@ $bookRadius: 5px;
   > *{
     pointer-events: all;
   }
+
 }
 
 .unstyleLink{
@@ -558,4 +559,15 @@ $bottom-bar-width-standard: 650px;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+
+.iconButton{
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.8;
+  }
+  &:active{
+    opacity: 0.5;
+  }
 }

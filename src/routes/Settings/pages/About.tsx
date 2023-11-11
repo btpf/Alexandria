@@ -20,7 +20,7 @@ const About = ()=>{
         <div style={{marginTop:0,display:"flex", flexDirection:'column', justifyContent:"center", alignItems:"middle"}}>
           <div style={{fontSize:34, fontWeight:700}}>Alexandria</div>
           <div style={{display:"flex", width:"100%", justifyContent:"space-around"}}>
-            <div style={{color:"blue",cursor:"pointer", fontSize:14, marginTop:-10, textAlign:"left"}}
+            <div style={{color:"var(--link)",cursor:"pointer", fontSize:14, marginTop:-10, textAlign:"left"}}
               onClick={()=>{open("https://github.com/btpf/Alexandria")}}
             >Github</div>
 

@@ -33,7 +33,7 @@ const SettingsBar = ()=>{
       <div className={styles.currentMenuContainer}>
         <SettingsIcon 
           className={styles.settingsIconBottomBar} 
-          style={{marginRight:"auto", marginLeft:15, opacity: showQuickSettingsIcon? 1:0}}
+          style={{ opacity: showQuickSettingsIcon? "":0}}
           onClick={()=>{
             console.log(window.location.pathname)
             navigate("/settings/" + menu, {state:{backPath:window.location.pathname}})
@@ -45,6 +45,7 @@ const SettingsBar = ()=>{
             <div key={i} style={{opacity: item==menu?"100%":"50%"}} className={`${styles.tabSection}`} onClick={()=>setMenu(item)}> {item}</div>
           )
         })}
+        {/* This line is simply just used as a spacer. It is invisible */}
         <SettingsIcon style={{marginLeft:"auto", marginRight:15, opacity:0}}/>
       </div>
     </BottomMenuContainer>

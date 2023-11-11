@@ -17,6 +17,19 @@
   font-weight: 600;
   cursor:pointer;
   color:var(--text-primary);
+  opacity: 0.75;
+
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.85;
+  }
+  &:active{
+    opacity: 0.5;
+  }
+}
+
+.active{
+  opacity: 1
 }
 .optionContainer > svg{
   display:block;

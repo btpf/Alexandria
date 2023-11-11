@@ -1,19 +1,19 @@
 @use 'breakpoints.scss' as *;
 
 
-.settingsIcon{
-  position: absolute;
-  left:5px;
-  top:5px;
-  z-index: 101;
-  background-color: var(--background-primary);
-  border-radius: 100%;
-  // border: 1px solid black;
-  padding: 5px;
-}
 
 .settingsIconBottomBar{
   color:var(--text-secondary);
+  margin-right:auto;
+  margin-left:15px;
+  transition: 0.15s;
+cursor: pointer;
+  &:hover{
+    opacity: 0.8;
+  }
+  &:active{
+    opacity: 0.5;
+  }
 }
 
 
@@ -63,4 +63,11 @@
 
 .tabSection{
   color: var(--text-primary);
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.8 !important;
+  }
+  &:active{
+    opacity: 0.5 !important;
+  }
 }

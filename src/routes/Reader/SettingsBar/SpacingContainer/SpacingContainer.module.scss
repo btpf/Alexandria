@@ -39,6 +39,14 @@
   align-items: center;
   font-size: 18px;
   cursor:pointer;
+
+  transition: 0.15s;
+  &:hover{
+    opacity: 0.8;
+  }
+  &:active{
+    opacity: 0.5;
+  }
 }
 
 .resizeSize{
@@ -64,5 +72,11 @@
   width:100%;
   & > svg{
     cursor: pointer;
+    &:hover{
+      opacity: 0.8;
+    }
+    &:active{
+      opacity: 0.5;
+    }
   }
 }
