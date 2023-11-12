@@ -56,7 +56,7 @@ async fn main() {
             let appDataDir = app_data_dir( app.config().as_ref()).unwrap();
 
             if cfg!(target_os = "windows") || cfg!(dev) {
-                let currentDir = env::current_dir().unwrap();
+                let currentDir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
                 
                 let program_files_path = Path::new("C:\\Program Files");
                 // If the parent directory is Program Files, The file was installed
