@@ -14,7 +14,7 @@
 
 - Supported Systems:
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Windows 8+ (.exe, .msi)
-  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Linux (.AppImage, .deb)
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Linux (Flatpak, .AppImage, .deb)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Android
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  IOS & OSx
 - Supported Formats:
@@ -31,8 +31,6 @@
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Adjust Word Spacing, Line Height, and Reader Margins
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Highlight Exports
 - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Split Screen Layout
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Offline Dictionary Support
-- <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Cross Platform Syncing
 ## Screenshots:
 <h2 align="center">Default Light & Dark Themes</h2>
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/46fa4d93-8365-44bd-afd0-eb4bbbdba878"> </div>
@@ -56,6 +54,8 @@ Flatpak:
 ```
 flatpak install io.github.btpf.alexandria
 ```
+Binaries: <a href="https://github.com/btpf/Alexandria/releases">.AppImage & .deb</a>
+
 ### Windows:
 
 Builds for windows are provided in <a href="https://github.com/btpf/Alexandria/releases">Releases</a>
