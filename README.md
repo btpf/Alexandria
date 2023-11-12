@@ -54,8 +54,9 @@ Flatpak:
 ```
 flatpak install io.github.btpf.alexandria
 ```
-Binaries: <a href="https://github.com/btpf/Alexandria/releases">.AppImage & .deb</a>
+<a href="https://github.com/btpf/Alexandria/releases">.AppImage & .deb Builds</a>
 
+[Flatpak Source](https://github.com/flathub/io.github.btpf.alexandria)
 ### Windows:
 
 Builds for windows are provided in <a href="https://github.com/btpf/Alexandria/releases">Releases</a>
