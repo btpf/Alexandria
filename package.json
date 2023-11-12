@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack",
-    "build": "NODE_ENV=production webpack",
+    "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack-dev-server",
     "tauri": "tauri",
     "lint": "eslint --fix --ext .ts,.tsx ."
@@ -37,6 +37,7 @@
     "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",
     "babel-plugin-tsconfig-paths-module-resolver": "^1.0.3",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "eslint": "^8.20.0",
     "eslint-plugin-react": "^7.30.1",
