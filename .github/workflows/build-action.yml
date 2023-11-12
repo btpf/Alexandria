@@ -40,6 +40,6 @@ jobs:
               src-tauri/target/release/**/*.exe
               src-tauri/target/release/**/*.msi
               src-tauri/target/release/**/*.deb
-              src-tauri/target/release/**/*.appimage
+              src-tauri/target/release/**/*.AppImage
               !src-tauri/target/release/deps
               !src-tauri/target/release/build
