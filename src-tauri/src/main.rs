@@ -48,7 +48,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 
     
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main]
 async fn main() {
     tauri::Builder::default()
         .setup(|app| {
