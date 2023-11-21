@@ -8,6 +8,7 @@ export interface defaultAppState {
       sortBy: string,
       readerMargins: number,
       state:{
+        localSystemFonts: {[fontName: string]: Array<string>},
         maximized: bool,
         selectedRendition: number,
         dualReaderMode: boolean,

@@ -71,6 +71,10 @@
   margin-left:20px;
   cursor:pointer;
 }
+.sourceIcon{
+  margin-left:20px;
+  opacity: 0.5;
+}
 
 .selector{
   padding-left:50px;
@@ -87,11 +91,16 @@
   // border: 1px solid black;
   align-items: center;
   justify-content: space-between;
+  transition: 0.2s;
+  cursor:pointer;
+
+  // &:hover{
+  //   opacity: 0.75;
+  // }
 }
 
 .label{
   font-size:18px;
-  cursor:pointer;
 }
 
 
@@ -123,6 +132,7 @@
 .fontNameBox{
   flex-basis: 33%;
   text-align: center;
+  font-size:18px;
 }
 
 

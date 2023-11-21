@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 
 import { useAppSelector } from "@store/hooks"
-import { LoadThemes, SetMaximized, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
+import { LoadThemes, SetLocalFontsList, SetMaximized, setSelectedTheme, SetSortSettings } from "@store/slices/appState"
 import { invoke } from "@tauri-apps/api"
 import { appWindow } from "@tauri-apps/api/window"
 import React, { useEffect, useLayoutEffect, useState } from "react"
@@ -66,6 +66,11 @@ const InitializeApp = ({children}: JSX.ElementChildrenAttribute) =>{
         dispatch(SetSortSettings({sortBy: response.sortBy, sortDirection:response.sortDirection}))
       // dispatch(LoadGlobalThemes(response))
       })
+
+      invoke("list_system_fonts").then((response)=>{
+        dispatch(SetLocalFontsList({fonts:response}));
+      })
+
     })
 
 

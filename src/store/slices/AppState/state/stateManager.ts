@@ -67,6 +67,15 @@ const SetFootnoteActive:appStateReducer = (state, action: PayloadAction<footnote
 const HideFootnote:appStateReducerSingle =(state) =>{
   state.state.footnote.active = false;
 }
+
+export interface locaFontsListPayload{
+  fonts: {[fontName: string]: Array<string>}
+}
+
+const SetLocalFontsList:appStateReducer = (state, action: PayloadAction<locaFontsListPayload>) =>{
+  state.state.localSystemFonts = action.payload.fonts
+}
+
 export const actions = {
   SetMaximized,
   SetSelectedRendition,
@@ -82,5 +91,6 @@ export const actions = {
   ToggleProgressMenu,
   SetFootnoteActive,
   HideFootnote,
+  SetLocalFontsList
 }
   

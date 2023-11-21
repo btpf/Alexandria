@@ -22,6 +22,7 @@ const initialState: defaultAppState = {
   sortDirection:"ASC",
   readerMargins: 75,
   state:{
+    localSystemFonts: {},
     maximized: false,
     selectedRendition: 0,
     dualReaderMode: false,
@@ -105,6 +106,7 @@ export const {
   ToggleProgressMenu,
   SetFootnoteActive,
   HideFootnote,
+  SetLocalFontsList,
 
   /* Modals */
   MoveQuickbarModal,

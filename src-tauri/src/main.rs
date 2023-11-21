@@ -8,7 +8,7 @@
 // https://users.rust-lang.org/t/add-unstable-feature-only-if-compiled-on-nightly/27886
 #![cfg_attr(feature = "opt_once_cell", feature(once_cell))]
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     env::{self, current_dir},
     fs::{self, File},
     io::{BufReader, Read, Write},
@@ -29,6 +29,10 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 
 extern crate reqwest;
+
+use font_kit::source::SystemSource;
+
+
 use std::io;
 use tauri::{api::path::app_data_dir, Manager};
 
@@ -118,7 +122,8 @@ async fn main() {
             get_settings,
             delete_book,
             get_config_path_js,
-            add_system_font
+            add_system_font,
+            list_system_fonts
         ])
         .run(tauri::generate_context!()) // Create a ../dist folder if it there is an error on this line
         .expect("error while running tauri application");
@@ -583,6 +588,24 @@ fn get_font_urls(name: &str) -> Option<Vec<String>> {
     } else {
         return None;
     }
+}
+
+#[tauri::command]
+fn list_system_fonts() -> HashMap<String, HashSet<String>> {
+    let source = SystemSource::new();
+    let fonts = source.all_fonts().unwrap();
+
+    // let mut font_family_set:HashSet<String> = HashSet::new();
+    let mut font_family_map = HashMap::<String, HashSet<String>>::new();
+    for font in fonts {
+        if let Ok(font) = font.load() {
+            let properties = font.properties();
+            let mut result = font_family_map.entry(font.family_name()).or_insert(HashSet::new());
+            result.insert(properties.weight.0.to_string());
+        }
+    }
+    
+    return font_family_map;
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
