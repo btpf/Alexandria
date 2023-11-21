@@ -37,7 +37,6 @@ const FontManager = (props:any)=>{
 
   const [availableMarks, setAvailableMarks] = useState(defaultMarks)
   const [selectedFont, setSelectedFont] = useState("Roboto")
-  const [installedFontName, setInstalledFontName] = useState("")
   const [selectedWeight, setSelectedWeight] = useState(500)
   const [currentDataList, setCurrentDataList] = useState(myStyle)
 
@@ -96,6 +95,8 @@ const FontManager = (props:any)=>{
 
   }, [])
   const localFontListKeys = Object.keys(localFontListFiltered)
+  const installedFonts = Object.keys(fontList)
+  const installedFontsLength = textFiltered == "" ? installedFonts.length: 0
   return (
     <div className={styles.themeContainer}>
       
@@ -160,11 +161,10 @@ const FontManager = (props:any)=>{
 
       {/* <div style={{backgroundColor:"white"}}>Installed & Enabled Fonts</div> */}
       <div className={styles.listContainer}>
-        <Virtuoso style={{ height: '100%' }} totalCount={Object.keys(fontList).length + Object.keys(localFontListFiltered).length + currentDataList.length} itemContent={index => {
+        <Virtuoso style={{ height: '100%' }} totalCount={installedFontsLength + Object.keys(localFontListFiltered).length + currentDataList.length} itemContent={index => {
 
 
-          const installedFonts = Object.keys(fontList)
-          const installedFontsLength = installedFonts.length
+
           const mappedFontName = installedFonts[index]
           
           if(index < installedFontsLength){
