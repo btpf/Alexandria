@@ -20,6 +20,7 @@ const SetDualReaderReversed:appStateReducer = (state, action: PayloadAction<bool
 
 const resetBookAppState:appStateReducerSingle = (state) =>{
   const myState = {...initialAppState.state}
+  myState.localSystemFonts = state.state.localSystemFonts
   myState["maximized"] = state.state.maximized
 
   state.state = myState
