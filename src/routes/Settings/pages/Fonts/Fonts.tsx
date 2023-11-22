@@ -220,7 +220,7 @@ const FontManager = (props:any)=>{
                 
               }>
                 <div className={styles.localButtonsContainer}>
-                  <ComputerIcon className={styles.sourceIcon}/>
+                  {!installedFonts.includes(localFontFamily)?<ComputerIcon className={styles.sourceIcon}/>:<div></div>}
 
                 </div>
                 <div className={`${styles.fontNameBox}`} style={{fontFamily:localFontFamily}}>{localFontFamily} </div>
