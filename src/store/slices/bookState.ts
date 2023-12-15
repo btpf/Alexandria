@@ -68,9 +68,17 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       ${action.payload.theme.textAlign == "default"?"":`text-align: ${action.payload.theme.textAlign} !important;`}
     }
     div{
+      font-family: inherit !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
+      word-spacing: inherit !important;
       background-color: inherit;
     }
     section{
+      font-family: inherit !important;
+      font-size: inherit !important;
+      font-weight: inherit !important;
+      word-spacing: inherit !important;
       background-color: inherit;
     }
     a{
