@@ -7,8 +7,8 @@
     "typescript.suggest.paths": false,
     "eslint.format.enable": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
-      "source.fixAll.stylelint": true
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.stylelint": "explicit"
     },
     // https://github.com/tailwindlabs/tailwindcss/discussions/5258#discussioncomment-1979394
     "css.lint.unknownAtRules": "ignore",
