@@ -498,6 +498,7 @@ export default (renditionInstance:Rendition, view:number)=>{
     console.log("Book started")
   })
 
+  // Each time a new section/chapter is opened (Which employs the scroll trick), this hook will run.
   renditionInstance.hooks.content.register((contents, /*view*/) => {
 
 
@@ -531,14 +532,15 @@ export default (renditionInstance:Rendition, view:number)=>{
     }, true))
 
 
+    // https://stackoverflow.com/a/60516136
+    // This fixes a bug where if custom fonts are injected using
+    // @font-face, the annotation calculations are performed on the default font
+    // and are offset. This redraws once all fonts finish loading.
+    contents.document.fonts.onloadingdone = () =>{
+      redrawAnnotations()
+    }
 
   })
-
-  // const flexClickHandler = (e:any)=>{
-  //   if(e.target == flexContainer){
-  //     clickHandler(e)
-  //   }
-  // }
 
   const renditionAttachmentHandler = ()=>{
     backgroundElement = window.document.getElementById("reader-background")
