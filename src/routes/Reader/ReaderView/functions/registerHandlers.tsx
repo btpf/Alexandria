@@ -32,6 +32,8 @@ export default (renditionInstance:Rendition, view:number)=>{
   let selectedRendition!:number
   let isDualReaderMode!:boolean
   let footnoteActive!:boolean
+  let lineHeight!:number
+  let fontSize!:number
 
   let timer:any = null;
 
@@ -61,6 +63,9 @@ export default (renditionInstance:Rendition, view:number)=>{
     sidebarOpen = newState?.appState?.state?.sidebarMenuSelected
     viewMode = bookState?.data?.theme?.renderMode
     footnoteActive = newState.appState.state.footnote.active
+
+    lineHeight = bookState?.data?.theme?.lineHeight
+    fontSize = bookState?.data?.theme?.fontSize
 
     if(selectedRendition != newState.appState.state.selectedRendition && QuickbarModalVisible){
       // If anything is highlighted, remove it.
@@ -108,7 +113,7 @@ export default (renditionInstance:Rendition, view:number)=>{
 
   const keyboardEventsHandler = (event) =>{
     if(view != selectedRendition) return
-    
+
     if(NoteModalVisible){
       if(event.keyCode == 27){
         store.dispatch(HideNoteModal())
@@ -477,7 +482,43 @@ export default (renditionInstance:Rendition, view:number)=>{
   }
 
 
-  const redrawAnnotations = () => renditionInstance.views().forEach((view:View) => view.pane ? view.pane.render() : null)
+  const redrawAnnotations = () => {
+    // This will reposition the annotations
+    renditionInstance.views().forEach((view:View) => view.pane ? view.pane.render() : null)
+  
+
+
+    // This will correct the heights of the annotations
+    const AnnotationKeys = Object.keys(renditionInstance.annotations._annotations)
+
+    for (const annotationKey of AnnotationKeys){
+      // For each of the annotations in the book
+      const annotation = renditionInstance.annotations._annotations[annotationKey]
+
+      // If the mark is currently rendered
+      const mark = annotation.mark
+      if(!mark) continue
+
+      // Get the container element of the highlights
+      const containerHighlight = mark.element
+      if(!containerHighlight) continue
+
+      // Get the the highlight for each line
+      const highlightLines = containerHighlight.childNodes
+
+      for (const highlightLine of highlightLines){
+        // Recalculate the highlight size
+        // https://stackoverflow.com/a/47327417
+        const baseFontSize = 16;
+
+        const calculatedLineHeight = (lineHeight/100) * (fontSize/100) * baseFontSize
+        highlightLine.style.height = calculatedLineHeight
+      }
+
+
+
+    }
+  }
     
 
 
