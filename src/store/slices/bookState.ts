@@ -63,7 +63,9 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-size: inherit !important;
       font-weight: inherit !important;
       word-spacing: inherit !important;
-      background-color: inherit;
+      
+      background-color: inherit !important;
+      color: inherit !important;
       ${action.payload.theme.paragraphSpacing >= 0? `margin-bottom: ${action.payload.theme.paragraphSpacing}px !important;`:""}
       ${action.payload.theme.textAlign == "default"?"":`text-align: ${action.payload.theme.textAlign} !important;`}
     }
@@ -72,18 +74,22 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-size: inherit !important;
       font-weight: inherit !important;
       word-spacing: inherit !important;
-      background-color: inherit;
+
+      background-color: inherit !important;
+      color: inherit !important;
     }
     section{
       font-family: inherit !important;
       font-size: inherit !important;
       font-weight: inherit !important;
       word-spacing: inherit !important;
-      background-color: inherit;
+
+      background-color: inherit !important;
+      color: inherit !important;
     }
     a{
-      color: ${theme.reader.body.link};
-      text-decoration: none;
+      color: ${theme.reader.body.link} !important;
+      text-decoration: none !important;
     }
     img{
         ${`filter: ${theme.reader.image.invert?"invert(100%)":"unset"};`}
