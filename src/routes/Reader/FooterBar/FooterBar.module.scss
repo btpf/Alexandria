@@ -69,7 +69,13 @@
 .footnoteBody{
   // display:flex;
   // background-color:var(--background-tertiary);
+  user-select:text;
+  cursor:auto;
   padding:20px;
+  * {
+    // This will fix issues with the reference href itself not being selectable
+    user-select: text;
+  }
 }
 
 .gotoFoot{
