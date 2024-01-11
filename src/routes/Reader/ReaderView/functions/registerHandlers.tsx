@@ -45,6 +45,7 @@ export default (renditionInstance:Rendition, view:number)=>{
 
 
   let oldThemeState = {};
+  let oldHighlightsLength = 0
   const unsubscribeRedux = store.subscribe(()=>{
     const newState = store.getState()
     const bookState:bookStateStructure = newState.bookState[view]
@@ -67,6 +68,7 @@ export default (renditionInstance:Rendition, view:number)=>{
     lineHeight = bookState?.data?.theme?.lineHeight
     fontSize = bookState?.data?.theme?.fontSize
 
+
     if(selectedRendition != newState.appState.state.selectedRendition && QuickbarModalVisible){
       // If anything is highlighted, remove it.
       // This handles the case when changing to another rendition while something is highlighted
@@ -86,7 +88,16 @@ export default (renditionInstance:Rendition, view:number)=>{
         redrawAnnotations()
 
       ],1)
+
+      return
     }
+
+    // Correct annotation height when a new annotation is created
+    const newHighlightLength = Object.keys(bookState.data?.highlights || []).length
+    if(oldHighlightsLength < newHighlightLength) correctHighlightHeight()
+    oldHighlightsLength = newHighlightLength
+
+
   })
 
   const scrollEventsHandler = (event) =>{
@@ -487,7 +498,11 @@ export default (renditionInstance:Rendition, view:number)=>{
     renditionInstance.views().forEach((view:View) => view.pane ? view.pane.render() : null)
   
 
+    correctHighlightHeight()
 
+  }
+    
+  const correctHighlightHeight = ()=>{
     // This will correct the heights of the annotations
     const AnnotationKeys = Object.keys(renditionInstance.annotations._annotations)
 
@@ -519,8 +534,6 @@ export default (renditionInstance:Rendition, view:number)=>{
 
     }
   }
-    
-
 
 
   // Handle case where epubJS dispatches it's own event (Like if the user scrolled onto a new page)
