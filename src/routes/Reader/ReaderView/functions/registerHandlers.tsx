@@ -108,6 +108,15 @@ export default (renditionInstance:Rendition, view:number)=>{
 
   const keyboardEventsHandler = (event) =>{
     if(view != selectedRendition) return
+    
+    if(NoteModalVisible){
+      if(event.keyCode == 27){
+        store.dispatch(HideNoteModal())
+      }
+      
+      return
+    }
+
     if (event.keyCode == 40 || event.keyCode == 39) {
       renditionInstance.next()
     }
