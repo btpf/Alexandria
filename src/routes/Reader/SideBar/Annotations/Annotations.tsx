@@ -37,7 +37,9 @@ const Annotations = ()=>{
       const myPromise:Promise<AnnotationData> = new Promise(function(myResolve, myReject) {
         // "Producing Code" (May take some time)
         ((renditionInstance.book.getRange(item) as unknown) as Promise<Range>).then((rangeData:Range)=>{
-          const myData:AnnotationData = {AnnotationCFI: item, annotation: annotations[item].note, color: annotations[item].color, highlightedText: (rangeData.endContainer as any).data.substring(rangeData.startOffset, rangeData.endOffset)}
+          const documentFragement = rangeData.cloneContents()
+          const text = documentFragement.textContent || ""
+          const myData:AnnotationData = {AnnotationCFI: item, annotation: annotations[item].note, color: annotations[item].color, highlightedText: text}
           myResolve(myData); // when successful
         })
         
