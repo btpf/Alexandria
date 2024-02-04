@@ -48,6 +48,10 @@
   width: 100%;
   display: flex;
   justify-content: space-evenly;
+  color: var(--text-secondary);
+  &>div {
+    transition: 0.2s;
+  }
 }
 .tabSelector > div{
   // border-bottom: 2px solid rgb(31, 120, 255);
@@ -58,8 +62,8 @@
   padding-bottom: 5px;
 }
 .selectedBookmarkTab{
-  border-bottom: 2px solid rgb(31, 120, 255) !important;
-  color: rgb(31, 120, 255);
+  border-bottom: 2px solid var(--text-primary) !important;
+  color: var(--text-primary);
 }
 .tabSelector > div:hover{
   // border-bottom: 2px solid rgb(31, 120, 255);
