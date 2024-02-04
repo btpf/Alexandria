@@ -319,7 +319,7 @@ const GlobalTheme = ()=>{
             <div className={styles.themePropertyName}>
             Invert Images 
             </div>
-            <input disabled={isDefaultTheme} type="radio" onChange={()=>null} onClick={()=>{
+            <input disabled={isDefaultTheme} type="checkbox" onChange={()=>null} onClick={()=>{
               const checkValue = appThemes[lastValidTheme]?.reader?.image?.invert || false
               dispatch(UpdateTheme({
                 themeName: lastValidTheme,
