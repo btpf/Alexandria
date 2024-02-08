@@ -1,6 +1,6 @@
-<h1 align="center">Alexandria</h1>
+ <h1 align="center"><img height="60px" width="60px" align="center" src="https://raw.githubusercontent.com/btpf/Alexandria/main/public/resources/logo.svg"> Alexandria</h1>
 <div align="center">A minimalistic cross platform eBook reader, built with Tauri ❤️ Epub.js</div>
-<div align="center"><a href="/#Download">Download</a> | <a href="/">Website</a> |  <a href="/docs/FAQ.md">FAQ</a> |  <a href="/docs/Build%20Instructions.md">Build Instructions</a></div>
+<div align="center"><a href="/#Download">Download</a> |  <a href="/docs/FAQ.md">FAQ</a> |  <a href="/docs/Build%20Instructions.md">Build Instructions</a></div>
 <br>
 
 <div align="center"><a href="/"> <img align="center" src="https://github.com/btpf/Alexandria/assets/61168382/6ff644fa-b4bf-4a8b-bc85-c1f44c21b2a3"> </div>
@@ -15,8 +15,9 @@
 - Supported Systems:
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> Windows 8+ (.exe, .msi)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Linux (Flatpak, .AppImage, .deb)
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  MacOS (.dmg)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  Android
-  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  IOS & OSx
+  - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Purple circle/Flat/purple_circle_flat.svg">  IOS
 - Supported Formats:
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg"> EPUB (.epub, .epub3)
   - <img height="18px" width="18px" align="center" src="https://github.com/microsoft/fluentui-emoji/blob/main/assets/Green circle/Flat/green_circle_flat.svg">  Kindle (.azw, .azw3) and Mobipocket (.mobi)
@@ -60,6 +61,10 @@ flatpak install io.github.btpf.alexandria
 ### Windows:
 
 Builds for windows are provided in <a href="https://github.com/btpf/Alexandria/releases">Releases</a>
+
+### MacOS:
+
+The first unsigned builds for MacOS can now be found in <a href="https://github.com/btpf/Alexandria/releases">Releases</a>
 
 ---
 
