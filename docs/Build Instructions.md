@@ -36,7 +36,7 @@ First make sure dependencies are present:
 Then run the install script
 
 1. `cd libmobi-rs`
-2. `sh ./build.sh`
+2. `sh ./build-linux.sh`
 
 The static library will be tested in a minimal rust environment. If this unit test passes, you are clear to proceed with the final step. 
 
