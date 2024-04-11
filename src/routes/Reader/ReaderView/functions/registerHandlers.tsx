@@ -3,7 +3,7 @@ import { AllowMouseEvent, setProgrammaticProgressUpdate, SetProgress, SkipMouseE
 import { LOADSTATE } from "@store/slices/constants";
 import { bookStateStructure } from "@store/slices/EpubJSBackend/epubjsManager.d";
 import store from "@store/store";
-import { Contents, Rendition } from '@btpf/epubjs';
+import { Contents, EpubCFI, Rendition } from '@btpf/epubjs';
 import View from "epubjs/types/managers/view";
 import { 
   CalculateBoxPosition, 
@@ -563,6 +563,45 @@ export default (renditionInstance:Rendition, view:number)=>{
 
   // Each time a new section/chapter is opened (Which employs the scroll trick), this hook will run.
   renditionInstance.hooks.content.register((contents, /*view*/) => {
+    //   // Adding windows tablet support
+    let prevSelection:string;
+
+    // We will override the window.oncontextmenu to prevent memory leaks
+    contents.window.oncontextmenu = ((event:PointerEvent) => {
+
+      // very first thing we do is prevent the event since this will allow submenus to appear
+      // (Though the main mini-menu will still appear no matter what on windows)
+      event.preventDefault();
+      event.stopPropagation();
+  
+      const cfiBase = contents.cfiBase
+      const contentsWindow = contents.window
+  
+      // We are now using the code from contents.js from epub.js to fit the arguemnts of the selectionHandler
+  
+      // We will add this functionality. On a windows surface, this represents
+      // when the edge mini-menu is closed using the three dots. Not the best,
+      // but the best that can be done it seems
+
+      // PointerID 1 is reserved for when the menu closes it seems. Lets use this.
+      if(event.pointerId != 1){
+        return
+      }
+  
+      const selection = contentsWindow.getSelection();
+      // Prevents case where text is still selected from before and one clicks on the text
+      if(selection.toString() == prevSelection || selection.toString() == '') return
+      prevSelection = selection.toString()
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        if(!range.collapsed) {
+          // cfirange = this.section.cfiFromRange(range);
+          const cfirange = new EpubCFI(range, cfiBase).toString();
+          selectionHandler(cfirange, contentsWindow)
+        }
+      }
+      return false;
+    });
 
 
 
@@ -629,7 +668,6 @@ export default (renditionInstance:Rendition, view:number)=>{
   renditionInstance.on('rendered', redrawAnnotations)
   window.addEventListener('keydown', keyboardEventsHandler)
   window.addEventListener("wheel", scrollEventsHandler);
-
 
 
   // renditionInstance.on("displayed", ()=>{

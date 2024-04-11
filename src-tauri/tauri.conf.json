@@ -76,7 +76,8 @@
         "width": 800,
         "fileDropEnabled": true,
         "decorations": false,
-        "transparent": true
+        "transparent": true,
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection,ElasticOverscroll --enable-features=msWebView2EnableDraggableRegions"
       }
     ]
   }

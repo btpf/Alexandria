@@ -141,3 +141,23 @@ div {
   font-weight: 900;
   font-style: normal;
 }
+
+// https://github.com/tauri-apps/tauri/issues/4746#issuecomment-2007114269
+[data-tauri-drag-region] {
+	-webkit-app-region: drag;
+
+  // Catches the case for most buttons across the project
+  // Though this seems to only be fixing the mouse cases.
+  // Manually setting this on the parent of the SVGs seems to be the only way to get touch to work...
+  // otherwise pixel perfect touch on the skinny SVG lines seems to be required... Strange behavior.
+  // Unless... Height is set to 100%, and each SVG has a viewbox set.
+  // setting padding seems to improve it a lot as well
+  svg{
+    -webkit-app-region: no-drag;
+    height:100%;
+  }
+}
+
+[data-tauri-drag-region-exclude] {
+	-webkit-app-region: no-drag;
+}

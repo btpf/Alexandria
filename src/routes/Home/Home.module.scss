@@ -331,6 +331,9 @@ $bookRadius: 5px;
   background-color: var(--background-secondary);
   color: var(--text-primary);
   border: none;
+
+  // Needed to fix bug with tablet support on titlebar. clicks do not register otherwise.
+  -webkit-app-region: no-drag;
 }
 
 .searchbarDesktop:focus{
@@ -564,6 +567,8 @@ $bottom-bar-width-standard: 650px;
 .iconButton{
   transition: 0.15s;
   color: var(--text-secondary);
+  padding: 0 5px 0 5px;
+  width:34px;
   &:hover{
     color: var(--text-primary);
     opacity: 0.8;

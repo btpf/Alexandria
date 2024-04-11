@@ -186,7 +186,8 @@ const Shelf = () =>{
               opacity: 0.6, 
               marginTop:"8px", 
               color:"var(--text-secondary)",
-              strokeWidth:"2px"
+              strokeWidth:"2px",
+              height:"16px"
             }} 
           />
           <input style={{paddingLeft:"26px"}} placeholder={"Search Book Titles"} className={styles.searchbarDesktop}
@@ -194,10 +195,12 @@ const Shelf = () =>{
 
         </div>
         <div className={styles.rightContainer}>
-          <Filter className={styles.iconButton} style={{marginRight:10, strokeWidth: 1.5, cursor:"pointer"}} onClick={()=>setBottomBarActive(!bottomBarActive)}/>
-          <Link className={`${styles.iconButton} ${styles.unstyleLink}`} state={{ backPath: false }} to="/settings">
-            <Settings style={{strokeWidth: 1.5, marginBottom:1}}/>
-          </Link>
+          <div style={{display:"flex", height:"100%"}}>
+            <Filter className={styles.iconButton} style={{ strokeWidth: 1.5, cursor:"pointer", height:"100%"}}  viewBox="0 0 24 24" onClick={()=>setBottomBarActive(!bottomBarActive)}/>
+            <Link className={`${styles.iconButton} ${styles.unstyleLink}`} state={{ backPath: false }} to="/settings">
+              <Settings viewBox="0 0 24 24" style={{strokeWidth: 1.5}}/>
+            </Link></div>
+
           <TitleBarButtons/>
         </div>
 

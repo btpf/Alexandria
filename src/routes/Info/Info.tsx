@@ -146,7 +146,7 @@ const Info = (props:any) =>{
       <div data-tauri-drag-region className={styles.titleBar}>
         {/* This is the titlebar for desktop screens */}
         <div onClick={()=> navigate("/")} className={styles.backButtonContainer}>
-          <BackArrow/>
+          <BackArrow viewBox="0 0 24 24"/>
         </div>
         <div className={styles.titleText}>Info</div>
         <div className={styles.titleBarButtonsContainer}>
