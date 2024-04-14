@@ -101,6 +101,7 @@ export default (renditionInstance:Rendition, view:number)=>{
   })
 
   const scrollEventsHandler = (event) =>{
+    console.log("SCROLL EVENT HANDLER")
     // Prevent flipping pages when scrolling on valid elements
     if(sidebarOpen || ThemeMenuActive || NoteModalVisible || DictionaryWord || (viewMode == "continuous") || footnoteActive) return
 
@@ -654,10 +655,57 @@ export default (renditionInstance:Rendition, view:number)=>{
     }else{
       console.log("Error: Background container not found")
     }
-    
+    if(renditionInstance.manager){
+      renditionInstance.manager.container.onscroll = ()=>{
+        // This is all related to a bug that came up with the surface tablet support
+        // When the reader is in dual reader or single reader mode, a long horizontal element is created
+        // and that element has it's scroll modified when the page is flipped.
+        // When text is selected on the windows touch screens however, the autoscroll can kick in and
+        // scroll this "page". I can't find any CSS tricks to disable it, So we will use some JS
+        // Ensure we are not in continuous mode
+        if((viewMode == "continuous")){
+          return
+        }
+
+        // First we will check if this scroll event was triggered by touch
+        if(!currentlySelectingByTouch){
+          return
+        }
+        // ensure the instance manager exists
+        if(!renditionInstance.manager){
+          return
+        }
+
+        // If the position has been scrolled less than 100 pixels
+        // Then it is most likely not a page flip, and rather a scroll bug
+        // const newScrollLeft = renditionInstance.manager?.container.scrollLeft || 0
+        // console.log("Checking scroll offset: ", startingScrollLeft, newScrollLeft)
+        // if(newScrollLeft - startingScrollLeft < 100){
+
+        // We can check to see if there is selected text
+        // If there is anything selected, that means that we should definitely not be scrolling
+        if(getSelectedText() != ""){
+          renditionInstance.manager.container.scrollLeft = startingScrollLeft
+
+        }
+        
+      }
+    }
       
   }
   
+  let startingScrollLeft = 0;
+  let currentlySelectingByTouch = false
+  const touchStartHandler = () =>{
+    startingScrollLeft = renditionInstance.manager?.container.scrollLeft || 0
+    currentlySelectingByTouch = true
+  }
+
+
+  const touchEndHandler = () =>{
+    startingScrollLeft = renditionInstance.manager?.container.scrollLeft || 0
+    currentlySelectingByTouch = true
+  }
   
   renditionInstance.on("attached", renditionAttachmentHandler)
   renditionInstance.on("locationChanged", pageTurnHandler)
@@ -668,6 +716,9 @@ export default (renditionInstance:Rendition, view:number)=>{
   renditionInstance.on('rendered', redrawAnnotations)
   window.addEventListener('keydown', keyboardEventsHandler)
   window.addEventListener("wheel", scrollEventsHandler);
+  renditionInstance.on("touchstart", touchStartHandler);
+  renditionInstance.on("touchend", touchEndHandler);
+
 
 
   // renditionInstance.on("displayed", ()=>{
