@@ -69,7 +69,8 @@ export const appState = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(setThemeThunk.pending, (state, action)=>{
-      state.selectedTheme = action.meta.arg.themeName
+      // We will comment this out for consistency, since the bookstate setThemeThunk should not set the global app theme.
+      // state.selectedTheme = action.meta.arg.themeName
     })
   },
 })
