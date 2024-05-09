@@ -47,7 +47,7 @@ const QuickbarModal = () =>{
       console.log("Quickbar Crash prevented")
       return (<></>)
     }
-    const showDict = !result.includes(" ")
+    const showDict = result.split(" ").filter((n: string) => n).length == 1
     return(
       <>
         <div className={styles.container} style={{top:modalY, left: modalX, width: QUICKBAR_MODAL_WIDTH, height: QUICKBAR_MODAL_HEIGHT}}>
@@ -68,7 +68,7 @@ const QuickbarModal = () =>{
             }}><Copy/></div>
             <div style={!showDict?{display:"none"}:{}}><Book onClick={()=>{
               console.log("About to set word", result)
-              dispatch(SetDictionaryWord(result))
+              dispatch(SetDictionaryWord(result.replaceAll(' ', '')))
               renditionInstance.annotations.remove(selectedCFI, "highlight")
               dispatch(MoveQuickbarModal({
                 view: 0,
