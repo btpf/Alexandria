@@ -106,7 +106,11 @@ const ProgressInfoBar = ()=>{
     }
 
   }
-
+  
+  // wait until displayedCFI is loaded
+  if (!displayedCFI) {
+    return <BottomMenuContainer active={menuActive}></BottomMenuContainer>;
+  }
   const currentPercentage = renditionInstance?.book.locations.percentageFromCfi(displayedCFI)
   
   const locationsCount = renditionInstance?.book.locations.total
