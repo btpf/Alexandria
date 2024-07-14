@@ -107,9 +107,8 @@ export const importBook = async (file:string)=>{
           await fs.writeBinaryFile({ path:coverpath, contents });
         }
   
-  
         // Update library before destroying book instance
-        returnData.cover_url = coverpath
+        if(cover != null) returnData.cover_url = coverpath
         book.destroy()
 
       }
