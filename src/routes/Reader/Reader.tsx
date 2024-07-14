@@ -196,7 +196,7 @@ const Home = () =>{
         <div onClick={()=>{
           dispatch(ToggleProgressMenu())
         }} className={styles.percentageContainer}>
-          {renditionInstance? Math.round(renditionInstance.book.locations.percentageFromCfi(displayedCFI)*100):"0"}%
+          {displayedCFI && renditionInstance? Math.round(renditionInstance.book.locations.percentageFromCfi(displayedCFI)*100):"0"}%
         </div>
         <div className={styles.sliderContainer}>
           <SliderNavigator/>
