@@ -56,7 +56,7 @@ const ThemeBuilder = (builder: ActionReducerMapBuilder<BookInstances>) =>{
       font-size: ${action.payload.theme.fontSize}% !important;
       font-weight: ${action.payload.theme.fontWeight} !important;
       word-spacing: ${action.payload.theme.wordSpacing}px !important;
-      line-height: ${action.payload.theme.lineHeight}% !important;
+      ${action.payload.theme.lineHeight != 0.9 ? `line-height: ${action.payload.theme.lineHeight} !important;` : ""}
     }
     p{
       font-family: inherit !important;

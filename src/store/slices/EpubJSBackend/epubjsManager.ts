@@ -136,7 +136,7 @@ export const RenditionBuilder = (builder:ActionReducerMapBuilder<BookInstances>)
           fontSize:100,
           fontWeight: 400,
           wordSpacing: 0,
-          lineHeight: 100,
+          lineHeight: 0.9,
           paragraphSpacing: -1,
           textAlign: "default",
           // readerMargins: readerMarginsToUse,

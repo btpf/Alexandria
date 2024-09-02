@@ -59,9 +59,9 @@ const SpacingContainer = ()=>{
           <div>
             <div className={styles.settingLabel}>Line Height</div>
             <div className={styles.settingButtonContainer}>
-              <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight - 5}))}>-</div>
-              <div className={styles.resizeSize}>{lineHeight}%</div>
-              <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight + 5}))}>+</div>
+              <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight - 0.1}))}>-</div>
+              <div className={styles.resizeSize}>{lineHeight == 0.9?"default":`${lineHeight}`}</div>
+              <div className={styles.settingButton} onClick={()=>dispatch(setLineHeightThunk({view:selectedRendition, value: lineHeight + 0.1}))}>+</div>
             </div>
           </div>
         </div>

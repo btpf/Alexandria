@@ -220,8 +220,14 @@ export const setLineHeightThunk = createAsyncThunk(
     const currentBookInstance:bookStateStructure = state.bookState[payload.view]
     const themeSpecs = state.appState.themes[state.appState.selectedTheme]
 
+    
+    function roundToTenth(num:number){
+      return Math.round(num*10)/10
+    }
 
-    const newTheme = {...currentBookInstance.data.theme, lineHeight:payload.value}
+    // 0.9 represents the default unset line-height
+    const newLineHeightValue = roundToTenth(Math.max(payload.value, 0.9))
+    const newTheme = {...currentBookInstance.data.theme, lineHeight:newLineHeightValue}
 
     return {
       view: payload.view,
