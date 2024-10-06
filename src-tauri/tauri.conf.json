@@ -12,7 +12,7 @@
   },
   "tauri": {
     "security": {
-      "csp": "default-src 'self' blob: https://asset.localhost/ http://127.0.0.1:16780/ https://en.wiktionary.org https://fonts.gstatic.com/ https://fonts.googleapis.com/; style-src 'self' 'unsafe-inline' blob: https://asset.localhost/ https://fonts.googleapis.com/; img-src data:"
+      "csp": "default-src 'self' blob: https://asset.localhost/ http://127.0.0.1:16780/ https://en.wiktionary.org https://fonts.gstatic.com/ https://fonts.googleapis.com/ data:; style-src 'self' 'unsafe-inline' blob: https://asset.localhost/ https://fonts.googleapis.com/;"
     },
     "cli": {
       "args": [{
