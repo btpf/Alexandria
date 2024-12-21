@@ -136,10 +136,10 @@ export default (renditionInstance:Rendition, view:number)=>{
       return
     }
 
-    if (event.keyCode == 40 || event.keyCode == 39) {
+    if (event.keyCode == 40 || event.keyCode == 39 || event.keyCode == 32 || event.keyCode == 34) {
       renditionInstance.next()
     }
-    if (event.keyCode == 37 || event.keyCode == 38) {
+    if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 33) {
       renditionInstance.prev()
     }
     if(event.ctrlKey && event.keyCode == 66){
