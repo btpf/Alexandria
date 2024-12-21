@@ -545,8 +545,14 @@ export default (renditionInstance:Rendition, view:number)=>{
         // Recalculate the highlight size
         // https://stackoverflow.com/a/47327417
         const baseFontSize = 16;
+        
+        // https://stackoverflow.com/a/46909109
+        // 1.2 is approximately the default line height in browsers
+        // "Desktop browsers (including Firefox) use a default value of roughly 1.2, depending on the element's font-family."
 
-        const calculatedLineHeight = (lineHeight/100) * (fontSize/100) * baseFontSize
+        // If the lineHeight value is 0.9, then it is unset in the theme
+        // In this case, we will use the default line height of 1.2
+        const calculatedLineHeight = (lineHeight == 0.9? 1.2 : lineHeight) * (fontSize/100) * baseFontSize
         highlightLine.style.height = calculatedLineHeight
       }
 
