@@ -13,6 +13,8 @@ import {
   QUICKBAR_MODAL_WIDTH 
 } from "./ModalUtility";
 import { handleLinkClick } from "@shared/scripts/handleLinkClick";
+import { writeText } from "@tauri-apps/api/clipboard";
+import toast from "react-hot-toast";
 
 // import {bookStateStructure} from 'src/store/slices/EpubJSBackend/epubjsManager.d'
 
@@ -150,6 +152,23 @@ export default (renditionInstance:Rendition, view:number)=>{
         store.dispatch(ToggleBookmark({view:selectedRendition, bookmarkLocation:renditionInstance.location.end.cfi}))
       }
        
+    }
+
+    if (event.ctrlKey && event.key === 'c') {
+      const result:any = renditionInstance?.getRange(selectedCFI)?.cloneContents().textContent
+      if(!result) return
+      
+      renditionInstance.annotations.remove(selectedCFI, "highlight")
+      store.dispatch(MoveQuickbarModal({
+        x:0,
+        y:0,
+        visible: false
+      }))
+      writeText(result);
+      toast.success('Text Copied',
+        {
+          icon: '📋',
+        })
     }
     if(event.keyCode === 114 || (event.ctrlKey && event.keyCode === 70)){
       // This will prevent the native browser searchbar from showing when
