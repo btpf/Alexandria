@@ -1,4 +1,5 @@
  <h1 align="center"><img height="60px" width="60px" align="center" src="https://raw.githubusercontent.com/btpf/Alexandria/main/public/resources/logo.svg"> Alexandria</h1>
+<br><p align="center"><em>Note: This project is no longer being actively developed.</em></p><br>
 <div align="center">A minimalistic cross platform eBook reader, built with Tauri ❤️ Epub.js</div>
 <div align="center"><a href="/#Download">Download</a> |  <a href="/docs/FAQ.md">FAQ</a> |  <a href="/docs/Build%20Instructions.md">Build Instructions</a></div>
 <br>
