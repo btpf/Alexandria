@@ -38,7 +38,7 @@ jobs:
           run: npm install # change this to npm or pnpm depending on which one you use
         - uses: tauri-apps/tauri-action@v0
         - name: Archive production artifacts
-          uses: actions/upload-artifact@v3
+          uses: actions/upload-artifact@v4
           with:
             name: Upload Binaries
             path: |
